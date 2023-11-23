@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Geonames Table of APIs</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -12,13 +13,27 @@
         </tr>
         <tr>
             <td>1. ..name</td>
-            <td>..description</td>
-            <td><form><input type="submit"></form></td>
+            <td id="input">
+                <select id="selCountry">
+                    <option value="GB">Great Britain</option>
+                    <option value="FR">France</option>
+                    <option value="DE">Germany</option>
+                    <option value="US">USA</option>
+                </select>
+        
+                <select id="selLanguage">
+                    <option value="en">English</option>
+                    <option value="fr">Francais</option>
+                    <option value="de">Deutsche</option>
+                </select>
+            </td>
+            <!-- <td><form><input type="submit" id="btnRun"></form></td> -->
+            <td><button id="btnRun" onclick="alerter()">Submit</button></td>
         </tr>
         <tr>
             <td>2. ..name</td>
-            <td>..description</td>
-            <td><form><input type="submit"></form></td>
+            <td id="input">..description</td>
+            <td><form><input type="submit" id="btnRun"></form></td>
         </tr>
         <tr>
             <td>3. ..name</td>
@@ -26,9 +41,12 @@
             <td><form><input type="submit"></form></td>
         </tr>
         <tr>
-            <td id="results" colspan="3">RESULTS</td>
+            <td id="txtContinent" colspan="3"></td>
         </tr>
     </table>
+
+    <script type="application/javascript" src="js/jquery-2.2.3.min.js"></script>
+    <script type="application/javascript" src="js/script.js"></script>
 
 </body>
 
