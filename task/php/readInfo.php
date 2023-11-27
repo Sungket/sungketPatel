@@ -1,25 +1,31 @@
 <?php
+	$lang = $_GET["lang"];
+    $country = $_GET["country"];
+    $username = $_GET["username"];
 
+    // $curl = curl_init();
 
-	$url='http://api.geonames.org/countryInfoJSON?formatted=true&lang=' . $_REQUEST['lang'] . '&country=' . $_REQUEST['country'] . '&username=flightltd&style=full';
+    // curl_setopt($curl, CURLOPT_URL, "http://api.geonames.org/countryInfoJSON?formatted=true&lang=" + $lang + "&country=" + $country + "&username=" + $username);
+    // curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-    $curl = curl_init();
+    // $response = curl_exec($curl);
+    // $err = curl_error($curl);
 
-    curl_setopt($curl, CURLOPT_URL, $url);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    // curl_close($curl);
 
-    $response = curl_exec($curl);
-    $err = curl_error($curl);
+    // $decode = json_decode($response,true);
+    // $output = $decode['geonames'];
 
-    curl_close($curl);
+    // header('Content-Type: application/json; charset=UTF-8');
 
-    //$response = jason_decode($response, true);
-    echo $response;
+	// echo $output;
 
-    // $data = json_decode($url);
-
-    // echo $data;
-    // echo "Hello";
-	//echo json_encode($output); 
-
-?>
+    $url = "http://api.geonames.org/countryInfoJSON?formatted=true&lang=" . $lang . "&country=" . $country . "&username=" . $username;
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_HTTPGET, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response_json = curl_exec($ch);
+    // curl_close($ch);
+    // $response=json_encode($response_json, true);
+    
+    echo $response_json ;
