@@ -1,21 +1,9 @@
-let land;
-let lang;
-
-function alerter(){
-// ***********************************************************
-    land = document.getElementById('selCountry').value;
-    lang = document.getElementById('selLanguage').value;
-    let hr = new XMLHttpRequest();
-    //JS calls the endpoint directly
-    let url = "http://api.geonames.org/countryInfoJSON?formatted=true&lang="+lang + "&country=" + land + "&username=flightltd&style=full";
+function processInput(){
+    let land = document.getElementById('selCountry').value;
+    let lang = document.getElementById('selLanguage').value;
     
-    $.ajax({url: url, success: function(result){
-        //below coming back as JSON object - no need o parse 
-        console.log(result);
-      }});
-    
-    //this method calls the PHP then endpoint from PHP
-      $.ajax({url: "http://localhost/projects/task/php/readInfo.php?formatted=true&lang="+lang + "&country=" + land + "&username=flightltd&style=full", success: function(result){
+    //ajax calls the PHP then endpoint from PHP
+      $.ajax({url: "http://localhost/projects/task/php/readInfo.php?formatted=true&lang="+lang + "&country=" + land + "&username=sungket&style=full", success: function(result){
         const countries = JSON.parse(result);
         document.getElementById('country').innerHTML = countries.geonames[0].countryName;
         document.getElementById('area').innerHTML = countries.geonames[0].areaInSqKm;
@@ -25,57 +13,38 @@ function alerter(){
         document.getElementById('population').innerHTML = countries.geonames[0].population;
         document.getElementById('language').innerHTML = countries.geonames[0].languages;
       }});
+}
+
+function processTimezone() {
+    let lat = document.getElementById('lat').value;
+    let long = document.getElementById('long').value;
+    //JS calls the endpoint directly
+    let url = "http://api.geonames.org/timezoneJSON?lat=" + lat + "&lng=" + long + "&username=sungket&style=full";
     
+    $.ajax({url: url, success: function(result){
+        //below coming back as JSON object - no need to parse 
+        const gmtOffset = result.gmtOffset;
+        document.getElementById('timezone').innerHTML = `Timezone: GMT: ${gmtOffset < 0 ? "" : "+"}${gmtOffset}`;
+      }});
+}
 
-    
-    hr.open("POST", url, true);
-    hr.setRequestHeader = function() {
-        console.log(hr);
-        if (this.status == 200) {
-            let countries = JSON.parse(result).replace("[", "");
-            let country = countries.continent;
-            let areaInSqKm
-            let capital
-            let continent
-            let currency
-            let population
-            let languages
-            let north
-            let east
-            let south
-            let west
-            // countries.forEach(element => {
-            //     console.log(element);
-            //     //country = countries.countryName;
-            //     areaInSqKm = element.areaInSqKm;
-            //     capital = element.capital;
-            //     continent = element.continentName;
-            //     currency = element.currencyCode;
-            //     population = element.population;
-            //     languages = element.languages;
-            //     north = element.north;
-            //     east = element.east;
-            //     south = element.south;
-            //     west = element.west;
-                document.getElementById('country').innerHTML = country;
-                document.getElementById('area').innerHTML = areaInSqKm; 
-                document.getElementById('capital').innerHTML = capital;
-                document.getElementById('continent').innerHTML = continent;
-                document.getElementById('currency').innerHTML = currency;
-                document.getElementById('population').innerHTML = population;
-                document.getElementById('language').innerHTML = languages;
-            //)
-            
-    };
-    hr.send();
+function processEQ() {
+    let north = document.getElementById('north').value;
+    let east = document.getElementById('east').value;
+    let south = document.getElementById('south').value;
+    let west = document.getElementById('west').value;
 
-
-// -----------------------------------------------------------
-
-
-
-
-     
-         
-
-}}
+    $.ajax({url: "http://localhost/projects/task/php/readEq.php?north=" + north + "&south=" + south + "&east=" + east + "&west=" + west + "&username=sungket&style=full", success: function(result){     
+        const eqList = JSON.parse(result);
+        try {
+            document.getElementById('earthq').innerHTML = `Date: ${eqList.earthquakes[0].datetime} \n \
+            Depth: ${eqList.earthquakes[0].depth} \n \
+            Longitude: ${eqList.earthquakes[0].lng} \n \
+            Latitude: ${eqList.earthquakes[0].lat} \n \
+            Magnitude: ${eqList.earthquakes[0].magnitude}`;
+        }
+        catch(err) {
+            document.getElementById('earthq').innerHTML = "No recorded recent earthquakes for the values given. Try a larger area."
+        }
+      }});
+}
