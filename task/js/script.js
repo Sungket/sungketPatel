@@ -22,12 +22,11 @@ function processInput(){
 function processTimezone() {
     let lat = document.getElementById('lat').value;
     let long = document.getElementById('long').value;
-    //JS calls the endpoint directly
-    let url = "http://api.geonames.org/timezoneJSON?lat=" + lat + "&lng=" + long + "&username=sungket&style=full";
-    
-    $.ajax({url: url, success: function(result){
-        //below coming back as JSON object - no need to parse 
-        const gmtOffset = result.gmtOffset;
+
+    $.ajax({url: "php/readTz.php?lat=" + lat + "&lng=" + long + "&username=sungket&style=full", type: "GET", success: function(result){
+        const time = JSON.parse(result);
+        console.log(time);
+        const gmtOffset = time.gmtOffset;
         document.getElementById('timezone').innerHTML = `Timezone: GMT: ${gmtOffset < 0 ? "" : "+"}${gmtOffset}`;
       }});
 }
