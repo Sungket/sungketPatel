@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Geonames Table of APIs</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css" defer>
 </head>
 <body>
     <table>
@@ -12,32 +12,14 @@
             <th></th>
         </tr>
         <tr>
-            <td>1. Country info in different languages</td>
+            <td>1. Neighboring countries</td>
             <td id="input">
+                <p>Select a country from the drop down, and see a list of its neighboring countries.</p>
                 <select id="selCountry">
                     <option value="GB">Great Britain</option>
                     <option value="FR">France</option>
                     <option value="DE">Germany</option>
                     <option value="US">USA</option>
-                </select>
-        
-                <select id="selLanguage">
-                    <option value="en">English</option>
-                    <option value="fr">Francais</option>
-                    <option value="de">Deutsche</option>
-                    <option value="es">Spanish</option>
-                </select>
-            </td>
-            <td><button onclick="processInput()">Submit</button></td>
-        </tr>
-        <tr>
-            <td>2. Get Timezone</td>
-            <td>
-                <label for="lat">Latitude</label>
-                <input type="number" id="lat" min="-90" max="90">
-                <label for="long">Longitude</label>
-                <input type="number" id="long" min="-180" max="180">
-                <!-- <select id="selCountryCoords">
                     <option value="AU">Australia</option>
                     <option value="FR">France</option>
                     <option value="IN">India</option>
@@ -46,17 +28,29 @@
                     <option value="MX">Mexico</option>
                     <option value="ZA">South Africa</option>
                     <option value="TH">Thailand</option>
-                    <option value="GB">Great Britain</option>
-                    <option value="US">USA</option>
-                </select> -->
+                </select>
+            </td>
+            <td><button onclick="processInput()">Submit</button></td>
+        </tr>
+        <tr>
+            <td>2. Get Timezone</td>
+            <td>
+                <p>
+                    Input the latitude (between -90 and 90) and longitude (between -180 and 180) of your choice to see the 
+                    timezone in GMT of that area.
+                </p>
+                <label for="lat">Latitude</label>
+                <input type="number" id="lat" min="-90" max="90">
+                <label for="long">Longitude</label>
+                <input type="number" id="long" min="-180" max="180">
             </td>
             <td><button onclick="processTimezone()">Submit</button></td>
         </tr>
         <tr>
-            <td>3. Recent earthquake</td>
-            <td id="input">
-                <p>Input parameters for north/south (between -90 to +90), and east/west (between -180 to +180). 
-                    The result will show the most recent earthquake to happen in that area bounded by the values.
+            <td>3. Latest earthquake</td>
+            <td>
+                <p>Input values for north/south (between -90 and +90), and east/west (between -180 and +180). 
+                    The result will show the most recent earthquake to happen in the area bounded by the values.
                 </p>
                 <label for="north">North</label>
                 <input type="number" id="north" min="-90" max="90">
@@ -70,7 +64,7 @@
             <td><button onclick="processEQ()">Submit</button></td>
         </tr>
         <tr>
-            <td id="country" colspan="3">country</td>
+            <td id="neighboring countries" colspan="3">country</td>
         </tr>
         <tr>
             <td id="area" colspan="3">area</td>
@@ -98,7 +92,7 @@
             <td id="timezone" colspan="3">timezone</td>
         </tr>
         <tr>
-            <td id="earthq" colspan="3">earthquakes</td>
+            <td id="earthq" colspan="3">latest earthquake</td>
         </tr>
     </table>
 

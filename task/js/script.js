@@ -1,18 +1,31 @@
 function processInput(){
-    let land = document.getElementById('selCountry').value;
-    let lang = document.getElementById('selLanguage').value;
+    let country = document.getElementById('selCountry').value;
     
     //ajax calls the PHP then endpoint from PHP
-      $.ajax({url: "http://localhost/projects/task/php/readInfo.php?formatted=true&lang="+lang + "&country=" + land + "&username=sungket&style=full", success: function(result){
-        const countries = JSON.parse(result);
-        document.getElementById('country').innerHTML = countries.geonames[0].countryName;
-        document.getElementById('area').innerHTML = countries.geonames[0].areaInSqKm;
-        document.getElementById('capital').innerHTML =countries.geonames[0].capital;
-        document.getElementById('continent').innerHTML = countries.geonames[0].continent;
-        document.getElementById('currency').innerHTML = countries.geonames[0].currencyCode;
-        document.getElementById('population').innerHTML = countries.geonames[0].population;
-        document.getElementById('language').innerHTML = countries.geonames[0].languages;
-      }});
+
+    $.ajax({url: "http://localhost/projects/task/php/readInfo.php?country=" + country + "&username=sungket&style=full", success: function(result){
+        parser = new DOMParser();
+        neighbours = parser.parseFromString(result, "text/xml");
+        let names = neighbours.getElementsByTagName("name");
+        let outputString = "";
+        for (let i = 0; i < names.length; i++) {
+            let name = names[i].firstChild.nodeValue;
+            console.log(name);
+            outputString += name + ", ";
+        }
+        document.getElementById('countries').innerHTML = outputString;
+    }});
+
+    //   $.ajax({url: "http://localhost/projects/task/php/readInfo.php?formatted=true&lang="+lang + "&country=" + land + "&username=sungket&style=full", success: function(result){
+    //     const countries = JSON.parse(result);
+    //     document.getElementById('country').innerHTML = countries.geonames[0].countryName;
+    //     document.getElementById('area').innerHTML = countries.geonames[0].areaInSqKm;
+    //     document.getElementById('capital').innerHTML =countries.geonames[0].capital;
+    //     document.getElementById('continent').innerHTML = countries.geonames[0].continent;
+    //     document.getElementById('currency').innerHTML = countries.geonames[0].currencyCode;
+    //     document.getElementById('population').innerHTML = countries.geonames[0].population;
+    //     document.getElementById('language').innerHTML = countries.geonames[0].languages;
+    //   }});
 }
 
 function processTimezone() {
