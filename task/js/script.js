@@ -2,7 +2,7 @@ function processInput(){
     let country = document.getElementById('selCountry').value;
     
     //ajax calls the PHP then endpoint from PHP
-    $.ajax({url: "http://localhost/projects/task/php/readInfo.php?country=" + country + "&username=sungket&style=full", success: function(result){
+    $.ajax({url: "php/readInfo.php?country=" + country + "&username=sungket&style=full", success: function(result){
         parser = new DOMParser();
         neighbours = parser.parseFromString(result, "text/xml");
         let names = neighbours.getElementsByTagName("name");
@@ -38,7 +38,7 @@ function processEQ() {
     let south = document.getElementById('south').value;
     let west = document.getElementById('west').value;
 
-    $.ajax({url: "http://localhost/projects/task/php/readEq.php?north=" + north + "&south=" + south + "&east=" + east + "&west=" + west + "&username=sungket&style=full", success: function(result){     
+    $.ajax({url: "php/readEq.php?north=" + north + "&south=" + south + "&east=" + east + "&west=" + west + "&username=sungket&style=full", success: function(result){     
         const eqList = JSON.parse(result);
         try {
             document.getElementById('earthq').innerHTML = `Date: ${eqList.earthquakes[0].datetime} \n \
