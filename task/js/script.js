@@ -23,7 +23,7 @@ function processTimezone() {
     let lat = document.getElementById('lat').value;
     let long = document.getElementById('long').value;
 
-    $.ajax({url: "php/readTz.php?lat=" + lat + "&lng=" + long + "&username=sungket&style=full", type: "GET", success: function(result){
+    $.ajax({url: "php/readTz.php?lat=" + lat + "&long=" + long + "&username=sungket&style=full", type: "GET", success: function(result){
         const time = JSON.parse(result);
         console.log(time);
         const gmtOffset = time.gmtOffset;
