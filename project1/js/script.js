@@ -14,16 +14,6 @@ let circle = L.circle(([51.508, -0.11]), {
     radius: 500
 }).addTo(map);
 
-// L.easyButton('fa-crosshairs', function(btn, map){
-//     helloPopup.setLatLng(map.getCenter()).openOn(map);
-// }).addTo(map);
-
-// L.easyButton.addTo(map);
-
-// let easyButton = L.easyButton("fa-info fa-lg", function (btn, map) {
-//     $("#exampleModal").modal("show");
-//   }).addTo(map);
-
 marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
 
 circle.bindPopup("I am a circle.");
@@ -45,6 +35,5 @@ map.on('click', onMapClick);
 var helloPopup = L.popup().setContent('Hello World!');
 
 let easyButton = L.easyButton("fa-info fa-lg", function (btn, map) {
-    // $("#exampleModal").modal("show");
-    helloPopup.setLatLng(map.getCenter()).openOn(map);
+    $("#myModal").modal("show");
   }).addTo(map);
