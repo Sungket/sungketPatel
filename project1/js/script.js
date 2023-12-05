@@ -37,3 +37,11 @@ var helloPopup = L.popup().setContent('Hello World!');
 let easyButton = L.easyButton("fa-info fa-lg", function (btn, map) {
     $("#myModal").modal("show");
   }).addTo(map);
+
+function fetchWeatherInfo() {
+    // alert("Hello, you click to get weather info.");
+    $.ajax({url: "http://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=7b964a710daaa3af6d297d5f54bc105d", success: function(result){
+        const response = JSON.parse(result);
+        console.log(response);
+    }})
+}

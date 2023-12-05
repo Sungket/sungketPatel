@@ -17,6 +17,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""></script>
+
     <title>Gazetteer</title>
 </head>
 <body>
@@ -31,8 +32,33 @@
             <div id="map"></div>
         </div>
         <div class="row">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#weatherModal">
+            <button type="button" class="btn btn-primary col-12" data-toggle="modal" data-target="#weatherModal" onclick="fetchWeatherInfo()">
                 Weather
+            </button>
+        </div>
+        <div class="row">
+            <button type="button" class="btn btn-primary col-12" data-toggle="modal" data-target="#ccModal">
+                Currency Converter
+            </button>
+        </div>
+        <div class="row">
+            <button type="button" class="btn btn-primary col-12" data-toggle="modal" data-target="#geoModal">
+                Geographical Information
+            </button>
+        </div>
+        <div class="row">
+            <button type="button" class="btn btn-primary col-12" data-toggle="modal" data-target="#popModal">
+                Population and Demographics
+            </button>
+        </div>
+        <div class="row">
+            <button type="button" class="btn btn-primary col-12" data-toggle="modal" data-target="#newsModal">
+                News in the Area
+            </button>
+        </div>
+        <div class="row">
+            <button type="button" class="btn btn-primary col-12" data-toggle="modal" data-target="#wikiModal">
+                Wiki
             </button>
         </div>
         
@@ -57,15 +83,60 @@
 
     <!--Weather modal-->
     <div class="modal" id="weatherModal" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content shadow">
                 <!--Modal header-->
                 <div class="modal header">
-                    <h2 class="modal-title">Hello</h2>
+                    <h5 class="modal-title">Weather</h5>
                 </div>
                 <!--Modal body-->
                 <div class="modal-body">
-                    <p>This is the weather modal </p>
+                    <table class="table table-striped">
+                        <tr>
+                            <td class="text-center">
+                                <i class="fa fa-rocket fa-xl text-success"></i>
+                              </td>
+                              <td>
+                                Cloud Cover
+                              </td>
+                              <td class="text-end">
+                                value
+                              </td>
+                        </tr>
+                        <tr>
+                              <td class="text-center">
+                                <i class="fa-solid fa-street-view fa-xl text-success"></i>
+                              </td>
+                              <td>
+                                Temperature
+                              </td>
+                              <td class="text-end">
+                                value
+                              </td>
+                        </tr>
+                        <tr>
+                              <td class="text-center">
+                                <i class="fa-solid fa-heart fa-xl text-success"></i>
+                              </td>
+                              <td>
+                                Precipitation
+                              </td>
+                              <td class="text-end">
+                                value
+                              </td>
+                        </tr>
+                        <tr>
+                              <td class="text-center">
+                                <i class="fa-solid fa-street-view fa-xl text-success"></i>
+                              </td>
+                              <td>
+                                Air Quality
+                              </td>
+                              <td class="text-end">
+                                value
+                              </td>
+                        </tr>
+                    </table>
                 </div>
                 <!--Modal footer-->
                 <div class="modal-footer">
@@ -75,6 +146,170 @@
         </div> <!--End modal dialog-->
     </div> <!-- End modal-->
 
+    <!-- Modal Popup-->
+    <div class="modal" id="ccModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal header">
+                    <h5 class="modal-title">Currency Converter</h5>
+                </div>
+                <!--Modal Body-->
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <tr>
+                            <td class="text-center">
+                                Current exchange rate
+                            </td>
+                            <td class="text-end">
+                                value
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">
+                                Convert Currency
+                            </td>
+                            <td>
+                                result currency
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div> <!--End modal content-->
+        </div> <!--End modal dialog-->
+    </div> <!-- End modal-->
+
+        <!-- Modal Popup-->
+        <div class="modal" id="geoModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal header">
+                        <h5 class="modal-title">Geographical Information</h5>
+                    </div>
+                    <!--Modal Body-->
+                    <div class="modal-body">
+                        <table class="table table-striped">
+                            <tr>
+                                <td class="text-center">
+                                    Highest mountain
+                                </td>
+                                <td class="text-end">
+                                    value
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    Lakes
+                                </td>
+                                <td>
+                                    value
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    Rivers
+                                </td>
+                                <td>
+                                    value
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div> <!--End modal content-->
+            </div> <!--End modal dialog-->
+        </div> <!-- End modal-->
+
+        <!-- Modal Popup-->
+        <div class="modal" id="popModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal header">
+                        <h5 class="modal-title">Local News</h5>
+                    </div>
+                    <!--Modal Body-->
+                    <div class="modal-body">
+                        <table class="table table-striped">
+                            <tr>
+                                <td class="text-center">
+                                    Population
+                                </td>
+                                <td class="text-end">
+                                    value
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    Ethnic groups
+                                </td>
+                                <td>
+                                    value
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    Religeons
+                                </td>
+                                <td>
+                                    value
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    Age structure
+                                </td>
+                                <td>
+                                    value
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div> <!--End modal content-->
+            </div> <!--End modal dialog-->
+        </div> <!-- End modal-->
+
+        <!-- Modal Popup-->
+        <div class="modal" id="newsModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal header">
+                        <h5 class="modal-title">News</h5>
+                    </div>
+                    <!--Modal Body-->
+                    <div class="modal-body">
+                        News
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div> <!--End modal content-->
+            </div> <!--End modal dialog-->
+        </div> <!-- End modal-->
+
+        <div class="modal" id="wikiModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal header">
+                        <h5 class="modal-title">Wikipedia</h5>
+                    </div>
+                    <!--Modal Body-->
+                    <div class="modal-body">
+                        Wiki article
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div> <!--End modal content-->
+            </div> <!--End modal dialog-->
+        </div> <!-- End modal-->
+
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" 
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" 
     crossorigin="anonymous"></script>
@@ -82,6 +317,7 @@
     integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" 
     crossorigin="anonymous"></script>
     <script src="js/easy-button.js"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
     <script src="js/script.js"></script>
 
 </body>
