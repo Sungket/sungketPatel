@@ -38,6 +38,22 @@ let easyButton = L.easyButton("fa-info fa-lg", function (btn, map) {
     $("#myModal").modal("show");
   }).addTo(map);
 
+$.ajax({type:"GET", 
+        url: "php/readCountries.php", 
+        success: function(array){
+    //now returning a JSON object
+    const obj = JSON.parse(array);
+    console.log(obj[0]);
+    console.log(typeof obj);
+    console.log(obj);
+    console.log(obj.length);
+    for (let i = 0; i < obj.length; i++) {
+        $('.dropdown-menu').append('<a class="dropdown-item" href="#">' + obj[i] + '</a>');
+    };
+}})
+
+
+
 function fetchWeatherInfo() {
     $.ajax({url: "http://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=7b964a710daaa3af6d297d5f54bc105d", success: function(result){
         const response = JSON.parse(result);
