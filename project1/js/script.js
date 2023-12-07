@@ -38,6 +38,13 @@ let easyButton = L.easyButton("fa-info fa-lg", function (btn, map) {
     $("#myModal").modal("show");
   }).addTo(map);
 
+//below code asks asks browser for location, then alerts with the coords.
+if(navigator.geolocation) {
+navigator.geolocation.getCurrentPosition(showPosition);
+} else {
+    alert("Geolocation not been allowed by the browser.");
+}
+
 // fetch all country names and populate the drop down menu
 $.ajax({type:"GET", 
         url: "php/readCountries.php", 
@@ -57,19 +64,9 @@ function getBorders(i) {
             url: 'php/readBorders.php?countryIndex=' + countryIndex,
             type:'GET',
             success: function(array){
-                // const obj = JSON.parse(array);
-                // console.log(typeof obj);
                 console.log(array);
+                console.log(typeof array);
             }});
-    // $.post('php/readBorders.php',
-    // {
-    //     countryIndex : i
-    // },
-    // function(array){
-    //     const obj = JSON.parse(array);
-    //     console.log(typeof obj);
-    //     console.log(i);
-    // });
 }
 
 function fetchWeatherInfo() {
@@ -83,3 +80,10 @@ function fetchWeatherInfo() {
         console.log(typeof resp);
     }});
 }
+
+function showPosition(position) {
+    alert(
+        "Latitude: " + position.coords.latitude +
+        "Longitude: " + position.coords.longitude
+    );
+};
