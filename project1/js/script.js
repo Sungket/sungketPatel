@@ -47,18 +47,29 @@ $.ajax({type:"GET",
     for (let i = 0; i < obj.length; i++) {
         $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="getBorders(' + i + ')">' + obj[i] + '</a>');
     };
-}})
+}});
 
 
 // onchange event handler once user clicks on a country, fetches the border coords
 function getBorders(i) {
-    $.ajax({type:"GET",
-            url: "php/readBorders.php",
+    const countryIndex = i;
+    $.ajax({
+            url: 'php/readBorders.php?countryIndex=' + countryIndex,
+            type:'GET',
             success: function(array){
-                const obj = JSON.parse(array);
-                console.log(typeof obj);
-                console.log(i);
-            }})
+                // const obj = JSON.parse(array);
+                // console.log(typeof obj);
+                console.log(array);
+            }});
+    // $.post('php/readBorders.php',
+    // {
+    //     countryIndex : i
+    // },
+    // function(array){
+    //     const obj = JSON.parse(array);
+    //     console.log(typeof obj);
+    //     console.log(i);
+    // });
 }
 
 function fetchWeatherInfo() {
@@ -70,5 +81,5 @@ function fetchWeatherInfo() {
     $.ajax({url: "utils/countryBorders.geo.json", success: function(res){
         const resp = JSON.parse(res);
         console.log(typeof resp);
-    }})
+    }});
 }
