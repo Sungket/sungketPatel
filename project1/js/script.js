@@ -1,6 +1,6 @@
 let latitude;
 let longitude;
-//initialise map
+//initialise map and view
 let map = L.map('map').setView([52, 0], 13); ;
 
 //below code asks asks browser for location, then alerts with the coords. Show position is the callback function to retrieve coords and 
@@ -19,18 +19,19 @@ function showPosition(position) {
         type:'GET',
         success: function(array){
             console.log(array);
-            //set up initial map view
             map.setView([latitude, longitude], 13); 
 
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(map);
+
+            document.getElementById("dropdownbtn").innerHTML = array;
         }});
 };
 
 
-
+//markers, points etc
 let marker = L.marker([51.5, -0.09]).addTo(map);
 
 let circle = L.circle(([51.508, -0.11]), {
