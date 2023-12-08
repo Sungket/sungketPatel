@@ -1,11 +1,10 @@
-var map = L.map('map').setView([51.505, -0.09], 13); 
+let latitude;
+let longitude;
+//initialise map
+let map = L.map('map').setView([52, 0], 13); ;
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
-
-//below code asks asks browser for location, then alerts with the coords.
+//below code asks asks browser for location, then alerts with the coords. Show position is the callback function to retrieve coords and 
+// pass to readISO.php.
 if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition);
     } else {
@@ -13,15 +12,24 @@ if(navigator.geolocation) {
     }
 
 function showPosition(position) {
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
     $.ajax({
         url: 'php/readISO.php?lat=' + latitude + '&lng=' + longitude + '&username=sungket&style=full',
         type:'GET',
         success: function(array){
             console.log(array);
+            //set up initial map view
+            map.setView([latitude, longitude], 13); 
+
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
         }});
 };
+
+
 
 let marker = L.marker([51.5, -0.09]).addTo(map);
 
