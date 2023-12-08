@@ -5,6 +5,24 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+//below code asks asks browser for location, then alerts with the coords.
+if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        alert("Geolocation not been allowed by the browser.");
+    }
+
+function showPosition(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    $.ajax({
+        url: 'php/readISO.php?lat=' + latitude + '&lng=' + longitude + '&username=sungket&style=full',
+        type:'GET',
+        success: function(array){
+            console.log(array);
+        }});
+};
+
 let marker = L.marker([51.5, -0.09]).addTo(map);
 
 let circle = L.circle(([51.508, -0.11]), {
@@ -37,13 +55,6 @@ var helloPopup = L.popup().setContent('Hello World!');
 let easyButton = L.easyButton("fa-info fa-lg", function (btn, map) {
     $("#myModal").modal("show");
   }).addTo(map);
-
-//below code asks asks browser for location, then alerts with the coords.
-if(navigator.geolocation) {
-navigator.geolocation.getCurrentPosition(showPosition);
-} else {
-    alert("Geolocation not been allowed by the browser.");
-}
 
 // fetch all country names and populate the drop down menu
 $.ajax({type:"GET", 
@@ -80,10 +91,3 @@ function fetchWeatherInfo() {
         console.log(typeof resp);
     }});
 }
-
-function showPosition(position) {
-    alert(
-        "Latitude: " + position.coords.latitude +
-        "Longitude: " + position.coords.longitude
-    );
-};
