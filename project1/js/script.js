@@ -18,7 +18,8 @@ function showPosition(position) {
         url: 'php/readISO.php?lat=' + latitude + '&lng=' + longitude + '&username=sungket&style=full',
         type:'GET',
         success: function(array){
-            console.log(array);
+            let parser = new DOMParser();
+            let information = parser.parseFromString(array, "text/xml");
             map.setView([latitude, longitude], 13); 
 
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -26,7 +27,8 @@ function showPosition(position) {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(map);
 
-            document.getElementById("dropdownbtn").innerHTML = array;
+            const country = information.querySelectorAll("country")
+            document.getElementById("dropdownbtn").innerHTML = country[0].querySelector("countryName").textContent;
         }});
 };
 
