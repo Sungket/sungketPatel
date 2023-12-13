@@ -1,14 +1,14 @@
 let latitude;
 let longitude;
 //initialise map and view
-let map = L.map('map').setView([52, 0], 13); ;
+let map = L.map('map').setView([52, 0], 13);
 
 //below code asks asks browser for location, then alerts with the coords. Show position is the callback function to retrieve coords and 
 // pass to readISO.php.
 if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
+    navigator.geolocation.getCurrentPosition(showPosition, defaultPosition);
     } else {
-        alert("Geolocation not been allowed by the browser.");
+        defaultPosition();
     }
 
 function showPosition(position) {
@@ -31,6 +31,28 @@ function showPosition(position) {
             document.getElementById("dropdownbtn").innerHTML = country[0].querySelector("countryName").textContent;
         }});
 };
+
+function defaultPosition(position) {
+    alert("Geolocation blocked by browser.");
+    // map.setView([25, 77], 13);
+
+    // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //     maxZoom: 19,
+    //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    // }).addTo(map);
+
+    let resp;
+
+    $.ajax({url: "utils/countryBorders.geo.json", success: function(res){
+        resp = JSON.parse(res);
+        let specifics = resp["features"][0]["geometry"]["coordinates"];
+        console.log(specifics);
+    }});
+
+    let coords = resp;
+
+    let countryLayer = L.geoJSON(coords).addTo(map);
+}
 
 
 //markers, points etc
@@ -71,10 +93,13 @@ let easyButton = L.easyButton("fa-info fa-lg", function (btn, map) {
 $.ajax({type:"GET", 
         url: "php/readCountries.php", 
         success: function(array){
-    //now returning a JSON object
+    //now returning a JSON object, the iterator reads through the array and populates the dropdown
     const obj = JSON.parse(array);
     for (let i = 0; i < obj.length; i++) {
-        $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="getBorders(' + i + ')">' + obj[i] + '</a>');
+        //$('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="getBorders(' + i + ')">' + obj[i] + '</a>');
+        $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i] + '</a>');
+        //$('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox()">' + obj[i] + '</a>');
+        // $('.dropdown-menu').append('<a class="dropdown-item" href="#" id="country" onclick="fetchBoundingBox()">' + obj[i] + '</a>');
     };
 }});
 
@@ -101,4 +126,36 @@ function fetchWeatherInfo() {
         const resp = JSON.parse(res);
         console.log(typeof resp);
     }});
+}
+
+// document.getElementById("country", fetchBoundingBox, false);
+
+function fetchBoundingBox(countryIdx) {
+    // const countryName = String(country);
+    console.log(countryIdx);
+
+    $.ajax({
+        url: "php/readCountriesISO2.php",
+        type: "GET",
+        success: function(ISOArray){
+            
+        }
+    })
+
+
+    $.ajax({
+        // url: 'php/readCountryInfo.php?country=' + countryName,
+        url: 'php/readCountryInfo.php',
+        type: 'GET',
+        success: function(response){
+            parser = new DOMParser();
+            xmlDoc = parser.parseFromString(response, "text/xml");
+            const info = xmlDoc.querySelectorAll("country");
+            const north = info[0].querySelector("north").textContent;
+            const east = info[0].querySelector("east").textContent;
+            const south = info[0].querySelector("south").textContent;
+            const west = info[0].querySelector("west").textContent;
+            console.log(north + ', ' + south + ', ' + east + ', ' + west);
+        }
+    });
 }
