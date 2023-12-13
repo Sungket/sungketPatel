@@ -132,16 +132,23 @@ function fetchWeatherInfo() {
 
 function fetchBoundingBox(countryIdx) {
     // const countryName = String(country);
+    // countryIdx needs to match up with with the index of the ISO_a2 array
     console.log(countryIdx);
+    const map = new Map();
 
     $.ajax({
         url: "php/readCountriesISO2.php",
         type: "GET",
         success: function(ISOArray){
-            
+            const resp = JSON.parse(ISOArray);
+            console.log(resp);
+
+            for (let j = 0; j < resp.length; j++) {
+                map.set(j, resp[j]);
+            }
         }
     })
-
+    console.log(map);
 
     $.ajax({
         // url: 'php/readCountryInfo.php?country=' + countryName,
