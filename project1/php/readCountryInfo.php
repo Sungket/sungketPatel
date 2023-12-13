@@ -1,7 +1,7 @@
 <?php
-    // $country = $_GET["countryName"];
+    $iso = $_GET["country"];
 
-    $url = "http://api.geonames.org/countryInfo?country=" . "DE" . "&username=sungket";
+    $url = "http://api.geonames.org/countryInfo?country=" . $iso . "&username=sungket";
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_HTTPGET, true);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

@@ -139,20 +139,30 @@ function fetchBoundingBox(countryIdx) {
     $.ajax({
         url: "php/readCountriesISO2.php",
         type: "GET",
+        async: false,
         success: function(ISOArray){
             const resp = JSON.parse(ISOArray);
             console.log(resp);
-
             for (let j = 0; j < resp.length; j++) {
                 map.set(j, resp[j]);
             }
         }
     })
     console.log(map);
+    //now match countryIdx with the keys of the maps to get the ISO_a2 code
+    let isoCode;
+
+    for (let [key, value] of map.entries()) {
+        if (countryIdx === key) {
+            isoCode = value;
+        }
+    }
+
+    console.log(isoCode);
 
     $.ajax({
         // url: 'php/readCountryInfo.php?country=' + countryName,
-        url: 'php/readCountryInfo.php',
+        url: 'php/readCountryInfo.php?country=' + isoCode,
         type: 'GET',
         success: function(response){
             parser = new DOMParser();
