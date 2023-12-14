@@ -178,7 +178,10 @@ function fetchBoundingBox(countryIdx) {
             midLat = (Number(north) + Number(south)) / 2;
             midLong = (Number(east) + Number(west)) / 2;
             console.log(midLat + ", " + midLong);
-            map.setView([midLat, midLong], 13); 
+            map.setView([midLat, midLong], 5); 
+            const nameOfCountry = xmlDoc.getElementsByTagName("countryName")[0].childNodes[0].nodeValue;
+            console.log(nameOfCountry);
+            document.getElementById("dropdownbtn").innerHTML = nameOfCountry;
         }
     });
 
