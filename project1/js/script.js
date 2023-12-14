@@ -134,7 +134,7 @@ function fetchBoundingBox(countryIdx) {
     // const countryName = String(country);
     // countryIdx needs to match up with with the index of the ISO_a2 array
     console.log(countryIdx);
-    const map = new Map();
+    const isoMap = new Map();
 
     $.ajax({
         url: "php/readCountriesISO2.php",
@@ -144,21 +144,23 @@ function fetchBoundingBox(countryIdx) {
             const resp = JSON.parse(ISOArray);
             console.log(resp);
             for (let j = 0; j < resp.length; j++) {
-                map.set(j, resp[j]);
+                isoMap.set(j, resp[j]);
             }
         }
     })
-    console.log(map);
+    console.log(isoMap);
     //now match countryIdx with the keys of the maps to get the ISO_a2 code
     let isoCode;
 
-    for (let [key, value] of map.entries()) {
+    for (let [key, value] of isoMap.entries()) {
         if (countryIdx === key) {
             isoCode = value;
         }
     }
 
     console.log(isoCode);
+    let midLat;
+    let midLong;
 
     $.ajax({
         // url: 'php/readCountryInfo.php?country=' + countryName,
@@ -173,6 +175,11 @@ function fetchBoundingBox(countryIdx) {
             const south = info[0].querySelector("south").textContent;
             const west = info[0].querySelector("west").textContent;
             console.log(north + ', ' + south + ', ' + east + ', ' + west);
+            midLat = (Number(north) + Number(south)) / 2;
+            midLong = (Number(east) + Number(west)) / 2;
+            console.log(midLat + ", " + midLong);
+            map.setView([midLat, midLong], 13); 
         }
     });
+
 }
