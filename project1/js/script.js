@@ -34,24 +34,28 @@ function showPosition(position) {
 
 function defaultPosition(position) {
     alert("Geolocation blocked by browser.");
+
+    //read in the file of countries, get the first country, then get it's coords to feed into map.setView
+    fetchBoundingBox(0)
+
     // map.setView([25, 77], 13);
 
-    // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //     maxZoom: 19,
-    //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    // }).addTo(map);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
 
-    let resp;
+    // let resp;
 
-    $.ajax({url: "utils/countryBorders.geo.json", success: function(res){
-        resp = JSON.parse(res);
-        let specifics = resp["features"][0]["geometry"]["coordinates"];
-        console.log(specifics);
-    }});
+    // $.ajax({url: "utils/countryBorders.geo.json", success: function(res){
+    //     resp = JSON.parse(res);
+    //     let specifics = resp["features"][0]["geometry"]["coordinates"];
+    //     console.log(specifics);
+    // }});
 
-    let coords = resp;
+    // let coords = resp;
 
-    let countryLayer = L.geoJSON(coords).addTo(map);
+    // let countryLayer = L.geoJSON(coords).addTo(map);
 }
 
 
@@ -96,10 +100,7 @@ $.ajax({type:"GET",
     //now returning a JSON object, the iterator reads through the array and populates the dropdown
     const obj = JSON.parse(array);
     for (let i = 0; i < obj.length; i++) {
-        //$('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="getBorders(' + i + ')">' + obj[i] + '</a>');
         $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i] + '</a>');
-        //$('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox()">' + obj[i] + '</a>');
-        // $('.dropdown-menu').append('<a class="dropdown-item" href="#" id="country" onclick="fetchBoundingBox()">' + obj[i] + '</a>');
     };
 }});
 
@@ -133,7 +134,6 @@ function fetchWeatherInfo() {
 function fetchBoundingBox(countryIdx) {
     // const countryName = String(country);
     // countryIdx needs to match up with with the index of the ISO_a2 array
-    console.log(countryIdx);
     const isoMap = new Map();
 
     $.ajax({
@@ -174,13 +174,10 @@ function fetchBoundingBox(countryIdx) {
             const east = info[0].querySelector("east").textContent;
             const south = info[0].querySelector("south").textContent;
             const west = info[0].querySelector("west").textContent;
-            console.log(north + ', ' + south + ', ' + east + ', ' + west);
             midLat = (Number(north) + Number(south)) / 2;
             midLong = (Number(east) + Number(west)) / 2;
-            console.log(midLat + ", " + midLong);
             map.setView([midLat, midLong], 5); 
             const nameOfCountry = xmlDoc.getElementsByTagName("countryName")[0].childNodes[0].nodeValue;
-            console.log(nameOfCountry);
             document.getElementById("dropdownbtn").innerHTML = nameOfCountry;
         }
     });
