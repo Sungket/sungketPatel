@@ -32,30 +32,15 @@ function showPosition(position) {
         }});
 };
 
-function defaultPosition(position) {
+function defaultPosition() {
     alert("Geolocation blocked by browser.");
 
-    //read in the file of countries, get the first country, then get it's coords to feed into map.setView
     fetchBoundingBox(0)
-
-    // map.setView([25, 77], 13);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
-
-    // let resp;
-
-    // $.ajax({url: "utils/countryBorders.geo.json", success: function(res){
-    //     resp = JSON.parse(res);
-    //     let specifics = resp["features"][0]["geometry"]["coordinates"];
-    //     console.log(specifics);
-    // }});
-
-    // let coords = resp;
-
-    // let countryLayer = L.geoJSON(coords).addTo(map);
 }
 
 
@@ -129,11 +114,8 @@ function fetchWeatherInfo() {
     }});
 }
 
-// document.getElementById("country", fetchBoundingBox, false);
-
 function fetchBoundingBox(countryIdx) {
-    // const countryName = String(country);
-    // countryIdx needs to match up with with the index of the ISO_a2 array
+    // countryIdx needs to match up with with the index of the ISO_a2 array in order to get the required coords
     const isoMap = new Map();
 
     $.ajax({
@@ -142,13 +124,12 @@ function fetchBoundingBox(countryIdx) {
         async: false,
         success: function(ISOArray){
             const resp = JSON.parse(ISOArray);
-            console.log(resp);
             for (let j = 0; j < resp.length; j++) {
                 isoMap.set(j, resp[j]);
             }
         }
     })
-    console.log(isoMap);
+
     //now match countryIdx with the keys of the maps to get the ISO_a2 code
     let isoCode;
 
@@ -158,12 +139,10 @@ function fetchBoundingBox(countryIdx) {
         }
     }
 
-    console.log(isoCode);
     let midLat;
     let midLong;
 
     $.ajax({
-        // url: 'php/readCountryInfo.php?country=' + countryName,
         url: 'php/readCountryInfo.php?country=' + isoCode,
         type: 'GET',
         success: function(response){
@@ -181,5 +160,4 @@ function fetchBoundingBox(countryIdx) {
             document.getElementById("dropdownbtn").innerHTML = nameOfCountry;
         }
     });
-
 }
