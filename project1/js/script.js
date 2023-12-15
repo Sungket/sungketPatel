@@ -104,8 +104,8 @@ function getBorders(i) {
 
 function fetchWeatherInfo() {
     $.ajax({url: "http://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=7b964a710daaa3af6d297d5f54bc105d", success: function(result){
-        const response = JSON.parse(result);
-        console.log(response);
+        console.log(result.weather[0].main);
+        
     }})
 
     $.ajax({url: "utils/countryBorders.geo.json", success: function(res){
