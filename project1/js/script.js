@@ -1,5 +1,7 @@
 let latitude;
 let longitude;
+let midLat;
+let midLong;
 //initialise map and view
 let map = L.map('map').setView([52, 0], 13);
 
@@ -103,14 +105,19 @@ function getBorders(i) {
 }
 
 function fetchWeatherInfo() {
-    $.ajax({url: "http://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=7b964a710daaa3af6d297d5f54bc105d", success: function(result){
-        console.log(result.weather[0].main);
-        
+    latitude = midLat;
+    longitude = midLong;
+    $.ajax({url: "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=7b964a710daaa3af6d297d5f54bc105d", success: function(result){
+        const celsius = (Number(result.main.temp) - 273.15).toFixed(0);
+        const feelsLikeTemp = (Number(result.main.feels_like) - 273.15).toFixed(0);
+        document.getElementById('weatherOverview').innerHTML = result.weather[0].main;
+        document.getElementById('tempInfo').innerHTML = celsius + " <sup>o</sup>C";
+        document.getElementById('feelsLike').innerHTML = feelsLikeTemp + " <sup>o</sup>C";
+        document.getElementById('wind').innerHTML = result.wind.speed + " m/s";
     }})
 
     $.ajax({url: "utils/countryBorders.geo.json", success: function(res){
         const resp = JSON.parse(res);
-        console.log(typeof resp);
     }});
 }
 
@@ -138,9 +145,6 @@ function fetchBoundingBox(countryIdx) {
             isoCode = value;
         }
     }
-
-    let midLat;
-    let midLong;
 
     $.ajax({
         url: 'php/readCountryInfo.php?country=' + isoCode,
