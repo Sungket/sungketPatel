@@ -107,13 +107,18 @@ function getBorders(i) {
 function fetchWeatherInfo() {
     latitude = midLat;
     longitude = midLong;
-    $.ajax({url: "http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=7b964a710daaa3af6d297d5f54bc105d", success: function(result){
-        const celsius = (Number(result.main.temp) - 273.15).toFixed(0);
-        const feelsLikeTemp = (Number(result.main.feels_like) - 273.15).toFixed(0);
-        document.getElementById('weatherOverview').innerHTML = result.weather[0].main;
+    $.ajax({url: "php/weatherAPI.php?lat=" + latitude + "&lon=" + longitude + "&appid=7b964a710daaa3af6d297d5f54bc105d",
+            type: "GET",
+            success: function(result){
+        const response = JSON.parse(result);
+        // leave below clg in for now just in case you want to add further info
+        console.log(response);
+        const celsius = (Number(response.main.temp) - 273.15).toFixed(0);
+        const feelsLikeTemp = (Number(response.main.feels_like) - 273.15).toFixed(0);
+        document.getElementById('weatherOverview').innerHTML = response.weather[0].description;
         document.getElementById('tempInfo').innerHTML = celsius + " <sup>o</sup>C";
         document.getElementById('feelsLike').innerHTML = feelsLikeTemp + " <sup>o</sup>C";
-        document.getElementById('wind').innerHTML = result.wind.speed + " m/s";
+        document.getElementById('wind').innerHTML = response.wind.speed + " m/s";
     }})
 
     $.ajax({url: "utils/countryBorders.geo.json", success: function(res){
