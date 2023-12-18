@@ -2,6 +2,7 @@ let latitude;
 let longitude;
 let midLat;
 let midLong;
+let currencyCode;
 //initialise map and view
 let map = L.map('map').setView([52, 0], 13);
 
@@ -104,6 +105,7 @@ function getBorders(i) {
             }});
 }
 
+// Clicking on the weather button function
 function fetchWeatherInfo() {
     latitude = midLat;
     longitude = midLong;
@@ -124,6 +126,17 @@ function fetchWeatherInfo() {
     $.ajax({url: "utils/countryBorders.geo.json", success: function(res){
         const resp = JSON.parse(res);
     }});
+}
+
+// clicking on exchange rate button
+function exchangeRate() {
+    $.ajax({
+        url: "php/exchangeRate.php?app_id=44a738b0aab34f73906f57e69037439a&symbols=" + currencyCode,
+        type: 'GET',
+        success: function(response){
+            console.log(response);
+        }
+    })
 }
 
 function fetchBoundingBox(countryIdx) {
@@ -162,6 +175,7 @@ function fetchBoundingBox(countryIdx) {
             const east = info[0].querySelector("east").textContent;
             const south = info[0].querySelector("south").textContent;
             const west = info[0].querySelector("west").textContent;
+            currencyCode = info[0].querySelector("currencyCode").textContent;
             midLat = (Number(north) + Number(south)) / 2;
             midLong = (Number(east) + Number(west)) / 2;
             map.setView([midLat, midLong], 5); 
