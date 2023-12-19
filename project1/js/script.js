@@ -257,3 +257,13 @@ function fetchBoundingBox(countryIdx) {
         }
     });
 }
+
+function wikipedia() {
+    $.ajax({
+        url: "php/wikipedia.php?north=" + north + "&south=" + south + "&east=" + east + "&west=" + west,
+        type: "GET",
+        success: function(result){
+            console.log(result);
+        }
+    })
+}
