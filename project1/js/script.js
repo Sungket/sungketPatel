@@ -259,6 +259,26 @@ function fetchBoundingBox(countryIdx) {
 }
 
 function wikipedia() {
+    let north;
+    let east;
+    let south;
+    let west;
+
+    $.ajax({
+        url: 'php/readCountryInfo.php?country=' + isoCode,
+        type: 'GET',
+        async: false,
+        success: function(response){
+            parser = new DOMParser();
+            xmlDoc = parser.parseFromString(response, "text/xml");
+            const info = xmlDoc.querySelectorAll("country");
+            north = info[0].querySelector("north").textContent;
+            east = info[0].querySelector("east").textContent;
+            south = info[0].querySelector("south").textContent;
+            west = info[0].querySelector("west").textContent;
+        }
+    })
+
     $.ajax({
         url: "php/wikipedia.php?north=" + north + "&south=" + south + "&east=" + east + "&west=" + west,
         type: "GET",
