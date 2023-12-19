@@ -1,8 +1,11 @@
+//set up global variables
 let latitude;
 let longitude;
 let midLat;
 let midLong;
 let currencyCode;
+let countryCode;
+
 //initialise map and view
 let map = L.map('map').setView([52, 0], 13);
 
@@ -135,6 +138,75 @@ function exchangeRate() {
         type: 'GET',
         success: function(response){
             console.log(response);
+            const result = JSON.parse(response);
+            const resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
+            console.log(typeof resultCurrency);
+            document.getElementById("resultCurrency").innerHTML = resultCurrency;
+        }
+    })
+}
+
+// fetching information on POI
+function pointsOfInterest() {
+    let mountainList;
+    $.ajax({
+        url: "php/mountainsPOI.php?q=mountain&country=" + countryCode,
+        type: 'GET',
+        success: function(result){
+            xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
+            const geonames = xmlDoc.querySelectorAll("geoname");
+
+            for (const geoname of geonames) {
+                const mountain = geoname.querySelector("toponymName").textContent;
+                if (mountain.includes("Airport") || mountain.includes("Park")){
+                    continue;
+                } else {
+                    mountainList += mountain + ",\n";
+                }
+            }
+            document.getElementById("mountainList").innerHTML = mountainList;
+        }
+    })
+
+    let lakeList;
+    $.ajax({
+        url: "php/lakesPOI.php?q=lake&country=" + countryCode,
+        type: 'GET',
+        async: false,
+        success: function(result){
+            xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
+            const geonames = xmlDoc.querySelectorAll("geoname");
+
+            for (const geoname of geonames) {
+                const lake = geoname.querySelector("name").textContent;
+                if (lake.includes("Airport") || lake.includes("Park")){
+                    continue;
+                } else {
+                    lakeList += lake + ",\n";
+                }
+            }
+            document.getElementById("lakeList").innerHTML = lakeList;
+        }
+    })
+
+    let riverList
+    $.ajax({
+        url: "php/riversPOI.php?q=river&country=" + countryCode,
+        type: 'GET',
+        async: false,
+        success: function(result){
+            xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
+            const geonames = xmlDoc.querySelectorAll("geoname");
+
+            for (const geoname of geonames) {
+                const river = geoname.querySelector("name").textContent;
+                if (river.includes("Airport") || river.includes("Park")) {
+                    continue;
+                } else {
+                    riverList += river + ",\n";
+                }
+            }
+            document.getElementById("riverList").innerHTML = riverList;
         }
     })
 }
@@ -176,6 +248,7 @@ function fetchBoundingBox(countryIdx) {
             const south = info[0].querySelector("south").textContent;
             const west = info[0].querySelector("west").textContent;
             currencyCode = info[0].querySelector("currencyCode").textContent;
+            countryCode = info[0].querySelector("countryCode").textContent;
             midLat = (Number(north) + Number(south)) / 2;
             midLong = (Number(east) + Number(west)) / 2;
             map.setView([midLat, midLong], 5); 

@@ -48,7 +48,7 @@
             </button>
         </div>
         <div class="row">
-            <button type="button" class="btn btn-primary col-12" data-toggle="modal" data-target="#geoModal">
+            <button type="button" class="btn btn-primary col-12" data-toggle="modal" data-target="#geoModal" onclick="pointsOfInterest()">
                 Geographical Information
             </button>
         </div>
@@ -172,10 +172,10 @@
                         </tr>
                         <tr>
                             <td class="text-center">
-                                Convert Currency
+                                1 USD = 
                             </td>
-                            <td>
-                                result currency
+                            <td id="resultCurrency">
+                                result Currency
                             </td>
                         </tr>
                     </table>
@@ -199,9 +199,9 @@
                         <table class="table table-striped">
                             <tr>
                                 <td class="text-center">
-                                    Highest mountain
+                                    Mountains
                                 </td>
-                                <td class="text-end">
+                                <td class="text-end" id="mountainList">
                                     value
                                 </td>
                             </tr>
@@ -209,7 +209,7 @@
                                 <td class="text-center">
                                     Lakes
                                 </td>
-                                <td>
+                                <td id="lakeList">
                                     value
                                 </td>
                             </tr>
@@ -217,7 +217,7 @@
                                 <td class="text-center">
                                     Rivers
                                 </td>
-                                <td>
+                                <td id="riverList">
                                     value
                                 </td>
                             </tr>
