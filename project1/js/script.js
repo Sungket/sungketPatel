@@ -5,6 +5,7 @@ let midLat;
 let midLong;
 let currencyCode;
 let countryCode;
+let countryName;
 let north;
 let east;
 let south;
@@ -253,6 +254,7 @@ function fetchBoundingBox(countryIdx) {
             west = info[0].querySelector("west").textContent;
             currencyCode = info[0].querySelector("currencyCode").textContent;
             countryCode = info[0].querySelector("countryCode").textContent;
+            countryName = info[0].querySelector("countryName").textContent;
             midLat = (Number(north) + Number(south)) / 2;
             midLong = (Number(east) + Number(west)) / 2;
             map.setView([midLat, midLong], 5); 
@@ -263,12 +265,27 @@ function fetchBoundingBox(countryIdx) {
 }
 
 function wikipedia() {
-
+    //need to get countryName to match up with relevant article. Can get it from matching with country ISO?
     $.ajax({
         url: "php/wikipedia.php?north=" + north + "&south=" + south + "&east=" + east + "&west=" + west,
         type: "GET",
         success: function(result){
-            console.log(result);
+            const xmlDoc = new DOMParser().parseFromString(result, "text/xml")
+            const entries = xmlDoc.querySelectorAll("entry");
+
+            for (const entry of entries) {
+                const infoType = entry.querySelector("feature").textContent;
+                const title = entry.querySelector("title").textContent;
+                const article = entry.querySelector("summary").textContent;
+                if (infoType == "country" && title == countryName) {
+                    document.getElementById("wikiTitle").innerHTML = title;
+                    document.getElementById("wikiArticle").innerHTML = article;
+                }
+            }
         }
     })
+}
+
+function news() {
+
 }
