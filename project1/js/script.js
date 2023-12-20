@@ -273,13 +273,18 @@ function wikipedia() {
             const xmlDoc = new DOMParser().parseFromString(result, "text/xml")
             const entries = xmlDoc.querySelectorAll("entry");
 
-            for (const entry of entries) {
-                const infoType = entry.querySelector("feature").textContent;
-                const title = entry.querySelector("title").textContent;
-                const article = entry.querySelector("summary").textContent;
-                if (infoType == "country" && title == countryName) {
-                    document.getElementById("wikiTitle").innerHTML = title;
-                    document.getElementById("wikiArticle").innerHTML = article;
+            //if stmnt not working as intended, may try to replace with a try catch?
+            if (!entries) {
+                document.getElementById("wikiTitle").innerHTML = "No news available in this area";
+            } else {
+                for (const entry of entries) {
+                    const infoType = entry.querySelector("feature").textContent;
+                    const title = entry.querySelector("title").textContent;
+                    const article = entry.querySelector("summary").textContent;
+                    if (infoType == "country" && title == countryName) {
+                        document.getElementById("wikiTitle").innerHTML = title;
+                        document.getElementById("wikiArticle").innerHTML = article;
+                    }
                 }
             }
         }
