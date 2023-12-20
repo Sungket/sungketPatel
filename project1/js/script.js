@@ -265,7 +265,7 @@ function fetchBoundingBox(countryIdx) {
 }
 
 function wikipedia() {
-    //need to get countryName to match up with relevant article. Can get it from matching with country ISO?
+
     $.ajax({
         url: "php/wikipedia.php?north=" + north + "&south=" + south + "&east=" + east + "&west=" + west,
         type: "GET",
@@ -288,4 +288,15 @@ function wikipedia() {
 
 function news() {
 
+    $.ajax({
+        url: "php/newsAPI.php?country=" + countryCode,
+        type: "GET",
+        success: function(result){
+            const resp = JSON.parse(result);
+            articles = resp.articles;
+            articles.forEach(element => {
+                console.log(element);
+            });
+        }
+    })
 }
