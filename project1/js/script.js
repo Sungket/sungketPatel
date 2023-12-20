@@ -6,6 +6,9 @@ let midLong;
 let currencyCode;
 let countryCode;
 let countryName;
+let capitalCity;
+let areaSqKm;
+let continentName;
 let north;
 let east;
 let south;
@@ -87,6 +90,10 @@ var helloPopup = L.popup().setContent('Hello World!');
 
 let easyButton = L.easyButton("fa-info fa-lg", function (btn, map) {
     $("#myModal").modal("show");
+    document.getElementById("EBcountryData").innerHTML = countryName;
+    document.getElementById("EBcapitalCity").innerHTML = capitalCity;
+    document.getElementById("EBareakm").innerHTML = areaSqKm;
+    document.getElementById("EBcontinents").innerHTML = continentName;
   }).addTo(map);
 
 // fetch all country names and populate the drop down menu
@@ -255,6 +262,9 @@ function fetchBoundingBox(countryIdx) {
             currencyCode = info[0].querySelector("currencyCode").textContent;
             countryCode = info[0].querySelector("countryCode").textContent;
             countryName = info[0].querySelector("countryName").textContent;
+            capitalCity = info[0].querySelector("capital").textContent;
+            continentName = info[0].querySelector("continentName").textContent;
+            areaSqKm = info[0].querySelector("areaInSqKm").textContent;
             midLat = (Number(north) + Number(south)) / 2;
             midLong = (Number(east) + Number(west)) / 2;
             map.setView([midLat, midLong], 5); 
