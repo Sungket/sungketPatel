@@ -288,6 +288,8 @@ function wikipedia() {
 
 function news() {
 
+    $(".news-list").empty();
+
     $.ajax({
         url: "php/newsAPI.php?country=" + countryCode,
         type: "GET",
@@ -295,7 +297,11 @@ function news() {
             const resp = JSON.parse(result);
             articles = resp.articles;
             articles.forEach(element => {
-                console.log(element);
+                let ul = document.querySelector("ul");
+                let li = document.createElement("li");
+                li.className = "news-list-item";
+                li.textContent = element.title;
+                ul.appendChild(li);
             });
         }
     })
