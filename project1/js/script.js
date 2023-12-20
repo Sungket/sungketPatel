@@ -5,6 +5,10 @@ let midLat;
 let midLong;
 let currencyCode;
 let countryCode;
+let north;
+let east;
+let south;
+let west;
 
 //initialise map and view
 let map = L.map('map').setView([52, 0], 13);
@@ -243,10 +247,10 @@ function fetchBoundingBox(countryIdx) {
             parser = new DOMParser();
             xmlDoc = parser.parseFromString(response, "text/xml");
             const info = xmlDoc.querySelectorAll("country");
-            const north = info[0].querySelector("north").textContent;
-            const east = info[0].querySelector("east").textContent;
-            const south = info[0].querySelector("south").textContent;
-            const west = info[0].querySelector("west").textContent;
+            north = info[0].querySelector("north").textContent;
+            east = info[0].querySelector("east").textContent;
+            south = info[0].querySelector("south").textContent;
+            west = info[0].querySelector("west").textContent;
             currencyCode = info[0].querySelector("currencyCode").textContent;
             countryCode = info[0].querySelector("countryCode").textContent;
             midLat = (Number(north) + Number(south)) / 2;
@@ -259,6 +263,7 @@ function fetchBoundingBox(countryIdx) {
 }
 
 function wikipedia() {
+
     $.ajax({
         url: "php/wikipedia.php?north=" + north + "&south=" + south + "&east=" + east + "&west=" + west,
         type: "GET",
