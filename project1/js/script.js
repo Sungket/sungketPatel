@@ -63,33 +63,35 @@ function defaultPosition() {
 //markers, points etc
 let marker = L.marker([51.5, -0.09]).addTo(map);
 
-let circle = L.circle(([51.508, -0.11]), {
-    color: 'red',
-    fillColor: '#f03',
-    fillOpacity: 0.5,
-    radius: 500
-}).addTo(map);
-
 marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
 
-circle.bindPopup("I am a circle.");
 
-var polygon = L.polygon([
-    [51.509, -0.08],
-    [51.503, -0.06],
-    [51.51, -0.047]
-]).addTo(map);
+// let circle = L.circle(([51.508, -0.11]), {
+//     color: 'red',
+//     fillColor: '#f03',
+//     fillOpacity: 0.5,
+//     radius: 500
+// }).addTo(map);
 
-polygon.bindPopup("I am a polygon.");
+// circle.bindPopup("I am a circle.");
 
-function onMapClick(e) {
-    alert("You clicked the map at " + e.latlng);
-}
+// var polygon = L.polygon([
+//     [51.509, -0.08],
+//     [51.503, -0.06],
+//     [51.51, -0.047]
+// ]).addTo(map);
 
-map.on('click', onMapClick);
+// polygon.bindPopup("I am a polygon.");
 
-var helloPopup = L.popup().setContent('Hello World!');
+// function onMapClick(e) {
+//     alert("You clicked the map at " + e.latlng);
+// }
 
+// map.on('click', onMapClick);
+
+// var helloPopup = L.popup().setContent('Hello World!');
+
+//leaflet's easybutton modal to display quick facts about the selected country 
 let easyButton = L.easyButton("fa-info fa-lg", function (btn, map) {
     $("#myModal").modal("show");
     document.getElementById("EBcountryData").innerHTML = countryName;
@@ -109,6 +111,63 @@ $.ajax({type:"GET",
     };
 }});
 
+
+$.ajax({
+    url: "php/airportsAPI.php",
+    type: "GET",
+    success: function(result){
+        xmlDoc = new DOMParser().parseFromString(result, "text/xml");
+        const geonames = xmlDoc.querySelectorAll("geoname");
+        // for (geoname of geonames) {
+        //     const name = geoname.querySelector("name").textContent;
+        //     const lat = geoname.querySelector("lat").textContent;
+        //     const long = geoname.querySelector("lng").textContent;
+        //     let marker = L.marker([lat, long]).addTo(map);
+        //     marker.bindPopup(name).openPopup();
+        // }
+        for (let i = 0; i < 16; i++){
+            const name = geonames[i].querySelector("name").textContent;
+            const lat = geonames[i].querySelector("lat").textContent;
+            const long = geonames[i].querySelector("lng").textContent;
+            let marker = L.marker([lat, long]).addTo(map);
+            marker.bindPopup(name).openPopup();
+        }
+    }
+});
+
+
+
+// $.ajax({
+//     url: "php/universitiesAPI.php",
+//     type: "GET",
+//     success: function(result){
+//         xmlDoc = new DOMParser().parseFromString(result, "text/xml");
+//         const geonames = xmlDoc.querySelectorAll("geoname");
+//         for (geoname of geonames) {
+//             const name = geoname.querySelector("name").textContent;
+//             const lat = geoname.querySelector("lat").textContent;
+//             const long = geoname.querySelector("lng").textContent;
+//             let marker = L.marker([lat, long]).addTo(map);
+//             marker.bindPopup(name).openPopup();
+//         }
+//     }
+// });
+
+// $.ajax({
+//     url: "php/capitalCitiesAPI.php",
+//     type: "GET",
+//     success: function(result){
+//         xmlDoc = new DOMParser().parseFromString(result, "text/xml");
+//         const geonames = xmlDoc.querySelectorAll("geoname");
+//         for (geoname of geonames) {
+//             const name = geoname.querySelector("name").textContent;
+//             const lat = geoname.querySelector("lat").textContent;
+//             const long = geoname.querySelector("lng").textContent;
+//             let marker = L.marker([lat, long]).addTo(map);
+//             marker.bindPopup(name).openPopup();
+//         }
+//     }
+// });
 
 // onchange event handler once user clicks on a country, fetches the border coords
 function getBorders(i) {

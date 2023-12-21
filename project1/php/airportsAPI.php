@@ -1,12 +1,7 @@
 <?php
-    // $country = $_GET["country"];
-
-    $url = "https://hub.worldpop.org/rest/data/pop";
+    $url = "http://api.geonames.org/search?q=airport&country=&username=sungket";
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_HTTPGET, true);
-    // curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    //     'User-Agent: testing'
-    // ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response_json = curl_exec($ch);
     
