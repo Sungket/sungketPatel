@@ -137,37 +137,37 @@ $.ajax({
 
 
 
-// $.ajax({
-//     url: "php/universitiesAPI.php",
-//     type: "GET",
-//     success: function(result){
-//         xmlDoc = new DOMParser().parseFromString(result, "text/xml");
-//         const geonames = xmlDoc.querySelectorAll("geoname");
-//         for (geoname of geonames) {
-//             const name = geoname.querySelector("name").textContent;
-//             const lat = geoname.querySelector("lat").textContent;
-//             const long = geoname.querySelector("lng").textContent;
-//             let marker = L.marker([lat, long]).addTo(map);
-//             marker.bindPopup(name).openPopup();
-//         }
-//     }
-// });
+$.ajax({
+    url: "php/universitiesAPI.php",
+    type: "GET",
+    success: function(result){
+        xmlDoc = new DOMParser().parseFromString(result, "text/xml");
+        const geonames = xmlDoc.querySelectorAll("geoname");
+        for (let i = 0; i < 16; i++) {
+            const name = geonames[i].querySelector("name").textContent;
+            const lat = geonames[i].querySelector("lat").textContent;
+            const long = geonames[i].querySelector("lng").textContent;
+            let marker = L.marker([lat, long]).addTo(map);
+            marker.bindPopup(name).openPopup();
+        }
+    }
+});
 
-// $.ajax({
-//     url: "php/capitalCitiesAPI.php",
-//     type: "GET",
-//     success: function(result){
-//         xmlDoc = new DOMParser().parseFromString(result, "text/xml");
-//         const geonames = xmlDoc.querySelectorAll("geoname");
-//         for (geoname of geonames) {
-//             const name = geoname.querySelector("name").textContent;
-//             const lat = geoname.querySelector("lat").textContent;
-//             const long = geoname.querySelector("lng").textContent;
-//             let marker = L.marker([lat, long]).addTo(map);
-//             marker.bindPopup(name).openPopup();
-//         }
-//     }
-// });
+$.ajax({
+    url: "php/capitalCitiesAPI.php",
+    type: "GET",
+    success: function(result){
+        xmlDoc = new DOMParser().parseFromString(result, "text/xml");
+        const geonames = xmlDoc.querySelectorAll("geoname");
+        for (let i = 0; i < 16; i++) {
+            const name = geonames[i].querySelector("name").textContent;
+            const lat = geonames[i].querySelector("lat").textContent;
+            const long = geonames[i].querySelector("lng").textContent;
+            let marker = L.marker([lat, long]).addTo(map);
+            marker.bindPopup(name).openPopup();
+        }
+    }
+});
 
 // onchange event handler once user clicks on a country, fetches the border coords
 function getBorders(i) {
