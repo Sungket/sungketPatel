@@ -9,6 +9,8 @@ let countryName;
 let capitalCity;
 let areaSqKm;
 let continentName;
+let pop;
+let languages;
 let north;
 let east;
 let south;
@@ -265,6 +267,8 @@ function fetchBoundingBox(countryIdx) {
             capitalCity = info[0].querySelector("capital").textContent;
             continentName = info[0].querySelector("continentName").textContent;
             areaSqKm = info[0].querySelector("areaInSqKm").textContent;
+            pop = info[0].querySelector("population").textContent;
+            languages = info[0].querySelector("languages").textContent;
             midLat = (Number(north) + Number(south)) / 2;
             midLong = (Number(east) + Number(west)) / 2;
             map.setView([midLat, midLong], 5); 
@@ -320,4 +324,10 @@ function news() {
             });
         }
     })
+}
+
+function population() {
+
+    document.getElementById("popValue").innerHTML = pop;
+    document.getElementById("langValue").innerHTML = languages;
 }
