@@ -25,11 +25,51 @@ let east;
 let south;
 let west;
 
+//****************************** */
+
+// var streets = L.tileLayer(
+//     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+//     {
+//       attribution:
+//         "Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012"
+//     }
+//   );
+  
+//   var satellite = L.tileLayer(
+//     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+//     {
+//       attribution:
+//         "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+//     }
+//   );
+//   var basemaps = {
+//     "Streets": streets,
+//     "Satellite": satellite
+//   };
+  
+//   var map = L.map("map", {
+//     layers: [streets]
+//   }).setView([54.5, -4], 6);
+  
+//   var layerControl = L.control.layers(basemaps).addTo(map);
+  
+//   L.easyButton("fa-info fa-lg", function (btn, map) {
+//     $("#exampleModal").modal("show");
+//   }).addTo(map);
+
+
+
+
+
+
+
+//******************************* */
+
 //initialise map and view
 let map = L.map('map').setView([52, 0], 13);
 
 //below code asks asks browser for location, then alerts with the coords. Show position is the callback function to retrieve coords and 
-// pass to readISO.php.
+//pass to readISO.php.
 if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition, defaultPosition);
     } else {
@@ -70,9 +110,9 @@ function defaultPosition() {
 
 
 //markers, points etc
-let marker = L.marker([51.5, -0.09]).addTo(map);
+// let marker = L.marker([51.5, -0.09]).addTo(map);
 
-marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+// marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
 
 
 // let circle = L.circle(([51.508, -0.11]), {

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "leaflet-easybutton": "^2.4.0"
   }
 }
