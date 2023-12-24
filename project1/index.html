@@ -207,7 +207,7 @@
                             <td class="text-center">
                                 Current exchange rate
                             </td>
-                            <td class="text-end">
+                            <td class="text-center">
                                 value
                             </td>
                         </tr>
@@ -215,9 +215,17 @@
                             <td class="text-center">
                                 1 USD = 
                             </td>
-                            <td id="resultCurrency">
+                            <td id="resultCurrency" class="text-end">
                                 result Currency
                             </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">
+                                <label for="usd2Convert">Convert USD</label><br>
+                                <input type="text" id="usd2Convert" name="usd" placeholder="Input amount to convert"><br>
+                                <input type="submit" value="Submit" onclick="calculate()">
+                            </td>
+                            <td class="text-end" id="resultAmount">result amount</td>
                         </tr>
                     </table>
                 </div>

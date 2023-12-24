@@ -24,6 +24,7 @@ let north;
 let east;
 let south;
 let west;
+let resultCurrency;
 
 //****************************** */
 
@@ -253,85 +254,205 @@ function fetchWeatherInfo() {
     }});
 }
 
+//weather easybutton
+let weather = L.easyButton("fa-info fa-lg", function (btn, map) {
+    $("#weatherModal").modal("show");
+    latitude = midLat;
+    longitude = midLong;
+
+    $.ajax({url: "php/weatherAPI.php?lat=" + latitude + "&lon=" + longitude + "&appid=7b964a710daaa3af6d297d5f54bc105d",
+            type: "GET",
+            success: function(result){
+        const response = JSON.parse(result);
+        // leave below clg in for now just in case you want to add further info
+        console.log(response);
+        const celsius = (Number(response.main.temp) - 273.15).toFixed(0);
+        const feelsLikeTemp = (Number(response.main.feels_like) - 273.15).toFixed(0);
+        document.getElementById('weatherOverview').innerHTML = response.weather[0].description;
+        document.getElementById('tempInfo').innerHTML = celsius + " <sup>o</sup>C";
+        document.getElementById('feelsLike').innerHTML = feelsLikeTemp + " <sup>o</sup>C";
+        document.getElementById('wind').innerHTML = response.wind.speed + " m/s";
+    }})
+}).addTo(map);
+
+
 // clicking on exchange rate button
-function exchangeRate() {
+// function exchangeRate() {
+//     $.ajax({
+//         url: "php/exchangeRate.php?app_id=44a738b0aab34f73906f57e69037439a&symbols=" + currencyCode,
+//         type: 'GET',
+//         success: function(response){
+//             console.log(response);
+//             const result = JSON.parse(response);
+//             const resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
+//             console.log(typeof resultCurrency);
+//             document.getElementById("resultCurrency").innerHTML = resultCurrency;
+//         }
+//     })
+// }
+
+let exchangeRate = L.easyButton("fa-info fa-lg", function (btn, map) {
+    $("#ccModal").modal("show");
     $.ajax({
         url: "php/exchangeRate.php?app_id=44a738b0aab34f73906f57e69037439a&symbols=" + currencyCode,
         type: 'GET',
         success: function(response){
             console.log(response);
             const result = JSON.parse(response);
-            const resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
-            console.log(typeof resultCurrency);
+            resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
             document.getElementById("resultCurrency").innerHTML = resultCurrency;
         }
     })
+}).addTo(map);
+
+function calculate(){
+    const input = Number(document.getElementById("usd2Convert").value);
+    if (input === NaN) {
+        alert("Please enter a valid number");
+    } else {
+        //bring in the value of the exchange rate
+        let numberCurr = resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim();
+        console.log(numberCurr);
+    }
 }
 
 // fetching information on POI
-function pointsOfInterest() {
-    let mountainList;
-    $.ajax({
-        url: "php/mountainsPOI.php?q=mountain&country=" + countryCode,
-        type: 'GET',
-        success: function(result){
-            xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
-            const geonames = xmlDoc.querySelectorAll("geoname");
+// function pointsOfInterest() {
+//     let mountainList;
+//     $.ajax({
+//         url: "php/mountainsPOI.php?q=mountain&country=" + countryCode,
+//         type: 'GET',
+//         success: function(result){
+//             xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
+//             const geonames = xmlDoc.querySelectorAll("geoname");
 
-            for (const geoname of geonames) {
-                const mountain = geoname.querySelector("toponymName").textContent;
-                if (mountain.includes("Airport") || mountain.includes("Park")){
-                    continue;
-                } else {
-                    mountainList += mountain + ",\n";
-                }
-            }
-            document.getElementById("mountainList").innerHTML = mountainList;
-        }
-    })
+//             for (const geoname of geonames) {
+//                 const mountain = geoname.querySelector("toponymName").textContent;
+//                 if (mountain.includes("Airport") || mountain.includes("Park")){
+//                     continue;
+//                 } else {
+//                     mountainList += mountain + ",\n";
+//                 }
+//             }
+//             document.getElementById("mountainList").innerHTML = mountainList;
+//         }
+//     })
 
-    let lakeList;
-    $.ajax({
-        url: "php/lakesPOI.php?q=lake&country=" + countryCode,
-        type: 'GET',
-        async: false,
-        success: function(result){
-            xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
-            const geonames = xmlDoc.querySelectorAll("geoname");
+//     let lakeList;
+//     $.ajax({
+//         url: "php/lakesPOI.php?q=lake&country=" + countryCode,
+//         type: 'GET',
+//         async: false,
+//         success: function(result){
+//             xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
+//             const geonames = xmlDoc.querySelectorAll("geoname");
 
-            for (const geoname of geonames) {
-                const lake = geoname.querySelector("name").textContent;
-                if (lake.includes("Airport") || lake.includes("Park")){
-                    continue;
-                } else {
-                    lakeList += lake + ",\n";
-                }
-            }
-            document.getElementById("lakeList").innerHTML = lakeList;
-        }
-    })
+//             for (const geoname of geonames) {
+//                 const lake = geoname.querySelector("name").textContent;
+//                 if (lake.includes("Airport") || lake.includes("Park")){
+//                     continue;
+//                 } else {
+//                     lakeList += lake + ",\n";
+//                 }
+//             }
+//             document.getElementById("lakeList").innerHTML = lakeList;
+//         }
+//     })
 
-    let riverList
-    $.ajax({
-        url: "php/riversPOI.php?q=river&country=" + countryCode,
-        type: 'GET',
-        async: false,
-        success: function(result){
-            xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
-            const geonames = xmlDoc.querySelectorAll("geoname");
+//     let riverList
+//     $.ajax({
+//         url: "php/riversPOI.php?q=river&country=" + countryCode,
+//         type: 'GET',
+//         async: false,
+//         success: function(result){
+//             xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
+//             const geonames = xmlDoc.querySelectorAll("geoname");
 
-            for (const geoname of geonames) {
-                const river = geoname.querySelector("name").textContent;
-                if (river.includes("Airport") || river.includes("Park")) {
-                    continue;
-                } else {
-                    riverList += river + ",\n";
-                }
-            }
-            document.getElementById("riverList").innerHTML = riverList;
-        }
-    })
-}
+//             for (const geoname of geonames) {
+//                 const river = geoname.querySelector("name").textContent;
+//                 if (river.includes("Airport") || river.includes("Park")) {
+//                     continue;
+//                 } else {
+//                     riverList += river + ",\n";
+//                 }
+//             }
+//             document.getElementById("riverList").innerHTML = riverList;
+//         }
+//     })
+// }
+
+// //geographical information easybutton
+// let geoInfo = L.easyButton("fa-info fa-lg", function (btn, map) {
+//     $("#geoModal").modal("show");
+//     let mountainList;
+//     $.ajax({
+//         url: "php/mountainsPOI.php?q=mountain&country=" + countryCode,
+//         type: 'GET',
+//         success: function(result){
+//             xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
+//             const geonames = xmlDoc.querySelectorAll("geoname");
+
+//             for (const geoname of geonames) {
+//                 const mountain = geoname.querySelector("toponymName").textContent;
+//                 if (mountain.includes("Airport") || mountain.includes("Park")){
+//                     continue;
+//                 } else {
+//                     mountainList += mountain + ",\n";
+//                 }
+//             }
+//             document.getElementById("mountainList").innerHTML = mountainList;
+//         }
+//     })
+
+//     let lakeList;
+//     $.ajax({
+//         url: "php/lakesPOI.php?q=lake&country=" + countryCode,
+//         type: 'GET',
+//         async: false,
+//         success: function(result){
+//             xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
+//             const geonames = xmlDoc.querySelectorAll("geoname");
+
+//             for (const geoname of geonames) {
+//                 const lake = geoname.querySelector("name").textContent;
+//                 if (lake.includes("Airport") || lake.includes("Park")){
+//                     continue;
+//                 } else {
+//                     lakeList += lake + ",\n";
+//                 }
+//             }
+//             document.getElementById("lakeList").innerHTML = lakeList;
+//         }
+//     })
+
+//     let riverList
+//     $.ajax({
+//         url: "php/riversPOI.php?q=river&country=" + countryCode,
+//         type: 'GET',
+//         async: false,
+//         success: function(result){
+//             xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
+//             const geonames = xmlDoc.querySelectorAll("geoname");
+
+//             for (const geoname of geonames) {
+//                 const river = geoname.querySelector("name").textContent;
+//                 if (river.includes("Airport") || river.includes("Park")) {
+//                     continue;
+//                 } else {
+//                     riverList += river + ",\n";
+//                 }
+//             }
+//             document.getElementById("riverList").innerHTML = riverList;
+//         }
+//     })
+// }).addTo(map);
+
+//leaflet's easybutton modal to display quick facts about the selected country 
+let popButton = L.easyButton("fa-info fa-lg", function (btn, map) {
+    $("#popModal").modal("show");
+    document.getElementById("popValue").innerHTML = pop;
+    document.getElementById("langValue").innerHTML = languages;
+  }).addTo(map);
 
 function fetchBoundingBox(countryIdx) {
     // countryIdx needs to match up with with the index of the ISO_a2 array in order to get the required coords
@@ -386,8 +507,36 @@ function fetchBoundingBox(countryIdx) {
     });
 }
 
-function wikipedia() {
+// function wikipedia() {
 
+//     $.ajax({
+//         url: "php/wikipedia.php?north=" + north + "&south=" + south + "&east=" + east + "&west=" + west,
+//         type: "GET",
+//         success: function(result){
+//             const xmlDoc = new DOMParser().parseFromString(result, "text/xml")
+//             const entries = xmlDoc.querySelectorAll("entry");
+
+//             //if stmnt not working as intended, may try to replace with a try catch?
+//             if (!entries) {
+//                 document.getElementById("wikiTitle").innerHTML = "No news available in this area";
+//             } else {
+//                 for (const entry of entries) {
+//                     const infoType = entry.querySelector("feature").textContent;
+//                     const title = entry.querySelector("title").textContent;
+//                     const article = entry.querySelector("summary").textContent;
+//                     if (infoType == "country" && title == countryName) {
+//                         document.getElementById("wikiTitle").innerHTML = title;
+//                         document.getElementById("wikiArticle").innerHTML = article;
+//                     }
+//                 }
+//             }
+//         }
+//     })
+// }
+
+//wikipedia easybutton to display an article about the area
+let wikipedia = L.easyButton("fa-info fa-lg", function (btn, map) {
+    $("#wikiModal").modal("show");
     $.ajax({
         url: "php/wikipedia.php?north=" + north + "&south=" + south + "&east=" + east + "&west=" + west,
         type: "GET",
@@ -411,10 +560,12 @@ function wikipedia() {
             }
         }
     })
-}
+  }).addTo(map);
 
-function news() {
 
+//leaflet's easybutton modal to display quick facts about the selected country 
+let news = L.easyButton("fa-info fa-lg", function (btn, map) {
+    $("#newsModal").modal("show");
     $(".news-list").empty();
 
     $.ajax({
@@ -432,10 +583,31 @@ function news() {
             });
         }
     })
-}
+  }).addTo(map);
 
-function population() {
+// function news() {
 
-    document.getElementById("popValue").innerHTML = pop;
-    document.getElementById("langValue").innerHTML = languages;
-}
+//     $(".news-list").empty();
+
+//     $.ajax({
+//         url: "php/newsAPI.php?country=" + countryCode,
+//         type: "GET",
+//         success: function(result){
+//             const resp = JSON.parse(result);
+//             articles = resp.articles;
+//             articles.forEach(element => {
+//                 let ul = document.querySelector("ul");
+//                 let li = document.createElement("li");
+//                 li.className = "news-list-item";
+//                 li.textContent = element.title;
+//                 ul.appendChild(li);
+//             });
+//         }
+//     })
+// }
+
+// function population() {
+
+//     document.getElementById("popValue").innerHTML = pop;
+//     document.getElementById("langValue").innerHTML = languages;
+// }
