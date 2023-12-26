@@ -26,45 +26,6 @@ let south;
 let west;
 let resultCurrency;
 
-//****************************** */
-
-// var streets = L.tileLayer(
-//     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
-//     {
-//       attribution:
-//         "Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012"
-//     }
-//   );
-  
-//   var satellite = L.tileLayer(
-//     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-//     {
-//       attribution:
-//         "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
-//     }
-//   );
-//   var basemaps = {
-//     "Streets": streets,
-//     "Satellite": satellite
-//   };
-  
-//   var map = L.map("map", {
-//     layers: [streets]
-//   }).setView([54.5, -4], 6);
-  
-//   var layerControl = L.control.layers(basemaps).addTo(map);
-  
-//   L.easyButton("fa-info fa-lg", function (btn, map) {
-//     $("#exampleModal").modal("show");
-//   }).addTo(map);
-
-
-
-
-
-
-
-//******************************* */
 
 //initialise map and view
 let map = L.map('map').setView([52, 0], 13);
@@ -233,27 +194,27 @@ function getBorders(i) {
 }
 
 // Clicking on the weather button function
-function fetchWeatherInfo() {
-    latitude = midLat;
-    longitude = midLong;
-    $.ajax({url: "php/weatherAPI.php?lat=" + latitude + "&lon=" + longitude + "&appid=7b964a710daaa3af6d297d5f54bc105d",
-            type: "GET",
-            success: function(result){
-        const response = JSON.parse(result);
-        // leave below clg in for now just in case you want to add further info
-        console.log(response);
-        const celsius = (Number(response.main.temp) - 273.15).toFixed(0);
-        const feelsLikeTemp = (Number(response.main.feels_like) - 273.15).toFixed(0);
-        document.getElementById('weatherOverview').innerHTML = response.weather[0].description;
-        document.getElementById('tempInfo').innerHTML = celsius + " <sup>o</sup>C";
-        document.getElementById('feelsLike').innerHTML = feelsLikeTemp + " <sup>o</sup>C";
-        document.getElementById('wind').innerHTML = response.wind.speed + " m/s";
-    }})
+// function fetchWeatherInfo() {
+//     latitude = midLat;
+//     longitude = midLong;
+//     $.ajax({url: "php/weatherAPI.php?lat=" + latitude + "&lon=" + longitude,
+//             type: "GET",
+//             success: function(result){
+//         const response = JSON.parse(result);
+//         // leave below clg in for now just in case you want to add further info
+//         console.log(response);
+//         const celsius = (Number(response.main.temp) - 273.15).toFixed(0);
+//         const feelsLikeTemp = (Number(response.main.feels_like) - 273.15).toFixed(0);
+//         document.getElementById('weatherOverview').innerHTML = response.weather[0].description;
+//         document.getElementById('tempInfo').innerHTML = celsius + " <sup>o</sup>C";
+//         document.getElementById('feelsLike').innerHTML = feelsLikeTemp + " <sup>o</sup>C";
+//         document.getElementById('wind').innerHTML = response.wind.speed + " m/s";
+//     }})
 
-    $.ajax({url: "utils/countryBorders.geo.json", success: function(res){
-        const resp = JSON.parse(res);
-    }});
-}
+//     $.ajax({url: "utils/countryBorders.geo.json", success: function(res){
+//         const resp = JSON.parse(res);
+//     }});
+// }
 
 //weather easybutton
 let weather = L.easyButton("fa-info fa-lg", function (btn, map) {
@@ -261,36 +222,46 @@ let weather = L.easyButton("fa-info fa-lg", function (btn, map) {
     latitude = midLat;
     longitude = midLong;
 
-    $.ajax({url: "php/weatherAPI.php?lat=" + latitude + "&lon=" + longitude + "&appid=7b964a710daaa3af6d297d5f54bc105d",
+    $.ajax({url: "php/weatherAPI.php?lat=" + latitude + "&lon=" + longitude,
             type: "GET",
             success: function(result){
         const response = JSON.parse(result);
         // leave below clg in for now just in case you want to add further info
         console.log(response);
-        const celsius = (Number(response.main.temp) - 273.15).toFixed(0);
-        const feelsLikeTemp = (Number(response.main.feels_like) - 273.15).toFixed(0);
-        document.getElementById('weatherOverview').innerHTML = response.weather[0].description;
-        document.getElementById('tempInfo').innerHTML = celsius + " <sup>o</sup>C";
-        document.getElementById('feelsLike').innerHTML = feelsLikeTemp + " <sup>o</sup>C";
-        document.getElementById('wind').innerHTML = response.wind.speed + " m/s";
+        // const celsius = (Number(response.main.temp) - 273.15).toFixed(0);
+        // const feelsLikeTemp = (Number(response.main.feels_like) - 273.15).toFixed(0);
+        // const celsius = Number(response.current.temp_c)
+        document.getElementById('weatherOverview').innerHTML = response.current.condition.text;
+        document.getElementById('tempInfo').innerHTML = response.current.temp_c + " <sup>o</sup>C";
+        document.getElementById('feelsLike').innerHTML = response.current.feelslike_c + " <sup>o</sup>C";
+        document.getElementById('wind').innerHTML = response.current.wind_mph + "mph";
+    }})
+
+    $.ajax({url: "php/weatherForecast.php?lat=" + latitude + "&lon=" + longitude,
+    type: "GET",
+    success: function(response){
+        const res = JSON.parse(response);
+        console.log(res);
+        document.getElementById("forecast").innerHTML = res.forecast.forecastday[0].day.avgtemp_c;
     }})
 }).addTo(map);
 
 
-// clicking on exchange rate button
-// function exchangeRate() {
-//     $.ajax({
-//         url: "php/exchangeRate.php?app_id=44a738b0aab34f73906f57e69037439a&symbols=" + currencyCode,
-//         type: 'GET',
-//         success: function(response){
-//             console.log(response);
-//             const result = JSON.parse(response);
-//             const resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
-//             console.log(typeof resultCurrency);
-//             document.getElementById("resultCurrency").innerHTML = resultCurrency;
-//         }
-//     })
-// }
+//weather forecast easybutton
+let weatherForecast = L.easyButton("fa-info fa-lg", function (btn, map) {
+    $("#weatherForecastModal").modal("show");
+    latitude = midLat;
+    longitude = midLong;
+
+    $.ajax({url: "php/weatherForecast.php?lat=" + latitude + "&lon=" + longitude,
+    type: "GET",
+    success: function(response){
+        const res = JSON.parse(response);
+        console.log(res);
+        document.getElementById("forecast").innerHTML = res.forecast.forecastday[0].day.avgtemp_c;
+    }})
+}).addTo(map);
+
 
 let exchangeRate = L.easyButton("fa-info fa-lg", function (btn, map) {
     $("#ccModal").modal("show");
@@ -510,33 +481,6 @@ function fetchBoundingBox(countryIdx) {
     });
 }
 
-// function wikipedia() {
-
-//     $.ajax({
-//         url: "php/wikipedia.php?north=" + north + "&south=" + south + "&east=" + east + "&west=" + west,
-//         type: "GET",
-//         success: function(result){
-//             const xmlDoc = new DOMParser().parseFromString(result, "text/xml")
-//             const entries = xmlDoc.querySelectorAll("entry");
-
-//             //if stmnt not working as intended, may try to replace with a try catch?
-//             if (!entries) {
-//                 document.getElementById("wikiTitle").innerHTML = "No news available in this area";
-//             } else {
-//                 for (const entry of entries) {
-//                     const infoType = entry.querySelector("feature").textContent;
-//                     const title = entry.querySelector("title").textContent;
-//                     const article = entry.querySelector("summary").textContent;
-//                     if (infoType == "country" && title == countryName) {
-//                         document.getElementById("wikiTitle").innerHTML = title;
-//                         document.getElementById("wikiArticle").innerHTML = article;
-//                     }
-//                 }
-//             }
-//         }
-//     })
-// }
-
 //wikipedia easybutton to display an article about the area
 let wikipedia = L.easyButton("fa-info fa-lg", function (btn, map) {
     $("#wikiModal").modal("show");
@@ -587,30 +531,3 @@ let news = L.easyButton("fa-info fa-lg", function (btn, map) {
         }
     })
   }).addTo(map);
-
-// function news() {
-
-//     $(".news-list").empty();
-
-//     $.ajax({
-//         url: "php/newsAPI.php?country=" + countryCode,
-//         type: "GET",
-//         success: function(result){
-//             const resp = JSON.parse(result);
-//             articles = resp.articles;
-//             articles.forEach(element => {
-//                 let ul = document.querySelector("ul");
-//                 let li = document.createElement("li");
-//                 li.className = "news-list-item";
-//                 li.textContent = element.title;
-//                 ul.appendChild(li);
-//             });
-//         }
-//     })
-// }
-
-// function population() {
-
-//     document.getElementById("popValue").innerHTML = pop;
-//     document.getElementById("langValue").innerHTML = languages;
-// }
