@@ -1,12 +1,13 @@
-/* #map {
-    width: 500px;
-    height: 500px;
-} */
-
 html, body {
     margin: 0;
     padding: 0;
   }
+
+  #dropdownbtn {
+    z-index: 2000;
+  }
+
+  
   
   #map {
     width: 100%;

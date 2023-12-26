@@ -144,6 +144,7 @@ function defaultPosition() {
 //leaflet's easybutton modal to display quick facts about the selected country 
 let easyButton = L.easyButton("fa-info fa-lg", function (btn, map) {
     $("#myModal").modal("show");
+    $(easyButton).css("z-index", "100");
     document.getElementById("EBcountryData").innerHTML = countryName;
     document.getElementById("EBcapitalCity").innerHTML = capitalCity;
     document.getElementById("EBareakm").innerHTML = areaSqKm;
@@ -311,8 +312,10 @@ function calculate(){
         alert("Please enter a valid number");
     } else {
         //bring in the value of the exchange rate
-        let numberCurr = resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim();
+        let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
         console.log(numberCurr);
+        console.log(input);
+        console.log(input * numberCurr);
     }
 }
 
