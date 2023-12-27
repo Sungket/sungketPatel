@@ -258,7 +258,27 @@ let weatherForecast = L.easyButton("fa-info fa-lg", function (btn, map) {
     success: function(response){
         const res = JSON.parse(response);
         console.log(res);
-        document.getElementById("forecast").innerHTML = res.forecast.forecastday[0].day.avgtemp_c;
+        document.getElementById("day1").innerHTML = res.forecast.forecastday[1].date;
+        document.getElementById("day2").innerHTML = res.forecast.forecastday[2].date;
+        document.getElementById("day3").innerHTML = res.forecast.forecastday[3].date;
+        document.getElementById("forecast").innerHTML = res.forecast.forecastday[1].day.avgtemp_c;
+        document.getElementById("forecast2").innerHTML = res.forecast.forecastday[2].day.avgtemp_c;
+        document.getElementById("forecast3").innerHTML = res.forecast.forecastday[3].day.avgtemp_c;
+        document.getElementById("tempHigh").innerHTML = res.forecast.forecastday[1].day.maxtemp_c;
+        document.getElementById("tempHigh2").innerHTML = res.forecast.forecastday[2].day.maxtemp_c;
+        document.getElementById("tempHigh3").innerHTML = res.forecast.forecastday[3].day.maxtemp_c;
+        document.getElementById("tempLow").innerHTML = res.forecast.forecastday[1].day.mintemp_c;
+        document.getElementById("tempLow2").innerHTML = res.forecast.forecastday[2].day.mintemp_c;
+        document.getElementById("tempLow3").innerHTML = res.forecast.forecastday[3].day.mintemp_c;
+        document.getElementById("rain").innerHTML = res.forecast.forecastday[1].day.totalprecip_mm;
+        document.getElementById("rain2").innerHTML = res.forecast.forecastday[2].day.totalprecip_mm;
+        document.getElementById("rain3").innerHTML = res.forecast.forecastday[3].day.totalprecip_mm;
+        document.getElementById("wind").innerHTML = res.forecast.forecastday[1].day.maxwind_mph;
+        document.getElementById("wind2").innerHTML = res.forecast.forecastday[2].day.maxwind_mph;
+        document.getElementById("wind3").innerHTML = res.forecast.forecastday[3].day.maxwind_mph;
+        document.getElementById("uv").innerHTML = res.forecast.forecastday[1].day.uv;
+        document.getElementById("uv2").innerHTML = res.forecast.forecastday[2].day.uv;
+        document.getElementById("uv3").innerHTML = res.forecast.forecastday[3].day.uv;
     }})
 }).addTo(map);
 
