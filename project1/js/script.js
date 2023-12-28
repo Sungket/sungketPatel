@@ -25,10 +25,15 @@ let east;
 let south;
 let west;
 let resultCurrency;
+let airportsArray = [];
+let airports;
+let universitiesArray = [];
+let universities;
+let capitalCityArray = [];
+let capitalCities;
+let map;
+let baseMap;
 
-
-//initialise map and view
-let map = L.map('map').setView([52, 0], 13);
 
 //below code asks asks browser for location, then alerts with the coords. Show position is the callback function to retrieve coords and 
 //pass to readISO.php.
@@ -37,6 +42,8 @@ if(navigator.geolocation) {
     } else {
         defaultPosition();
     }
+
+    
 
 function showPosition(position) {
     latitude = position.coords.latitude;
@@ -49,11 +56,6 @@ function showPosition(position) {
             let information = parser.parseFromString(array, "text/xml");
             map.setView([latitude, longitude], 13); 
 
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
-
             const country = information.querySelectorAll("country")
             document.getElementById("dropdownbtn").innerHTML = country[0].querySelector("countryName").textContent;
         }});
@@ -63,66 +65,30 @@ function defaultPosition() {
     alert("Geolocation blocked by browser.");
 
     fetchBoundingBox(0)
-
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
 }
 
 
-//markers, points etc
-// let marker = L.marker([51.5, -0.09]).addTo(map);
-
-// marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
 
 
-// let circle = L.circle(([51.508, -0.11]), {
-//     color: 'red',
-//     fillColor: '#f03',
-//     fillOpacity: 0.5,
-//     radius: 500
-// }).addTo(map);
+var streets = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+    {
+      attribution:
+        "Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012"
+    }
+  );
+  
+  var satellite = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+      attribution:
+        "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+    }
+  );
 
-// circle.bindPopup("I am a circle.");
+//fetch airports, universities and capital Cities from API and place markers on the map
 
-// var polygon = L.polygon([
-//     [51.509, -0.08],
-//     [51.503, -0.06],
-//     [51.51, -0.047]
-// ]).addTo(map);
-
-// polygon.bindPopup("I am a polygon.");
-
-// function onMapClick(e) {
-//     alert("You clicked the map at " + e.latlng);
-// }
-
-// map.on('click', onMapClick);
-
-// var helloPopup = L.popup().setContent('Hello World!');
-
-//leaflet's easybutton modal to display quick facts about the selected country 
-let easyButton = L.easyButton("fa-info fa-lg", function (btn, map) {
-    $("#myModal").modal("show");
-    $(easyButton).css("z-index", "100");
-    document.getElementById("EBcountryData").innerHTML = countryName;
-    document.getElementById("EBcapitalCity").innerHTML = capitalCity;
-    document.getElementById("EBareakm").innerHTML = areaSqKm;
-    document.getElementById("EBcontinents").innerHTML = continentName;
-  }).addTo(map);
-
-// fetch all country names and populate the drop down menu
-$.ajax({type:"GET", 
-        url: "php/readCountries.php", 
-        success: function(array){
-    //now returning a JSON object, the iterator reads through the array and populates the dropdown
-    const obj = JSON.parse(array);
-    for (let i = 0; i < obj.length; i++) {
-        $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i] + '</a>');
-    };
-}});
-
+airports = L.layerGroup();
 
 $.ajax({
     url: "php/airportsAPI.php",
@@ -130,24 +96,17 @@ $.ajax({
     success: function(result){
         xmlDoc = new DOMParser().parseFromString(result, "text/xml");
         const geonames = xmlDoc.querySelectorAll("geoname");
-        // for (geoname of geonames) {
-        //     const name = geoname.querySelector("name").textContent;
-        //     const lat = geoname.querySelector("lat").textContent;
-        //     const long = geoname.querySelector("lng").textContent;
-        //     let marker = L.marker([lat, long]).addTo(map);
-        //     marker.bindPopup(name).openPopup();
-        // }
         for (let i = 0; i < 16; i++){
             const name = geonames[i].querySelector("name").textContent;
             const lat = geonames[i].querySelector("lat").textContent;
             const long = geonames[i].querySelector("lng").textContent;
-            let marker = L.marker([lat, long]).addTo(map);
-            marker.bindPopup(name).openPopup();
+            let marker = L.marker([lat, long]).bindPopup(name).openPopup();
+            marker.addTo(airports);
         }
     }
 });
 
-
+universities = L.layerGroup();
 
 $.ajax({
     url: "php/universitiesAPI.php",
@@ -159,11 +118,13 @@ $.ajax({
             const name = geonames[i].querySelector("name").textContent;
             const lat = geonames[i].querySelector("lat").textContent;
             const long = geonames[i].querySelector("lng").textContent;
-            let marker = L.marker([lat, long]).addTo(map);
-            marker.bindPopup(name).openPopup();
+            let marker = L.marker([lat, long]).bindPopup(name).openPopup();
+            marker.addTo(universities);
         }
     }
 });
+
+capitalCities = L.layerGroup();
 
 $.ajax({
     url: "php/capitalCitiesAPI.php",
@@ -175,278 +136,45 @@ $.ajax({
             const name = geonames[i].querySelector("name").textContent;
             const lat = geonames[i].querySelector("lat").textContent;
             const long = geonames[i].querySelector("lng").textContent;
-            let marker = L.marker([lat, long]).addTo(map);
-            marker.bindPopup(name).openPopup();
+            let marker = L.marker([lat, long]).bindPopup(name);
+            marker.addTo(capitalCities);
         }
     }
 });
+  
+  map = L.map("map", {
+    layers: [streets, airports, universities, capitalCities]
+  }).setView([54.5, -4], 6);
 
-// onchange event handler once user clicks on a country, fetches the border coords
-function getBorders(i) {
-    const countryIndex = i;
-    $.ajax({
-            url: 'php/readBorders.php?countryIndex=' + countryIndex,
-            type:'GET',
-            success: function(array){
-                console.log(array);
-                console.log(typeof array);
-            }});
-}
+  var basemaps = {
+    "Streets": streets,
+    "Satellite": satellite
+  };
 
-// Clicking on the weather button function
-// function fetchWeatherInfo() {
-//     latitude = midLat;
-//     longitude = midLong;
-//     $.ajax({url: "php/weatherAPI.php?lat=" + latitude + "&lon=" + longitude,
-//             type: "GET",
-//             success: function(result){
-//         const response = JSON.parse(result);
-//         // leave below clg in for now just in case you want to add further info
-//         console.log(response);
-//         const celsius = (Number(response.main.temp) - 273.15).toFixed(0);
-//         const feelsLikeTemp = (Number(response.main.feels_like) - 273.15).toFixed(0);
-//         document.getElementById('weatherOverview').innerHTML = response.weather[0].description;
-//         document.getElementById('tempInfo').innerHTML = celsius + " <sup>o</sup>C";
-//         document.getElementById('feelsLike').innerHTML = feelsLikeTemp + " <sup>o</sup>C";
-//         document.getElementById('wind').innerHTML = response.wind.speed + " m/s";
-//     }})
-
-//     $.ajax({url: "utils/countryBorders.geo.json", success: function(res){
-//         const resp = JSON.parse(res);
-//     }});
-// }
-
-//weather easybutton
-let weather = L.easyButton("fa-info fa-lg", function (btn, map) {
-    $("#weatherModal").modal("show");
-    latitude = midLat;
-    longitude = midLong;
-
-    $.ajax({url: "php/weatherAPI.php?lat=" + latitude + "&lon=" + longitude,
-            type: "GET",
-            success: function(result){
-        const response = JSON.parse(result);
-        // leave below clg in for now just in case you want to add further info
-        console.log(response);
-        // const celsius = (Number(response.main.temp) - 273.15).toFixed(0);
-        // const feelsLikeTemp = (Number(response.main.feels_like) - 273.15).toFixed(0);
-        // const celsius = Number(response.current.temp_c)
-        document.getElementById('weatherOverview').innerHTML = response.current.condition.text;
-        document.getElementById('tempInfo').innerHTML = response.current.temp_c + " <sup>o</sup>C";
-        document.getElementById('feelsLike').innerHTML = response.current.feelslike_c + " <sup>o</sup>C";
-        document.getElementById('wind').innerHTML = response.current.wind_mph + "mph";
-    }})
-
-    $.ajax({url: "php/weatherForecast.php?lat=" + latitude + "&lon=" + longitude,
-    type: "GET",
-    success: function(response){
-        const res = JSON.parse(response);
-        console.log(res);
-        document.getElementById("forecast").innerHTML = res.forecast.forecastday[0].day.avgtemp_c;
-    }})
-}).addTo(map);
-
-
-//weather forecast easybutton
-let weatherForecast = L.easyButton("fa-info fa-lg", function (btn, map) {
-    $("#weatherForecastModal").modal("show");
-    latitude = midLat;
-    longitude = midLong;
-
-    $.ajax({url: "php/weatherForecast.php?lat=" + latitude + "&lon=" + longitude,
-    type: "GET",
-    success: function(response){
-        const res = JSON.parse(response);
-        console.log(res);
-        document.getElementById("day1").innerHTML = res.forecast.forecastday[1].date;
-        document.getElementById("day2").innerHTML = res.forecast.forecastday[2].date;
-        document.getElementById("day3").innerHTML = res.forecast.forecastday[3].date;
-        document.getElementById("forecast").innerHTML = res.forecast.forecastday[1].day.avgtemp_c;
-        document.getElementById("forecast2").innerHTML = res.forecast.forecastday[2].day.avgtemp_c;
-        document.getElementById("forecast3").innerHTML = res.forecast.forecastday[3].day.avgtemp_c;
-        document.getElementById("tempHigh").innerHTML = res.forecast.forecastday[1].day.maxtemp_c;
-        document.getElementById("tempHigh2").innerHTML = res.forecast.forecastday[2].day.maxtemp_c;
-        document.getElementById("tempHigh3").innerHTML = res.forecast.forecastday[3].day.maxtemp_c;
-        document.getElementById("tempLow").innerHTML = res.forecast.forecastday[1].day.mintemp_c;
-        document.getElementById("tempLow2").innerHTML = res.forecast.forecastday[2].day.mintemp_c;
-        document.getElementById("tempLow3").innerHTML = res.forecast.forecastday[3].day.mintemp_c;
-        document.getElementById("rain").innerHTML = res.forecast.forecastday[1].day.totalprecip_mm;
-        document.getElementById("rain2").innerHTML = res.forecast.forecastday[2].day.totalprecip_mm;
-        document.getElementById("rain3").innerHTML = res.forecast.forecastday[3].day.totalprecip_mm;
-        document.getElementById("wind").innerHTML = res.forecast.forecastday[1].day.maxwind_mph;
-        document.getElementById("wind2").innerHTML = res.forecast.forecastday[2].day.maxwind_mph;
-        document.getElementById("wind3").innerHTML = res.forecast.forecastday[3].day.maxwind_mph;
-        document.getElementById("uv").innerHTML = res.forecast.forecastday[1].day.uv;
-        document.getElementById("uv2").innerHTML = res.forecast.forecastday[2].day.uv;
-        document.getElementById("uv3").innerHTML = res.forecast.forecastday[3].day.uv;
-    }})
-}).addTo(map);
-
-
-let exchangeRate = L.easyButton("fa-info fa-lg", function (btn, map) {
-    $("#ccModal").modal("show");
-    $.ajax({
-        url: "php/exchangeRate.php?app_id=44a738b0aab34f73906f57e69037439a&symbols=" + currencyCode,
-        type: 'GET',
-        success: function(response){
-            console.log(response);
-            const result = JSON.parse(response);
-            resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
-            document.getElementById("resultCurrency").innerHTML = resultCurrency;
-        }
-    })
-}).addTo(map);
-
-function calculate(){
-    const input = Number(document.getElementById("usd2Convert").value);
-    if (input === NaN) {
-        alert("Please enter a valid number");
-    } else {
-        //bring in the value of the exchange rate
-        let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
-        console.log(numberCurr);
-        console.log(input);
-        console.log(input * numberCurr);
-    }
-}
-
-// fetching information on POI
-// function pointsOfInterest() {
-//     let mountainList;
-//     $.ajax({
-//         url: "php/mountainsPOI.php?q=mountain&country=" + countryCode,
-//         type: 'GET',
-//         success: function(result){
-//             xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
-//             const geonames = xmlDoc.querySelectorAll("geoname");
-
-//             for (const geoname of geonames) {
-//                 const mountain = geoname.querySelector("toponymName").textContent;
-//                 if (mountain.includes("Airport") || mountain.includes("Park")){
-//                     continue;
-//                 } else {
-//                     mountainList += mountain + ",\n";
-//                 }
-//             }
-//             document.getElementById("mountainList").innerHTML = mountainList;
-//         }
-//     })
-
-//     let lakeList;
-//     $.ajax({
-//         url: "php/lakesPOI.php?q=lake&country=" + countryCode,
-//         type: 'GET',
-//         async: false,
-//         success: function(result){
-//             xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
-//             const geonames = xmlDoc.querySelectorAll("geoname");
-
-//             for (const geoname of geonames) {
-//                 const lake = geoname.querySelector("name").textContent;
-//                 if (lake.includes("Airport") || lake.includes("Park")){
-//                     continue;
-//                 } else {
-//                     lakeList += lake + ",\n";
-//                 }
-//             }
-//             document.getElementById("lakeList").innerHTML = lakeList;
-//         }
-//     })
-
-//     let riverList
-//     $.ajax({
-//         url: "php/riversPOI.php?q=river&country=" + countryCode,
-//         type: 'GET',
-//         async: false,
-//         success: function(result){
-//             xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
-//             const geonames = xmlDoc.querySelectorAll("geoname");
-
-//             for (const geoname of geonames) {
-//                 const river = geoname.querySelector("name").textContent;
-//                 if (river.includes("Airport") || river.includes("Park")) {
-//                     continue;
-//                 } else {
-//                     riverList += river + ",\n";
-//                 }
-//             }
-//             document.getElementById("riverList").innerHTML = riverList;
-//         }
-//     })
-// }
-
-// //geographical information easybutton
-// let geoInfo = L.easyButton("fa-info fa-lg", function (btn, map) {
-//     $("#geoModal").modal("show");
-//     let mountainList;
-//     $.ajax({
-//         url: "php/mountainsPOI.php?q=mountain&country=" + countryCode,
-//         type: 'GET',
-//         success: function(result){
-//             xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
-//             const geonames = xmlDoc.querySelectorAll("geoname");
-
-//             for (const geoname of geonames) {
-//                 const mountain = geoname.querySelector("toponymName").textContent;
-//                 if (mountain.includes("Airport") || mountain.includes("Park")){
-//                     continue;
-//                 } else {
-//                     mountainList += mountain + ",\n";
-//                 }
-//             }
-//             document.getElementById("mountainList").innerHTML = mountainList;
-//         }
-//     })
-
-//     let lakeList;
-//     $.ajax({
-//         url: "php/lakesPOI.php?q=lake&country=" + countryCode,
-//         type: 'GET',
-//         async: false,
-//         success: function(result){
-//             xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
-//             const geonames = xmlDoc.querySelectorAll("geoname");
-
-//             for (const geoname of geonames) {
-//                 const lake = geoname.querySelector("name").textContent;
-//                 if (lake.includes("Airport") || lake.includes("Park")){
-//                     continue;
-//                 } else {
-//                     lakeList += lake + ",\n";
-//                 }
-//             }
-//             document.getElementById("lakeList").innerHTML = lakeList;
-//         }
-//     })
-
-//     let riverList
-//     $.ajax({
-//         url: "php/riversPOI.php?q=river&country=" + countryCode,
-//         type: 'GET',
-//         async: false,
-//         success: function(result){
-//             xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
-//             const geonames = xmlDoc.querySelectorAll("geoname");
-
-//             for (const geoname of geonames) {
-//                 const river = geoname.querySelector("name").textContent;
-//                 if (river.includes("Airport") || river.includes("Park")) {
-//                     continue;
-//                 } else {
-//                     riverList += river + ",\n";
-//                 }
-//             }
-//             document.getElementById("riverList").innerHTML = riverList;
-//         }
-//     })
-// }).addTo(map);
-
-//leaflet's easybutton modal to display quick facts about the selected country 
-let popButton = L.easyButton("fa-info fa-lg", function (btn, map) {
-    $("#popModal").modal("show");
-    document.getElementById("popValue").innerHTML = pop;
-    document.getElementById("langValue").innerHTML = languages;
+  var overlayMaps = {
+    "Airports": airports,
+    "Universities" : universities,
+    "Major Cities": capitalCities,
+  };
+  
+  var layerControl = L.control.layers(basemaps, overlayMaps).addTo(map);
+  
+  L.easyButton("fa-certificate", function (btn, map) {
+    $("#exampleModal").modal("show");
   }).addTo(map);
+
+
+// fetch all country names and populate the drop down menu
+$.ajax({type:"GET", 
+url: "php/readCountries.php", 
+success: function(array){
+//now returning a JSON object, the iterator reads through the array and populates the dropdown
+const obj = JSON.parse(array);
+for (let i = 0; i < obj.length; i++) {
+$('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i] + '</a>');
+};
+}});
+
 
 function fetchBoundingBox(countryIdx) {
     // countryIdx needs to match up with with the index of the ISO_a2 array in order to get the required coords
@@ -501,6 +229,112 @@ function fetchBoundingBox(countryIdx) {
     });
 }
 
+//leaflet's easybutton modal to display quick facts about the selected country 
+let easyButton = L.easyButton("fa-info fa-lg", function (btn, map) {
+    $("#myModal").modal("show");
+    $(easyButton).css("z-index", "100");
+    document.getElementById("EBcountryData").innerHTML = countryName;
+    document.getElementById("EBcapitalCity").innerHTML = capitalCity;
+    document.getElementById("EBareakm").innerHTML = areaSqKm;
+    document.getElementById("EBcontinents").innerHTML = continentName;
+  }).addTo(map);
+
+//weather easybutton
+let weather = L.easyButton("fa-info fa-lg", function (btn, map) {
+    $("#weatherModal").modal("show");
+    latitude = midLat;
+    longitude = midLong;
+
+    $.ajax({url: "php/weatherAPI.php?lat=" + latitude + "&lon=" + longitude,
+            type: "GET",
+            success: function(result){
+        const response = JSON.parse(result);
+        // leave below clg in for now just in case you want to add further info
+        console.log(response);
+        document.getElementById('weatherOverview').innerHTML = response.current.condition.text;
+        document.getElementById('tempInfo').innerHTML = response.current.temp_c + " <sup>o</sup>C";
+        document.getElementById('feelsLike').innerHTML = response.current.feelslike_c + " <sup>o</sup>C";
+        document.getElementById('wind').innerHTML = response.current.wind_mph + "mph";
+    }})
+
+    $.ajax({url: "php/weatherForecast.php?lat=" + latitude + "&lon=" + longitude,
+    type: "GET",
+    success: function(response){
+        const res = JSON.parse(response);
+        console.log(res);
+        document.getElementById("forecast").innerHTML = res.forecast.forecastday[0].day.avgtemp_c;
+    }})
+}).addTo(map);
+
+//weather forecast easybutton
+let weatherForecast = L.easyButton("fa-info fa-lg", function (btn, map) {
+    $("#weatherForecastModal").modal("show");
+    latitude = midLat;
+    longitude = midLong;
+
+    $.ajax({url: "php/weatherForecast.php?lat=" + latitude + "&lon=" + longitude,
+    type: "GET",
+    success: function(response){
+        const res = JSON.parse(response);
+        console.log(res);
+        document.getElementById("day1").innerHTML = res.forecast.forecastday[1].date;
+        document.getElementById("day2").innerHTML = res.forecast.forecastday[2].date;
+        document.getElementById("day3").innerHTML = res.forecast.forecastday[3].date;
+        document.getElementById("forecast").innerHTML = res.forecast.forecastday[1].day.avgtemp_c;
+        document.getElementById("forecast2").innerHTML = res.forecast.forecastday[2].day.avgtemp_c;
+        document.getElementById("forecast3").innerHTML = res.forecast.forecastday[3].day.avgtemp_c;
+        document.getElementById("tempHigh").innerHTML = res.forecast.forecastday[1].day.maxtemp_c;
+        document.getElementById("tempHigh2").innerHTML = res.forecast.forecastday[2].day.maxtemp_c;
+        document.getElementById("tempHigh3").innerHTML = res.forecast.forecastday[3].day.maxtemp_c;
+        document.getElementById("tempLow").innerHTML = res.forecast.forecastday[1].day.mintemp_c;
+        document.getElementById("tempLow2").innerHTML = res.forecast.forecastday[2].day.mintemp_c;
+        document.getElementById("tempLow3").innerHTML = res.forecast.forecastday[3].day.mintemp_c;
+        document.getElementById("rain").innerHTML = res.forecast.forecastday[1].day.totalprecip_mm;
+        document.getElementById("rain2").innerHTML = res.forecast.forecastday[2].day.totalprecip_mm;
+        document.getElementById("rain3").innerHTML = res.forecast.forecastday[3].day.totalprecip_mm;
+        document.getElementById("wind").innerHTML = res.forecast.forecastday[1].day.maxwind_mph;
+        document.getElementById("wind2").innerHTML = res.forecast.forecastday[2].day.maxwind_mph;
+        document.getElementById("wind3").innerHTML = res.forecast.forecastday[3].day.maxwind_mph;
+        document.getElementById("uv").innerHTML = res.forecast.forecastday[1].day.uv;
+        document.getElementById("uv2").innerHTML = res.forecast.forecastday[2].day.uv;
+        document.getElementById("uv3").innerHTML = res.forecast.forecastday[3].day.uv;
+    }})
+}).addTo(map);
+
+let exchangeRate = L.easyButton("fa-info fa-lg", function (btn, map) {
+    $("#ccModal").modal("show");
+    $.ajax({
+        url: "php/exchangeRate.php?app_id=44a738b0aab34f73906f57e69037439a&symbols=" + currencyCode,
+        type: 'GET',
+        success: function(response){
+            console.log(response);
+            const result = JSON.parse(response);
+            resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
+            document.getElementById("resultCurrency").innerHTML = resultCurrency;
+        }
+    })
+}).addTo(map);
+
+function calculate(){
+    const input = Number(document.getElementById("usd2Convert").value);
+    if (input === NaN) {
+        alert("Please enter a valid number");
+    } else {
+        //bring in the value of the exchange rate
+        let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
+        console.log(numberCurr);
+        console.log(input);
+        console.log(input * numberCurr);
+    }
+}
+
+//leaflet's easybutton modal to display quick facts about the selected country 
+let popButton = L.easyButton("fa-info fa-lg", function (btn, map) {
+    $("#popModal").modal("show");
+    document.getElementById("popValue").innerHTML = pop;
+    document.getElementById("langValue").innerHTML = languages;
+  }).addTo(map);
+
 //wikipedia easybutton to display an article about the area
 let wikipedia = L.easyButton("fa-info fa-lg", function (btn, map) {
     $("#wikiModal").modal("show");
@@ -529,7 +363,6 @@ let wikipedia = L.easyButton("fa-info fa-lg", function (btn, map) {
     })
   }).addTo(map);
 
-
 //leaflet's easybutton modal to display quick facts about the selected country 
 let news = L.easyButton("fa-info fa-lg", function (btn, map) {
     $("#newsModal").modal("show");
@@ -551,3 +384,69 @@ let news = L.easyButton("fa-info fa-lg", function (btn, map) {
         }
     })
   }).addTo(map);
+
+//geographical information easybutton
+let geoInfo = L.easyButton("fa-info fa-lg", function (btn, map) {
+    $("#geoModal").modal("show");
+    let mountainList;
+    $.ajax({
+        url: "php/mountainsPOI.php?q=mountain&country=" + countryCode,
+        type: 'GET',
+        success: function(result){
+            xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
+            const geonames = xmlDoc.querySelectorAll("geoname");
+
+            for (const geoname of geonames) {
+                const mountain = geoname.querySelector("toponymName").textContent;
+                if (mountain.includes("Airport") || mountain.includes("Park")){
+                    continue;
+                } else {
+                    mountainList += mountain + ",\n";
+                }
+            }
+            document.getElementById("mountainList").innerHTML = mountainList;
+        }
+    })
+
+    let lakeList;
+    $.ajax({
+        url: "php/lakesPOI.php?q=lake&country=" + countryCode,
+        type: 'GET',
+        async: false,
+        success: function(result){
+            xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
+            const geonames = xmlDoc.querySelectorAll("geoname");
+
+            for (const geoname of geonames) {
+                const lake = geoname.querySelector("name").textContent;
+                if (lake.includes("Airport") || lake.includes("Park")){
+                    continue;
+                } else {
+                    lakeList += lake + ",\n";
+                }
+            }
+            document.getElementById("lakeList").innerHTML = lakeList;
+        }
+    })
+
+    let riverList
+    $.ajax({
+        url: "php/riversPOI.php?q=river&country=" + countryCode,
+        type: 'GET',
+        async: false,
+        success: function(result){
+            xmlDoc = new DOMParser().parseFromString(result, "text/xml");;
+            const geonames = xmlDoc.querySelectorAll("geoname");
+
+            for (const geoname of geonames) {
+                const river = geoname.querySelector("name").textContent;
+                if (river.includes("Airport") || river.includes("Park")) {
+                    continue;
+                } else {
+                    riverList += river + ",\n";
+                }
+            }
+            document.getElementById("riverList").innerHTML = riverList;
+        }
+    })
+}).addTo(map);
