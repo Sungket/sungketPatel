@@ -90,6 +90,13 @@ var streets = L.tileLayer(
 
 airports = L.markerClusterGroup();
 
+let airportMarker = L.ExtraMarkers.icon({
+    icon: 'fas fa-plane',
+    markerColor: 'green',
+    shape: 'square',
+    prefix: 'fa'
+});
+
 $.ajax({
     url: "php/airportsAPI.php",
     type: "GET",
@@ -100,13 +107,20 @@ $.ajax({
             const name = geonames[i].querySelector("name").textContent;
             const lat = geonames[i].querySelector("lat").textContent;
             const long = geonames[i].querySelector("lng").textContent;
-            let marker = L.marker([lat, long]).bindPopup(name).openPopup();
+            let marker = L.marker([lat, long], {icon: airportMarker}).bindPopup(name).openPopup();
             airports.addLayer(marker);
         }
     }
 });
 
 universities = L.markerClusterGroup();
+
+let universityMarker = L.ExtraMarkers.icon({
+    icon: 'fas fa-university',
+    markerColor: 'black',
+    shape: 'square',
+    prefix: 'fa'
+});
 
 $.ajax({
     url: "php/universitiesAPI.php",
@@ -118,7 +132,7 @@ $.ajax({
             const name = geonames[i].querySelector("name").textContent;
             const lat = geonames[i].querySelector("lat").textContent;
             const long = geonames[i].querySelector("lng").textContent;
-            let marker = L.marker([lat, long]).bindPopup(name).openPopup();
+            let marker = L.marker([lat, long], {icon: universityMarker}).bindPopup(name).openPopup();
             universities.addLayer(marker);
         }
     }
@@ -126,6 +140,13 @@ $.ajax({
 
 // capitalCities = L.layerGroup();
 capitalCities = L.markerClusterGroup();
+
+let cityMarker = L.ExtraMarkers.icon({
+    icon: 'far fa-building',
+    markerColor: 'blue',
+    shape: 'circle',
+    prefix: 'fa'
+});
 
 $.ajax({
     url: "php/capitalCitiesAPI.php",
@@ -137,7 +158,7 @@ $.ajax({
             const name = geonames[i].querySelector("name").textContent;
             const lat = geonames[i].querySelector("lat").textContent;
             const long = geonames[i].querySelector("lng").textContent;
-            let marker = L.marker([lat, long]).bindPopup(name);
+            let marker = L.marker([lat, long], {icon: cityMarker}).bindPopup(name);
             capitalCities.addLayer(marker);
         }
     }
@@ -231,7 +252,7 @@ function fetchBoundingBox(countryIdx) {
 }
 
 //leaflet's easybutton modal to display quick facts about the selected country 
-let easyButton = L.easyButton("fa-info fa-lg", function (btn, map) {
+let easyButton = L.easyButton("fas fa-info fa-lg", function (btn, map) {
     $("#myModal").modal("show");
     $(easyButton).css("z-index", "100");
     document.getElementById("EBcountryData").innerHTML = countryName;
@@ -241,7 +262,7 @@ let easyButton = L.easyButton("fa-info fa-lg", function (btn, map) {
   }).addTo(map);
 
 //weather easybutton
-let weather = L.easyButton("fa-info fa-lg", function (btn, map) {
+let weather = L.easyButton("fas fa-cloud-sun fa-lg", function (btn, map) {
     $("#weatherModal").modal("show");
     latitude = midLat;
     longitude = midLong;
@@ -268,7 +289,7 @@ let weather = L.easyButton("fa-info fa-lg", function (btn, map) {
 }).addTo(map);
 
 //weather forecast easybutton
-let weatherForecast = L.easyButton("fa-info fa-lg", function (btn, map) {
+let weatherForecast = L.easyButton("fas fa-temperature-low fa-lg", function (btn, map) {
     $("#weatherForecastModal").modal("show");
     latitude = midLat;
     longitude = midLong;
@@ -277,7 +298,6 @@ let weatherForecast = L.easyButton("fa-info fa-lg", function (btn, map) {
     type: "GET",
     success: function(response){
         const res = JSON.parse(response);
-        console.log(res);
         document.getElementById("day1").innerHTML = res.forecast.forecastday[1].date;
         document.getElementById("day2").innerHTML = res.forecast.forecastday[2].date;
         document.getElementById("day3").innerHTML = res.forecast.forecastday[3].date;
@@ -302,7 +322,7 @@ let weatherForecast = L.easyButton("fa-info fa-lg", function (btn, map) {
     }})
 }).addTo(map);
 
-let exchangeRate = L.easyButton("fa-info fa-lg", function (btn, map) {
+let exchangeRate = L.easyButton("fas fa-dollar-sign fa-lg", function (btn, map) {
     $("#ccModal").modal("show");
     $.ajax({
         url: "php/exchangeRate.php?app_id=44a738b0aab34f73906f57e69037439a&symbols=" + currencyCode,
@@ -330,14 +350,14 @@ function calculate(){
 }
 
 //leaflet's easybutton modal to display quick facts about the selected country 
-let popButton = L.easyButton("fa-info fa-lg", function (btn, map) {
+let popButton = L.easyButton("fas fa-users fa-lg", function (btn, map) {
     $("#popModal").modal("show");
     document.getElementById("popValue").innerHTML = pop;
     document.getElementById("langValue").innerHTML = languages;
   }).addTo(map);
 
 //wikipedia easybutton to display an article about the area
-let wikipedia = L.easyButton("fa-info fa-lg", function (btn, map) {
+let wikipedia = L.easyButton("fab fa-wikipedia-w fa-lg", function (btn, map) {
     $("#wikiModal").modal("show");
     $.ajax({
         url: "php/wikipedia.php?north=" + north + "&south=" + south + "&east=" + east + "&west=" + west,
@@ -365,7 +385,7 @@ let wikipedia = L.easyButton("fa-info fa-lg", function (btn, map) {
   }).addTo(map);
 
 //leaflet's easybutton modal to display quick facts about the selected country 
-let news = L.easyButton("fa-info fa-lg", function (btn, map) {
+let news = L.easyButton("far fa-newspaper fa-lg", function (btn, map) {
     $("#newsModal").modal("show");
     $(".news-list").empty();
 
@@ -387,7 +407,7 @@ let news = L.easyButton("fa-info fa-lg", function (btn, map) {
   }).addTo(map);
 
 //geographical information easybutton
-let geoInfo = L.easyButton("fa-info fa-lg", function (btn, map) {
+let geoInfo = L.easyButton("fas fa-mountain fa-lg", function (btn, map) {
     $("#geoModal").modal("show");
     let mountainList;
     $.ajax({
