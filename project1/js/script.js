@@ -88,7 +88,7 @@ var streets = L.tileLayer(
 
 //fetch airports, universities and capital Cities from API and place markers on the map
 
-airports = L.layerGroup();
+airports = L.markerClusterGroup();
 
 $.ajax({
     url: "php/airportsAPI.php",
@@ -96,17 +96,17 @@ $.ajax({
     success: function(result){
         xmlDoc = new DOMParser().parseFromString(result, "text/xml");
         const geonames = xmlDoc.querySelectorAll("geoname");
-        for (let i = 0; i < 16; i++){
+        for (let i = 0; i < 50; i++){
             const name = geonames[i].querySelector("name").textContent;
             const lat = geonames[i].querySelector("lat").textContent;
             const long = geonames[i].querySelector("lng").textContent;
             let marker = L.marker([lat, long]).bindPopup(name).openPopup();
-            marker.addTo(airports);
+            airports.addLayer(marker);
         }
     }
 });
 
-universities = L.layerGroup();
+universities = L.markerClusterGroup();
 
 $.ajax({
     url: "php/universitiesAPI.php",
@@ -114,17 +114,18 @@ $.ajax({
     success: function(result){
         xmlDoc = new DOMParser().parseFromString(result, "text/xml");
         const geonames = xmlDoc.querySelectorAll("geoname");
-        for (let i = 0; i < 16; i++) {
+        for (let i = 0; i < 50; i++) {
             const name = geonames[i].querySelector("name").textContent;
             const lat = geonames[i].querySelector("lat").textContent;
             const long = geonames[i].querySelector("lng").textContent;
             let marker = L.marker([lat, long]).bindPopup(name).openPopup();
-            marker.addTo(universities);
+            universities.addLayer(marker);
         }
     }
 });
 
-capitalCities = L.layerGroup();
+// capitalCities = L.layerGroup();
+capitalCities = L.markerClusterGroup();
 
 $.ajax({
     url: "php/capitalCitiesAPI.php",
@@ -132,12 +133,12 @@ $.ajax({
     success: function(result){
         xmlDoc = new DOMParser().parseFromString(result, "text/xml");
         const geonames = xmlDoc.querySelectorAll("geoname");
-        for (let i = 0; i < 16; i++) {
+        for (let i = 0; i < 50; i++) {
             const name = geonames[i].querySelector("name").textContent;
             const lat = geonames[i].querySelector("lat").textContent;
             const long = geonames[i].querySelector("lng").textContent;
             let marker = L.marker([lat, long]).bindPopup(name);
-            marker.addTo(capitalCities);
+            capitalCities.addLayer(marker);
         }
     }
 });
