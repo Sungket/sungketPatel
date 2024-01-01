@@ -33,6 +33,7 @@ let capitalCityArray = [];
 let capitalCities;
 let map;
 let baseMap;
+let earthquakesList = L.markerClusterGroup();
 
 
 //below code asks asks browser for location, then alerts with the coords. Show position is the callback function to retrieve coords and 
@@ -162,7 +163,7 @@ $.ajax({
 });
   
   map = L.map("map", {
-    layers: [streets, airports, universities, capitalCities]
+    layers: [streets, airports, universities, capitalCities, earthquakesList]
   }).setView([54.5, -4], 6);
 
   var basemaps = {
@@ -174,6 +175,7 @@ $.ajax({
     "Airports": airports,
     "Universities" : universities,
     "Major Cities": capitalCities,
+    "Earthquakes": earthquakesList,
   };
   
   var layerControl = L.control.layers(basemaps, overlayMaps).addTo(map);
@@ -246,11 +248,29 @@ function fetchBoundingBox(countryIdx) {
 }
 
 function earthquakes(north, east, south, west) {
+    let eqMarker = L.ExtraMarkers.icon({
+        icon: 'fas fa-bullseye',
+        markerColor: 'yellow',
+        shape: 'circle',
+        prefix: 'fa'
+    });
+
     $.ajax({
         url: 'php/earthquakes.php?north=' + north + "&south=" + south + "&east=" + east + "&west=" + west,
         type: 'GET',
         success: function(response) {
-            console.log(response);
+            const resp = JSON.parse(response);
+            console.log(resp);
+            console.log(resp.earthquakes.length);
+            for (let i = 0; i < resp.earthquakes.length; i++){
+                const date = resp.earthquakes[i].datetime;
+                const depth = resp.earthquakes[i].depth;
+                const magnitude = resp.earthquakes[i].magnitude;
+                const lat = resp.earthquakes[i].lat;
+                const long = resp.earthquakes[i].lng;
+                let marker = L.marker([lat, long], {icon: eqMarker}).bindPopup("<h5>Earthquake</h5>" + "<br><b>Date and time: </b>" + date + "<br><b>Depth: </b>" + depth + "<br><b>Magnitude: </b>" + magnitude);
+                earthquakesList.addLayer(marker);
+            }
         }
     })
 }
