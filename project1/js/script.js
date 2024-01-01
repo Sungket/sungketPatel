@@ -240,8 +240,19 @@ function fetchBoundingBox(countryIdx) {
             map.setView([midLat, midLong], 5); 
             const nameOfCountry = xmlDoc.getElementsByTagName("countryName")[0].childNodes[0].nodeValue;
             document.getElementById("dropdownbtn").innerHTML = nameOfCountry;
+            earthquakes(north, south, east, west);
         }
     });
+}
+
+function earthquakes(north, east, south, west) {
+    $.ajax({
+        url: 'php/earthquakes.php?north=' + north + "&south=" + south + "&east=" + east + "&west=" + west,
+        type: 'GET',
+        success: function(response) {
+            console.log(response);
+        }
+    })
 }
 
 //leaflet's easybutton modal to display quick facts about the selected country 
@@ -484,4 +495,6 @@ let geoInfo = L.easyButton("fas fa-mountain fa-lg", function (btn, map) {
             document.getElementById("riverList").innerHTML = riverList;
         }
     })
+
+
 }).addTo(map);
