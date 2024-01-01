@@ -34,6 +34,7 @@ let capitalCities;
 let map;
 let baseMap;
 let earthquakesList = L.markerClusterGroup();
+let flagImage;
 
 
 //below code asks asks browser for location, then alerts with the coords. Show position is the callback function to retrieve coords and 
@@ -45,7 +46,6 @@ if(navigator.geolocation) {
     }
 
     
-
 function showPosition(position) {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
@@ -243,8 +243,20 @@ function fetchBoundingBox(countryIdx) {
             const nameOfCountry = xmlDoc.getElementsByTagName("countryName")[0].childNodes[0].nodeValue;
             document.getElementById("dropdownbtn").innerHTML = nameOfCountry;
             earthquakes(north, south, east, west);
+            flagImage = "https://flagsapi.com/" + countryCode + "/flat/64.png";
         }
     });
+
+    // flagImage1 = "https://flagsapi.com/US/flat/64.png";
+
+
+    // $.ajax({
+    //     url: 'php/flag.php',
+    //     type: 'GET',
+    //     success: function(response) {
+
+    //     }
+    // })
 }
 
 function earthquakes(north, east, south, west) {
@@ -280,6 +292,10 @@ let easyButton = L.easyButton("fas fa-info fa-lg", function (btn, map) {
     $("#myModal").modal("show");
     $(easyButton).css("z-index", "100");
     document.getElementById("EBcountryData").innerHTML = countryName;
+    document.getElementById("flagImg").innerHTML = '';
+    let img = document.createElement('img');
+    img.src = flagImage;
+    document.getElementById("flagImg").appendChild(img);
     document.getElementById("EBcapitalCity").innerHTML = capitalCity;
     document.getElementById("EBareakm").innerHTML = areaSqKm;
     document.getElementById("EBcontinents").innerHTML = continentName;
@@ -287,7 +303,6 @@ let easyButton = L.easyButton("fas fa-info fa-lg", function (btn, map) {
 
 //weather easybutton
 let weather = L.easyButton("fas fa-cloud-sun fa-lg", function (btn, map) {
-    // $("#weatherModal").modal("show");
     latitude = midLat;
     longitude = midLong;
 
@@ -295,10 +310,7 @@ let weather = L.easyButton("fas fa-cloud-sun fa-lg", function (btn, map) {
             type: "GET",
             success: function(result){
         const response = JSON.parse(result);
-        console.log(response == 'undefined');
-        console.log(response);
-        // leave below clg in for now just in case you want to add further info
-        // console.log(response.error.code == 1006);
+
         try {
             $("#weatherModal").modal("show");
             document.getElementById('weatherOverview').innerHTML = response.current.condition.text;
@@ -515,6 +527,5 @@ let geoInfo = L.easyButton("fas fa-mountain fa-lg", function (btn, map) {
             document.getElementById("riverList").innerHTML = riverList;
         }
     })
-
 
 }).addTo(map);
