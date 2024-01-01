@@ -55,8 +55,7 @@ function showPosition(position) {
             let parser = new DOMParser();
             let information = parser.parseFromString(array, "text/xml");
             map.setView([latitude, longitude], 13); 
-
-            const country = information.querySelectorAll("country")
+            const country = information.querySelectorAll("country");
             document.getElementById("dropdownbtn").innerHTML = country[0].querySelector("countryName").textContent;
         }});
 };
@@ -66,8 +65,6 @@ function defaultPosition() {
 
     fetchBoundingBox(0)
 }
-
-
 
 
 var streets = L.tileLayer(
@@ -93,7 +90,7 @@ airports = L.markerClusterGroup();
 let airportMarker = L.ExtraMarkers.icon({
     icon: 'fas fa-plane',
     markerColor: 'green',
-    shape: 'square',
+    shape: 'penta',
     prefix: 'fa'
 });
 
@@ -107,7 +104,7 @@ $.ajax({
             const name = geonames[i].querySelector("name").textContent;
             const lat = geonames[i].querySelector("lat").textContent;
             const long = geonames[i].querySelector("lng").textContent;
-            let marker = L.marker([lat, long], {icon: airportMarker}).bindPopup(name).openPopup();
+            let marker = L.marker([lat, long], {icon: airportMarker}).bindPopup(name);
             airports.addLayer(marker);
         }
     }
@@ -132,7 +129,7 @@ $.ajax({
             const name = geonames[i].querySelector("name").textContent;
             const lat = geonames[i].querySelector("lat").textContent;
             const long = geonames[i].querySelector("lng").textContent;
-            let marker = L.marker([lat, long], {icon: universityMarker}).bindPopup(name).openPopup();
+            let marker = L.marker([lat, long], {icon: universityMarker}).bindPopup(name);
             universities.addLayer(marker);
         }
     }
@@ -263,7 +260,7 @@ let easyButton = L.easyButton("fas fa-info fa-lg", function (btn, map) {
 
 //weather easybutton
 let weather = L.easyButton("fas fa-cloud-sun fa-lg", function (btn, map) {
-    $("#weatherModal").modal("show");
+    // $("#weatherModal").modal("show");
     latitude = midLat;
     longitude = midLong;
 
@@ -271,26 +268,30 @@ let weather = L.easyButton("fas fa-cloud-sun fa-lg", function (btn, map) {
             type: "GET",
             success: function(result){
         const response = JSON.parse(result);
-        // leave below clg in for now just in case you want to add further info
+        console.log(response == 'undefined');
         console.log(response);
-        document.getElementById('weatherOverview').innerHTML = response.current.condition.text;
-        document.getElementById('tempInfo').innerHTML = response.current.temp_c + " <sup>o</sup>C";
-        document.getElementById('feelsLike').innerHTML = response.current.feelslike_c + " <sup>o</sup>C";
-        document.getElementById('wind').innerHTML = response.current.wind_mph + "mph";
-    }})
-
-    $.ajax({url: "php/weatherForecast.php?lat=" + latitude + "&lon=" + longitude,
-    type: "GET",
-    success: function(response){
-        const res = JSON.parse(response);
-        console.log(res);
-        document.getElementById("forecast").innerHTML = res.forecast.forecastday[0].day.avgtemp_c;
+        // leave below clg in for now just in case you want to add further info
+        // console.log(response.error.code == 1006);
+        try {
+            $("#weatherModal").modal("show");
+            document.getElementById('weatherOverview').innerHTML = response.current.condition.text;
+            document.getElementById('tempInfo').innerHTML = response.current.temp_c + " <sup>o</sup>C";
+            document.getElementById('feelsLike').innerHTML = response.current.feelslike_c + " <sup>o</sup>C";
+            document.getElementById('wind').innerHTML = response.current.wind_mph + "mph";
+        }
+        catch(err) {
+            $("#weatherModal").modal("hide");
+            alert('No weather data available from API in this area.')
+        }
+    },
+    error: function(request, status, error) {
+        console.log('no data');
     }})
 }).addTo(map);
 
 //weather forecast easybutton
 let weatherForecast = L.easyButton("fas fa-temperature-low fa-lg", function (btn, map) {
-    $("#weatherForecastModal").modal("show");
+
     latitude = midLat;
     longitude = midLong;
 
@@ -298,27 +299,33 @@ let weatherForecast = L.easyButton("fas fa-temperature-low fa-lg", function (btn
     type: "GET",
     success: function(response){
         const res = JSON.parse(response);
-        document.getElementById("day1").innerHTML = res.forecast.forecastday[1].date;
-        document.getElementById("day2").innerHTML = res.forecast.forecastday[2].date;
-        document.getElementById("day3").innerHTML = res.forecast.forecastday[3].date;
-        document.getElementById("forecast").innerHTML = res.forecast.forecastday[1].day.avgtemp_c;
-        document.getElementById("forecast2").innerHTML = res.forecast.forecastday[2].day.avgtemp_c;
-        document.getElementById("forecast3").innerHTML = res.forecast.forecastday[3].day.avgtemp_c;
-        document.getElementById("tempHigh").innerHTML = res.forecast.forecastday[1].day.maxtemp_c;
-        document.getElementById("tempHigh2").innerHTML = res.forecast.forecastday[2].day.maxtemp_c;
-        document.getElementById("tempHigh3").innerHTML = res.forecast.forecastday[3].day.maxtemp_c;
-        document.getElementById("tempLow").innerHTML = res.forecast.forecastday[1].day.mintemp_c;
-        document.getElementById("tempLow2").innerHTML = res.forecast.forecastday[2].day.mintemp_c;
-        document.getElementById("tempLow3").innerHTML = res.forecast.forecastday[3].day.mintemp_c;
-        document.getElementById("rain").innerHTML = res.forecast.forecastday[1].day.totalprecip_mm;
-        document.getElementById("rain2").innerHTML = res.forecast.forecastday[2].day.totalprecip_mm;
-        document.getElementById("rain3").innerHTML = res.forecast.forecastday[3].day.totalprecip_mm;
-        document.getElementById("wind").innerHTML = res.forecast.forecastday[1].day.maxwind_mph;
-        document.getElementById("wind2").innerHTML = res.forecast.forecastday[2].day.maxwind_mph;
-        document.getElementById("wind3").innerHTML = res.forecast.forecastday[3].day.maxwind_mph;
-        document.getElementById("uv").innerHTML = res.forecast.forecastday[1].day.uv;
-        document.getElementById("uv2").innerHTML = res.forecast.forecastday[2].day.uv;
-        document.getElementById("uv3").innerHTML = res.forecast.forecastday[3].day.uv;
+        try {
+            $("#weatherForecastModal").modal("show");
+            document.getElementById("day1").innerHTML = res.forecast.forecastday[1].date;
+            document.getElementById("day2").innerHTML = res.forecast.forecastday[2].date;
+            document.getElementById("day3").innerHTML = res.forecast.forecastday[3].date;
+            document.getElementById("forecast").innerHTML = res.forecast.forecastday[1].day.avgtemp_c;
+            document.getElementById("forecast2").innerHTML = res.forecast.forecastday[2].day.avgtemp_c;
+            document.getElementById("forecast3").innerHTML = res.forecast.forecastday[3].day.avgtemp_c;
+            document.getElementById("tempHigh").innerHTML = res.forecast.forecastday[1].day.maxtemp_c;
+            document.getElementById("tempHigh2").innerHTML = res.forecast.forecastday[2].day.maxtemp_c;
+            document.getElementById("tempHigh3").innerHTML = res.forecast.forecastday[3].day.maxtemp_c;
+            document.getElementById("tempLow").innerHTML = res.forecast.forecastday[1].day.mintemp_c;
+            document.getElementById("tempLow2").innerHTML = res.forecast.forecastday[2].day.mintemp_c;
+            document.getElementById("tempLow3").innerHTML = res.forecast.forecastday[3].day.mintemp_c;
+            document.getElementById("rain").innerHTML = res.forecast.forecastday[1].day.totalprecip_mm;
+            document.getElementById("rain2").innerHTML = res.forecast.forecastday[2].day.totalprecip_mm;
+            document.getElementById("rain3").innerHTML = res.forecast.forecastday[3].day.totalprecip_mm;
+            document.getElementById("wind").innerHTML = res.forecast.forecastday[1].day.maxwind_mph;
+            document.getElementById("wind2").innerHTML = res.forecast.forecastday[2].day.maxwind_mph;
+            document.getElementById("wind3").innerHTML = res.forecast.forecastday[3].day.maxwind_mph;
+            document.getElementById("uv").innerHTML = res.forecast.forecastday[1].day.uv;
+            document.getElementById("uv2").innerHTML = res.forecast.forecastday[2].day.uv;
+            document.getElementById("uv3").innerHTML = res.forecast.forecastday[3].day.uv;
+        } catch (err) {
+            $("#weatherForecastModal").modal("hide");
+            alert("No weather forecast information available in this area from API.")
+        }
     }})
 }).addTo(map);
 
@@ -367,7 +374,7 @@ let wikipedia = L.easyButton("fab fa-wikipedia-w fa-lg", function (btn, map) {
             const entries = xmlDoc.querySelectorAll("entry");
 
             //if stmnt not working as intended, may try to replace with a try catch?
-            if (!entries) {
+            if (typeof entries === 'undefined') {
                 document.getElementById("wikiTitle").innerHTML = "No news available in this area";
             } else {
                 for (const entry of entries) {
@@ -393,15 +400,27 @@ let news = L.easyButton("far fa-newspaper fa-lg", function (btn, map) {
         url: "php/newsAPI.php?country=" + countryCode,
         type: "GET",
         success: function(result){
+            console.log(result);
             const resp = JSON.parse(result);
-            articles = resp.articles;
-            articles.forEach(element => {
+            if (resp.totalResults !== 0) {
+                articles = resp.articles;
+                articles.forEach(element => {
+                    let ul = document.querySelector("ul");
+                    let li = document.createElement("li");
+                    li.className = "news-list-item";
+                    li.textContent = element.title;
+                    ul.appendChild(li);
+                });
+            } else {
                 let ul = document.querySelector("ul");
                 let li = document.createElement("li");
                 li.className = "news-list-item";
-                li.textContent = element.title;
+                li.textContent = "No news available in this area.";
                 ul.appendChild(li);
-            });
+            }
+        },
+        error: function(request, status, error) {
+            console.log('no data');
         }
     })
   }).addTo(map);
