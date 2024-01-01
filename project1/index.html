@@ -50,7 +50,7 @@
                     <table class="table">
                         <thead class="thead-dark">
                             <tr>
-                                <th>Quick Facts</th>
+                                <th class="text-center" colspan="2">Quick Facts</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -85,16 +85,11 @@
     <div class="modal" id="weatherModal" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content shadow">
-                <!--Modal header-->
-                <div class="modal header">
-                    <h5 class="modal-title">Weather</h5>
-                </div>
-                <!--Modal body-->
                 <div class="modal-body">
                     <table class="table">
                         <thead class="thead-dark">
                             <tr>
-                                <th scope="col">
+                                <th scope="col" class="text-center" colspan="2">
                                     Weather Overview
                                 </th>
                             </tr>
@@ -278,15 +273,14 @@
                 </div>
                 <!--Modal Body-->
                 <div class="modal-body">
-                    <table class="table table-striped">
-                        <tr>
-                            <td class="text-center">
-                                Current exchange rate
-                            </td>
-                            <td class="text-center">
-                                value
-                            </td>
-                        </tr>
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="text-center" colspan="2">
+                                    Current exchange rate
+                                </th>
+                            </tr>
+                        </thead>
                         <tr>
                             <td class="text-center">
                                 1 USD = 
@@ -297,11 +291,11 @@
                         </tr>
                         <tr>
                             <td class="text-center">
-                                <label for="usd2Convert">Convert USD</label><br>
+                                <!-- <label for="usd2Convert">Convert USD</label><br> -->
                                 <input type="text" id="usd2Convert" name="usd" placeholder="Input amount to convert"><br>
                                 <input type="submit" value="Submit" onclick="calculate()">
                             </td>
-                            <td class="text-end" id="resultAmount">result amount</td>
+                            <td class="text-end" id="resultAmount">Enter amount to convert</td>
                         </tr>
                     </table>
                 </div>

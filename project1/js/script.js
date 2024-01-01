@@ -178,10 +178,6 @@ $.ajax({
   
   var layerControl = L.control.layers(basemaps, overlayMaps).addTo(map);
   
-  L.easyButton("fa-certificate", function (btn, map) {
-    $("#exampleModal").modal("show");
-  }).addTo(map);
-
 
 // fetch all country names and populate the drop down menu
 $.ajax({type:"GET", 
@@ -345,13 +341,12 @@ let exchangeRate = L.easyButton("fas fa-dollar-sign fa-lg", function (btn, map) 
 
 function calculate(){
     const input = Number(document.getElementById("usd2Convert").value);
-    if (input === NaN) {
+    if (isNaN(input)) {
         alert("Please enter a valid number");
     } else {
         //bring in the value of the exchange rate
         let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
-        console.log(numberCurr);
-        console.log(input);
+        document.getElementById("resultAmount").innerHTML = input * numberCurr;
         console.log(input * numberCurr);
     }
 }
