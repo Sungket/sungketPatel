@@ -16,6 +16,11 @@ html, body {
     margin: 0;
     padding: 0;
   }
+
+  .dropdown-menu {
+    height: 95vh;
+    overflow-y: auto;
+  }
   
   #selectContainer {
     position: fixed;
