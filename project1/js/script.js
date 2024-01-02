@@ -13,6 +13,7 @@ let longitude;
 let midLat;
 let midLong;
 let currencyCode;
+let countryArray = [];
 let countryCode;
 let countryName;
 let capitalCity;
@@ -55,15 +56,21 @@ function showPosition(position) {
         success: function(array){
             let parser = new DOMParser();
             let information = parser.parseFromString(array, "text/xml");
-            map.setView([latitude, longitude], 13); 
-            const country = information.querySelectorAll("country");
-            document.getElementById("dropdownbtn").innerHTML = country[0].querySelector("countryName").textContent;
+            // map.setView([latitude, longitude], 13); 
+            const countryName = information.querySelectorAll("country");
+            let countryIndex;
+            countryArray.forEach((country) => {
+                if(countryName[0].querySelector("countryName").textContent == country.name) {
+                    countryIndex = country.idx;
+                }
+            })
+            document.getElementById("dropdownbtn").innerHTML = countryName[0].querySelector("countryName").textContent;
+            fetchBoundingBox(countryIndex);
         }});
 };
 
 function defaultPosition() {
     alert("Geolocation blocked by browser.");
-
     fetchBoundingBox(0)
 }
 
@@ -188,7 +195,9 @@ success: function(array){
 //now returning a JSON object, the iterator reads through the array and populates the dropdown
 const obj = JSON.parse(array);
 for (let i = 0; i < obj.length; i++) {
-$('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i] + '</a>');
+    $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i] + '</a>');
+    const countryObj = {name: obj[i], idx: i};
+    countryArray.push(countryObj);
 };
 }});
 
@@ -310,9 +319,7 @@ let weather = L.easyButton("fas fa-cloud-sun fa-lg", function (btn, map) {
             alert('No weather data available from API in this area.')
         }
     },
-    error: function(request, status, error) {
-        console.log('no data');
-    }})
+    })
 }).addTo(map);
 
 //weather forecast easybutton
@@ -376,7 +383,6 @@ function calculate(){
         //bring in the value of the exchange rate
         let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
         document.getElementById("resultAmount").innerHTML = input * numberCurr;
-        console.log(input * numberCurr);
     }
 }
 
@@ -441,9 +447,6 @@ let news = L.easyButton("far fa-newspaper fa-lg", function (btn, map) {
                 li.textContent = "No news available in this area.";
                 ul.appendChild(li);
             }
-        },
-        error: function(request, status, error) {
-            console.log('no data');
         }
     })
   }).addTo(map);
