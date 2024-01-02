@@ -246,17 +246,6 @@ function fetchBoundingBox(countryIdx) {
             flagImage = "https://flagsapi.com/" + countryCode + "/flat/64.png";
         }
     });
-
-    // flagImage1 = "https://flagsapi.com/US/flat/64.png";
-
-
-    // $.ajax({
-    //     url: 'php/flag.php',
-    //     type: 'GET',
-    //     success: function(response) {
-
-    //     }
-    // })
 }
 
 function earthquakes(north, east, south, west) {
@@ -272,8 +261,6 @@ function earthquakes(north, east, south, west) {
         type: 'GET',
         success: function(response) {
             const resp = JSON.parse(response);
-            console.log(resp);
-            console.log(resp.earthquakes.length);
             for (let i = 0; i < resp.earthquakes.length; i++){
                 const date = resp.earthquakes[i].datetime;
                 const depth = resp.earthquakes[i].depth;
@@ -374,7 +361,6 @@ let exchangeRate = L.easyButton("fas fa-dollar-sign fa-lg", function (btn, map) 
         url: "php/exchangeRate.php?app_id=44a738b0aab34f73906f57e69037439a&symbols=" + currencyCode,
         type: 'GET',
         success: function(response){
-            console.log(response);
             const result = JSON.parse(response);
             resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
             document.getElementById("resultCurrency").innerHTML = resultCurrency;
@@ -438,7 +424,6 @@ let news = L.easyButton("far fa-newspaper fa-lg", function (btn, map) {
         url: "php/newsAPI.php?country=" + countryCode,
         type: "GET",
         success: function(result){
-            console.log(result);
             const resp = JSON.parse(result);
             if (resp.totalResults !== 0) {
                 articles = resp.articles;
