@@ -400,7 +400,6 @@ let wikipedia = L.easyButton("fab fa-wikipedia-w fa-lg", function (btn, map) {
         type: "GET",
         success: function(result){
             const xmlDoc = new DOMParser().parseFromString(result, "text/xml")
-            console.log(xmlDoc);
             const entries = xmlDoc.querySelectorAll("entry");
 
             //if stmnt not working as intended, may try to replace with a try catch?
