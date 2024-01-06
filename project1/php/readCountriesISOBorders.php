@@ -3,15 +3,8 @@
     //change to an array below
     $jsonData = json_decode($jsonString, true);
 
-    // echo $jsonData["features"][2]["properties"]["name"] . "<br />";
-    
-    // echo $jsonData["features"][2]["properties"]["iso_a2"] . "<br />";
-
-    // echo $jsonData["features"][2]["properties"]["iso_a3"] . "<br />";
-
     //below gives 175 countries
     $numCountries =  count($jsonData["features"]);
-    // echo $numCountries  . "<br />";
 
     $countries = array();
 
