@@ -18,7 +18,13 @@
     $x = 0;
 
     do {
-        array_push($countries, $jsonData["features"][$x]["properties"]["name"]);
+        $countries[$x] = 
+            [
+                "name" => $jsonData["features"][$x]["properties"]["name"],
+                "iso_a2" => $jsonData["features"][$x]["properties"]["iso_a2"]
+            ];
+        // array_push($countries, $jsonData["features"][$x]["properties"]["name"]);
+        // array_push($countries, $jsonData["features"][$x]["properties"]["iso_a2"]);
         $x++;
     } while ($x < $numCountries);
 

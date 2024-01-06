@@ -194,8 +194,9 @@ success: function(array){
 //now returning a JSON object, the iterator reads through the array and populates the dropdown
 const obj = JSON.parse(array);
 for (let i = 0; i < obj.length; i++) {
-    $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i] + '</a>');
-    const countryObj = {name: obj[i], idx: i};
+    console.log(obj[i]);
+    $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i].name + '</a>');
+    const countryObj = {name: obj[i].name, iso_a2: obj[i].iso_a2, idx: i};
     countryArray.push(countryObj);
 };
 }});
