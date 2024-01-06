@@ -23,12 +23,7 @@
                 "name" => $jsonData["features"][$x]["properties"]["name"],
                 "iso_a2" => $jsonData["features"][$x]["properties"]["iso_a2"]
             ];
-        // array_push($countries, $jsonData["features"][$x]["properties"]["name"]);
-        // array_push($countries, $jsonData["features"][$x]["properties"]["iso_a2"]);
         $x++;
     } while ($x < $numCountries);
 
-    // print_r($countries);
     echo json_encode($countries);
-    // $encodedCountries = json_encode($countries);
-    // echo $encodedCountries;

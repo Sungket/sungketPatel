@@ -59,8 +59,6 @@ function showPosition(position) {
             const countryName = information.querySelectorAll("country");
             let countryIndex;
             countryArray.forEach((country) => {
-                console.log(country.name);
-                console.log(country.idx);
                 if(countryName[0].querySelector("countryName").textContent == country.name) {
                     countryIndex = country.idx;
                 }
@@ -199,37 +197,16 @@ for (let i = 0; i < obj.length; i++) {
     $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i].name + '</a>');
     const countryObj = {name: obj[i].name, iso_a2: obj[i].iso_a2, idx: i};
     countryArray.push(countryObj);
+
+    console.log('line 201 isoCode_a2: ' + countryObj.iso_a2);
 };
 }});
 
 
 function fetchBoundingBox(countryIdx) {
-    // countryIdx needs to match up with with the index of the ISO_a2 array in order to get the required coords
-    const isoMap = new Map();
 
     $.ajax({
-        url: "php/readCountriesISO2.php",
-        type: "GET",
-        async: false,
-        success: function(ISOArray){
-            const resp = JSON.parse(ISOArray);
-            for (let j = 0; j < resp.length; j++) {
-                isoMap.set(j, resp[j]);
-            }
-        }
-    })
-
-    //now match countryIdx with the keys of the maps to get the ISO_a2 code
-    let isoCode;
-
-    for (let [key, value] of isoMap.entries()) {
-        if (countryIdx === key) {
-            isoCode = value;
-        }
-    }
-
-    $.ajax({
-        url: 'php/readCountryInfo.php?country=' + isoCode,
+        url: 'php/readCountryInfo.php?country=' + countryArray[countryIdx].iso_a2,
         type: 'GET',
         success: function(response){
             parser = new DOMParser();
