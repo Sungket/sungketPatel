@@ -59,6 +59,8 @@ function showPosition(position) {
             const countryName = information.querySelectorAll("country");
             let countryIndex;
             countryArray.forEach((country) => {
+                console.log(country.name);
+                console.log(country.idx);
                 if(countryName[0].querySelector("countryName").textContent == country.name) {
                     countryIndex = country.idx;
                 }
@@ -194,7 +196,6 @@ success: function(array){
 //now returning a JSON object, the iterator reads through the array and populates the dropdown
 const obj = JSON.parse(array);
 for (let i = 0; i < obj.length; i++) {
-    console.log(obj[i]);
     $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i].name + '</a>');
     const countryObj = {name: obj[i].name, iso_a2: obj[i].iso_a2, idx: i};
     countryArray.push(countryObj);
