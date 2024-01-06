@@ -29,5 +29,6 @@
     } while ($x < $numCountries);
 
     // print_r($countries);
-    $encodedCountries = json_encode($countries);
-    echo $encodedCountries;
+    echo json_encode($countries);
+    // $encodedCountries = json_encode($countries);
+    // echo $encodedCountries;
