@@ -36,7 +36,7 @@ let map;
 let baseMap;
 let earthquakesList = L.markerClusterGroup();
 let flagImage;
-
+let borderLayer;
 
 //below code asks asks browser for location, then alerts with the coords. Show position is the callback function to retrieve coords and 
 //pass to readISO.php.
@@ -66,6 +66,15 @@ function showPosition(position) {
             document.getElementById("dropdownbtn").innerHTML = countryName[0].querySelector("countryName").textContent;
             fetchBoundingBox(countryIndex);
         }});
+
+    $.ajax({
+        url: 'php/openCageData.php?lat=' + latitude + "&lng=" + longitude,
+        type: 'GET',
+        success: function(output) {
+            const res = JSON.parse(output);
+            console.log(res);
+        }
+    })
 };
 
 function defaultPosition() {
@@ -199,18 +208,12 @@ for (let i = 0; i < obj.length; i++) {
 };
 }});
 
-$.ajax({
-    type: "GET",
-    url: "php/readCountryBorders.php",
-    success: function(output){
-        const resp = JSON.parse(output);
-        console.log(resp);
-        L.geoJSON(resp).addTo(map);
-    }
-});
-
 
 function fetchBoundingBox(countryIdx) {
+
+    if (borderLayer) {
+        map.removeLayer(borderLayer);
+    };
 
     $.ajax({
         url: 'php/readCountryInfo.php?country=' + countryArray[countryIdx].iso_a2,
@@ -238,6 +241,17 @@ function fetchBoundingBox(countryIdx) {
             document.getElementById("dropdownbtn").innerHTML = nameOfCountry;
             earthquakes(north, south, east, west);
             flagImage = "https://flagsapi.com/" + countryCode + "/flat/64.png";
+        }
+    });
+
+    //read in country borders php call
+    $.ajax({
+        type: "GET",
+        url: "php/readCountryBorders.php",
+        success: function(output){
+            const resp = JSON.parse(output);
+            borderLayer = L.geoJSON(resp.features[countryIdx]);
+            borderLayer.addTo(map);
         }
     });
 }
