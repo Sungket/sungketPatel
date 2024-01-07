@@ -37,6 +37,7 @@ let baseMap;
 let earthquakesList = L.markerClusterGroup();
 let flagImage;
 let borderLayer;
+let iso_a2;
 
 //below code asks asks browser for location, then alerts with the coords. Show position is the callback function to retrieve coords and 
 //pass to readISO.php.
@@ -72,9 +73,10 @@ function showPosition(position) {
         type: 'GET',
         success: function(output) {
             const res = JSON.parse(output);
-            console.log(res);
+            iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
+            console.log(iso_a2);
         }
-    })
+    });
 };
 
 function defaultPosition() {
@@ -99,6 +101,20 @@ var streets = L.tileLayer(
     }
   );
 
+// checking if this ajax call still works then delete the older commented out one
+$.ajax({type:"GET", 
+url: "php/readCountries.php", 
+success: function(array){
+    console.log('reading countries and populating dropdown...');
+    const obj = JSON.parse(array);
+    for (let i = 0; i < obj.length; i++) {
+        $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i].name + '</a>');
+        const countryObj = {name: obj[i].name, iso_a2: obj[i].iso_a2, idx: i};
+        countryArray.push(countryObj);
+    };
+}});
+
+
 //fetch airports, universities and capital Cities from API and place markers on the map
 
 airports = L.markerClusterGroup();
@@ -110,21 +126,23 @@ let airportMarker = L.ExtraMarkers.icon({
     prefix: 'fa'
 });
 
-$.ajax({
-    url: "php/airportsAPI.php",
-    type: "GET",
-    success: function(result){
-        xmlDoc = new DOMParser().parseFromString(result, "text/xml");
-        const geonames = xmlDoc.querySelectorAll("geoname");
-        for (let i = 0; i < 50; i++){
-            const name = geonames[i].querySelector("name").textContent;
-            const lat = geonames[i].querySelector("lat").textContent;
-            const long = geonames[i].querySelector("lng").textContent;
-            let marker = L.marker([lat, long], {icon: airportMarker}).bindPopup(name);
-            airports.addLayer(marker);
-        }
-    }
-});
+console.log(iso_a2);
+
+// $.ajax({
+//     url: "php/airportsAPI.php?countryName=" + iso_a2,
+//     type: "GET",
+//     success: function(result){
+//         xmlDoc = new DOMParser().parseFromString(result, "text/xml");
+//         const geonames = xmlDoc.querySelectorAll("geoname");
+//         for (let i = 0; i < 50; i++){
+//             const name = geonames[i].querySelector("name").textContent;
+//             const lat = geonames[i].querySelector("lat").textContent;
+//             const long = geonames[i].querySelector("lng").textContent;
+//             let marker = L.marker([lat, long], {icon: airportMarker}).bindPopup(name);
+//             airports.addLayer(marker);
+//         }
+//     }
+// });
 
 universities = L.markerClusterGroup();
 
@@ -197,19 +215,21 @@ $.ajax({
   
 
 // fetch all country names and populate the drop down menu
-$.ajax({type:"GET", 
-url: "php/readCountries.php", 
-success: function(array){
-const obj = JSON.parse(array);
-for (let i = 0; i < obj.length; i++) {
-    $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i].name + '</a>');
-    const countryObj = {name: obj[i].name, iso_a2: obj[i].iso_a2, idx: i};
-    countryArray.push(countryObj);
-};
-}});
+// $.ajax({type:"GET", 
+// url: "php/readCountries.php", 
+// success: function(array){
+// const obj = JSON.parse(array);
+// for (let i = 0; i < obj.length; i++) {
+//     $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i].name + '</a>');
+//     const countryObj = {name: obj[i].name, iso_a2: obj[i].iso_a2, idx: i};
+//     countryArray.push(countryObj);
+// };
+// }});
 
 
 function fetchBoundingBox(countryIdx) {
+
+    console.log('fetching bounding box...');
 
     if (borderLayer) {
         map.removeLayer(borderLayer);
@@ -244,7 +264,7 @@ function fetchBoundingBox(countryIdx) {
         }
     });
 
-    //read in country borders php call
+    //read in country borders php call and place border on map
     $.ajax({
         type: "GET",
         url: "php/readCountryBorders.php",
@@ -252,6 +272,24 @@ function fetchBoundingBox(countryIdx) {
             const resp = JSON.parse(output);
             borderLayer = L.geoJSON(resp.features[countryIdx]);
             borderLayer.addTo(map);
+        }
+    });
+
+    console.log('iso_a2 to be fed into airports API: ' + countryArray[countryIdx].iso_a2);
+    $.ajax({
+        url: "php/airportsAPI.php?country=" + countryArray[countryIdx].iso_a2,
+        type: "GET",
+        success: function(result){
+            xmlDoc = new DOMParser().parseFromString(result, "text/xml");
+            console.log(xmlDoc);
+            // const geonames = xmlDoc.querySelectorAll("geoname");
+            // for (let i = 0; i < 50; i++){
+            //     const name = geonames[i].querySelector("name").textContent;
+            //     const lat = geonames[i].querySelector("lat").textContent;
+            //     const long = geonames[i].querySelector("lng").textContent;
+            //     let marker = L.marker([lat, long], {icon: airportMarker}).bindPopup(name);
+            //     airports.addLayer(marker);
+            // }
         }
     });
 }
