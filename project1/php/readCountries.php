@@ -14,9 +14,9 @@
         $countries[$x] = 
             [
                 "name" => $jsonData["features"][$x]["properties"]["name"],
-                "iso_a2" => $jsonData["features"][$x]["properties"]["iso_a2"]
-                "iso_a3" => $jsonData["features"][$x]["properties"]["iso_a3"]
-                "iso_n3" => $jsonData["features"][$x]["properties"]["iso_n3"]
+                "iso_a2" => $jsonData["features"][$x]["properties"]["iso_a2"],
+                "iso_a3" => $jsonData["features"][$x]["properties"]["iso_a3"],
+                "iso_n3" => $jsonData["features"][$x]["properties"]["iso_n3"],
             ];
         $x++;
     } while ($x < $numCountries);

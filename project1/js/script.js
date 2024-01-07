@@ -199,6 +199,16 @@ for (let i = 0; i < obj.length; i++) {
 };
 }});
 
+$.ajax({
+    type: "GET",
+    url: "php/readCountryBorders.php",
+    success: function(output){
+        const resp = JSON.parse(output);
+        console.log(resp);
+        L.geoJSON(resp).addTo(map);
+    }
+});
+
 
 function fetchBoundingBox(countryIdx) {
 
