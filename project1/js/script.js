@@ -260,7 +260,7 @@ function fetchBoundingBox(countryIdx) {
             languages = info[0].querySelector("languages").textContent;
             midLat = (Number(north) + Number(south)) / 2;
             midLong = (Number(east) + Number(west)) / 2;
-            map.setView([midLat, midLong], 5); 
+            // map.setView([midLat, midLong], 5); 
             const nameOfCountry = xmlDoc.getElementsByTagName("countryName")[0].childNodes[0].nodeValue;
             document.getElementById("dropdownbtn").innerHTML = nameOfCountry;
             earthquakes(north, south, east, west);
@@ -353,6 +353,8 @@ function earthquakes(north, east, south, west) {
             }
         }
     })
+
+    map.fitBounds(borderLayer.getBounds());
 }
 
 //leaflet's easybutton modal to display quick facts about the selected country 
