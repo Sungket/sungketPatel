@@ -37,7 +37,7 @@ let baseMap;
 let earthquakesList = L.markerClusterGroup();
 let flagImage;
 let borderLayer;
-let iso_a2;
+let iso_a3;
 
 //below code asks asks browser for location, then alerts with the coords. Show position is the callback function to retrieve coords and 
 //pass to readISO.php.
@@ -68,15 +68,18 @@ function showPosition(position) {
             fetchBoundingBox(countryIndex);
         }});
 
-    $.ajax({
-        url: 'php/openCageData.php?lat=' + latitude + "&lng=" + longitude,
-        type: 'GET',
-        success: function(output) {
-            const res = JSON.parse(output);
-            iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
-            console.log(iso_a2);
-        }
-    });
+    // $.ajax({
+    //     url: 'php/openCageData.php?lat=' + latitude + "&lng=" + longitude,
+    //     type: 'GET',
+    //     success: function(output) {
+    //         const res = JSON.parse(output);
+    //         console.log(res);
+    //         let currencyName = res.results[0]["annotations"]["currency"]["iso_code"];
+    //         console.log(currencyName);
+    //         iso_a3 = res.results[0]["components"]["ISO_3166-1_alpha-3"];
+    //         console.log(iso_a3);
+    //     }
+    // });
 };
 
 function defaultPosition() {
@@ -105,7 +108,6 @@ var streets = L.tileLayer(
 $.ajax({type:"GET", 
 url: "php/readCountries.php", 
 success: function(array){
-    console.log('reading countries and populating dropdown...');
     const obj = JSON.parse(array);
     for (let i = 0; i < obj.length; i++) {
         $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i].name + '</a>');
@@ -168,8 +170,6 @@ let cityMarker = L.ExtraMarkers.icon({
 
 function fetchBoundingBox(countryIdx) {
 
-    console.log('fetching bounding box...');
-
     if (borderLayer) {
         map.removeLayer(borderLayer);
     };
@@ -194,8 +194,8 @@ function fetchBoundingBox(countryIdx) {
             countryName = info[0].querySelector("countryName").textContent;
             capitalCity = info[0].querySelector("capital").textContent;
             continentName = info[0].querySelector("continentName").textContent;
-            areaSqKm = info[0].querySelector("areaInSqKm").textContent;
-            pop = info[0].querySelector("population").textContent;
+            areaSqKm = numeral(info[0].querySelector("areaInSqKm").textContent).format('0,0');
+            pop = numeral(info[0].querySelector("population").textContent).format('0,0');
             languages = info[0].querySelector("languages").textContent;
             midLat = (Number(north) + Number(south)) / 2;
             midLong = (Number(east) + Number(west)) / 2;
@@ -222,7 +222,6 @@ function fetchBoundingBox(countryIdx) {
         type: "GET",
         success: function(result){
             xmlDoc = new DOMParser().parseFromString(result, "text/xml");
-            console.log(xmlDoc);
             const geonames = xmlDoc.querySelectorAll("geoname");
             for (let i = 0; i < 50; i++){
                 const name = geonames[i].querySelector("name").textContent;
@@ -256,7 +255,6 @@ function fetchBoundingBox(countryIdx) {
         success: function(result){
             xmlDoc = new DOMParser().parseFromString(result, "text/xml");
             const geonames = xmlDoc.querySelectorAll("geoname");
-            console.log(geonames);
             const name = geonames[0].querySelector("name").textContent;
             const lat = geonames[0].querySelector("lat").textContent;
             const long = geonames[0].querySelector("lng").textContent;
@@ -345,7 +343,7 @@ let weatherForecast = L.easyButton("fas fa-temperature-low fa-lg", function (btn
         const res = JSON.parse(response);
         try {
             $("#weatherForecastModal").modal("show");
-            document.getElementById("day1").innerHTML = Date.parse(res.forecast.forecastday[1].date);
+            document.getElementById("day1").innerHTML = res.forecast.forecastday[1].date;
             document.getElementById("day2").innerHTML = res.forecast.forecastday[2].date;
             document.getElementById("day3").innerHTML = res.forecast.forecastday[3].date;
             document.getElementById("forecast").innerHTML = res.forecast.forecastday[1].day.avgtemp_c;
@@ -380,8 +378,13 @@ let exchangeRate = L.easyButton("fas fa-dollar-sign fa-lg", function (btn, map) 
         type: 'GET',
         success: function(response){
             const result = JSON.parse(response);
+            console.log(result);
+            console.log(typeof result);
+            const resultingCurrNumber = numeral(JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, "").replace(/([a-zA-Z])/g, "").trim()).format('0.00');
+            console.log(resultingCurrNumber);
             resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
-            document.getElementById("resultCurrency").innerHTML = resultCurrency;
+            document.getElementById("resultCurrency").innerHTML = `1 USD equals ${resultingCurrNumber} ${currencyCode}`;
+            console.log(currencyCode);
         }
     })
 }).addTo(map);
