@@ -115,7 +115,7 @@ success: function(array){
 }});
 
 
-//fetch airports, universities and capital Cities from API and place markers on the map
+//set marker icons and layers
 
 airports = L.markerClusterGroup();
 
@@ -125,8 +125,6 @@ let airportMarker = L.ExtraMarkers.icon({
     shape: 'penta',
     prefix: 'fa'
 });
-
-console.log(iso_a2);
 
 
 universities = L.markerClusterGroup();
@@ -347,7 +345,7 @@ let weatherForecast = L.easyButton("fas fa-temperature-low fa-lg", function (btn
         const res = JSON.parse(response);
         try {
             $("#weatherForecastModal").modal("show");
-            document.getElementById("day1").innerHTML = res.forecast.forecastday[1].date;
+            document.getElementById("day1").innerHTML = Date.parse(res.forecast.forecastday[1].date);
             document.getElementById("day2").innerHTML = res.forecast.forecastday[2].date;
             document.getElementById("day3").innerHTML = res.forecast.forecastday[3].date;
             document.getElementById("forecast").innerHTML = res.forecast.forecastday[1].day.avgtemp_c;
