@@ -101,7 +101,7 @@ var streets = L.tileLayer(
     }
   );
 
-// checking if this ajax call still works then delete the older commented out one
+// fetch all country names and populate the drop down menu
 $.ajax({type:"GET", 
 url: "php/readCountries.php", 
 success: function(array){
@@ -128,21 +128,6 @@ let airportMarker = L.ExtraMarkers.icon({
 
 console.log(iso_a2);
 
-// $.ajax({
-//     url: "php/airportsAPI.php?countryName=" + iso_a2,
-//     type: "GET",
-//     success: function(result){
-//         xmlDoc = new DOMParser().parseFromString(result, "text/xml");
-//         const geonames = xmlDoc.querySelectorAll("geoname");
-//         for (let i = 0; i < 50; i++){
-//             const name = geonames[i].querySelector("name").textContent;
-//             const lat = geonames[i].querySelector("lat").textContent;
-//             const long = geonames[i].querySelector("lng").textContent;
-//             let marker = L.marker([lat, long], {icon: airportMarker}).bindPopup(name);
-//             airports.addLayer(marker);
-//         }
-//     }
-// });
 
 universities = L.markerClusterGroup();
 
@@ -153,23 +138,7 @@ let universityMarker = L.ExtraMarkers.icon({
     prefix: 'fa'
 });
 
-// $.ajax({
-//     url: "php/universitiesAPI.php",
-//     type: "GET",
-//     success: function(result){
-//         xmlDoc = new DOMParser().parseFromString(result, "text/xml");
-//         const geonames = xmlDoc.querySelectorAll("geoname");
-//         for (let i = 0; i < 50; i++) {
-//             const name = geonames[i].querySelector("name").textContent;
-//             const lat = geonames[i].querySelector("lat").textContent;
-//             const long = geonames[i].querySelector("lng").textContent;
-//             let marker = L.marker([lat, long], {icon: universityMarker}).bindPopup(name);
-//             universities.addLayer(marker);
-//         }
-//     }
-// });
 
-// capitalCities = L.layerGroup();
 capitalCities = L.markerClusterGroup();
 
 let cityMarker = L.ExtraMarkers.icon({
@@ -179,21 +148,6 @@ let cityMarker = L.ExtraMarkers.icon({
     prefix: 'fa'
 });
 
-// $.ajax({
-//     url: "php/capitalCitiesAPI.php",
-//     type: "GET",
-//     success: function(result){
-//         xmlDoc = new DOMParser().parseFromString(result, "text/xml");
-//         const geonames = xmlDoc.querySelectorAll("geoname");
-//         for (let i = 0; i < 50; i++) {
-//             const name = geonames[i].querySelector("name").textContent;
-//             const lat = geonames[i].querySelector("lat").textContent;
-//             const long = geonames[i].querySelector("lng").textContent;
-//             let marker = L.marker([lat, long], {icon: cityMarker}).bindPopup(name);
-//             capitalCities.addLayer(marker);
-//         }
-//     }
-// });
   
   map = L.map("map", {
     layers: [streets, airports, universities, capitalCities, earthquakesList]
@@ -212,19 +166,6 @@ let cityMarker = L.ExtraMarkers.icon({
   };
   
   var layerControl = L.control.layers(basemaps, overlayMaps).addTo(map);
-  
-
-// fetch all country names and populate the drop down menu
-// $.ajax({type:"GET", 
-// url: "php/readCountries.php", 
-// success: function(array){
-// const obj = JSON.parse(array);
-// for (let i = 0; i < obj.length; i++) {
-//     $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i].name + '</a>');
-//     const countryObj = {name: obj[i].name, iso_a2: obj[i].iso_a2, idx: i};
-//     countryArray.push(countryObj);
-// };
-// }});
 
 
 function fetchBoundingBox(countryIdx) {
@@ -260,7 +201,6 @@ function fetchBoundingBox(countryIdx) {
             languages = info[0].querySelector("languages").textContent;
             midLat = (Number(north) + Number(south)) / 2;
             midLong = (Number(east) + Number(west)) / 2;
-            // map.setView([midLat, midLong], 5); 
             const nameOfCountry = xmlDoc.getElementsByTagName("countryName")[0].childNodes[0].nodeValue;
             document.getElementById("dropdownbtn").innerHTML = nameOfCountry;
             earthquakes(north, south, east, west);
@@ -279,7 +219,6 @@ function fetchBoundingBox(countryIdx) {
         }
     });
 
-    console.log('iso_a2 to be fed into airports API: ' + countryArray[countryIdx].iso_a2);
     $.ajax({
         url: "php/airportsAPI.php?country=" + countryArray[countryIdx].iso_a2,
         type: "GET",
