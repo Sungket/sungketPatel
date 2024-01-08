@@ -1,5 +1,7 @@
 <?php
-    $url = "http://api.geonames.org/search?q=university&country=&username=sungket";
+    $country = $_GET["country"];
+
+    $url = "http://api.geonames.org/search?featureCode=UNIV&country=" . $country . "&username=sungket";
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_HTTPGET, true);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

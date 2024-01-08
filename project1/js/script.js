@@ -153,21 +153,21 @@ let universityMarker = L.ExtraMarkers.icon({
     prefix: 'fa'
 });
 
-$.ajax({
-    url: "php/universitiesAPI.php",
-    type: "GET",
-    success: function(result){
-        xmlDoc = new DOMParser().parseFromString(result, "text/xml");
-        const geonames = xmlDoc.querySelectorAll("geoname");
-        for (let i = 0; i < 50; i++) {
-            const name = geonames[i].querySelector("name").textContent;
-            const lat = geonames[i].querySelector("lat").textContent;
-            const long = geonames[i].querySelector("lng").textContent;
-            let marker = L.marker([lat, long], {icon: universityMarker}).bindPopup(name);
-            universities.addLayer(marker);
-        }
-    }
-});
+// $.ajax({
+//     url: "php/universitiesAPI.php",
+//     type: "GET",
+//     success: function(result){
+//         xmlDoc = new DOMParser().parseFromString(result, "text/xml");
+//         const geonames = xmlDoc.querySelectorAll("geoname");
+//         for (let i = 0; i < 50; i++) {
+//             const name = geonames[i].querySelector("name").textContent;
+//             const lat = geonames[i].querySelector("lat").textContent;
+//             const long = geonames[i].querySelector("lng").textContent;
+//             let marker = L.marker([lat, long], {icon: universityMarker}).bindPopup(name);
+//             universities.addLayer(marker);
+//         }
+//     }
+// });
 
 // capitalCities = L.layerGroup();
 capitalCities = L.markerClusterGroup();
@@ -237,6 +237,8 @@ function fetchBoundingBox(countryIdx) {
 
     airports.clearLayers();
 
+    universities.clearLayers();
+
     $.ajax({
         url: 'php/readCountryInfo.php?country=' + countryArray[countryIdx].iso_a2,
         type: 'GET',
@@ -291,6 +293,22 @@ function fetchBoundingBox(countryIdx) {
                 const long = geonames[i].querySelector("lng").textContent;
                 let marker = L.marker([lat, long], {icon: airportMarker}).bindPopup(name);
                 airports.addLayer(marker);
+            }
+        }
+    });
+
+    $.ajax({
+        url: "php/universitiesAPI.php?country=" + countryArray[countryIdx].iso_a2,
+        type: "GET",
+        success: function(result){
+            xmlDoc = new DOMParser().parseFromString(result, "text/xml");
+            const geonames = xmlDoc.querySelectorAll("geoname");
+            for (let i = 0; i < 50; i++) {
+                const name = geonames[i].querySelector("name").textContent;
+                const lat = geonames[i].querySelector("lat").textContent;
+                const long = geonames[i].querySelector("lng").textContent;
+                let marker = L.marker([lat, long], {icon: universityMarker}).bindPopup(name);
+                universities.addLayer(marker);
             }
         }
     });
