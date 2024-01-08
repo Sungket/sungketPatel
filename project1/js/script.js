@@ -13,6 +13,7 @@ let longitude;
 let midLat;
 let midLong;
 let currencyCode;
+let currencySymbol;
 let countryArray = [];
 let countryCode;
 let countryName;
@@ -78,6 +79,8 @@ function showPosition(position) {
     //         console.log(currencyName);
     //         iso_a3 = res.results[0]["components"]["ISO_3166-1_alpha-3"];
     //         console.log(iso_a3);
+    //         currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
+    //         console.log(currencySymbol);
     //     }
     // });
 };
@@ -205,6 +208,24 @@ function fetchBoundingBox(countryIdx) {
             flagImage = "https://flagsapi.com/" + countryCode + "/flat/64.png";
         }
     });
+
+    console.log(midLat);
+    console.log(midLong);
+
+    // $.ajax({
+    //     url: 'php/openCageData.php?lat=' + midLat + "&lng=" + midLong,
+    //     type: 'GET',
+    //     success: function(output) {
+    //         const res = JSON.parse(output);
+    //         console.log(res);
+    //         let currencyName = res.results[0]["annotations"]["currency"]["iso_code"];
+    //         console.log(currencyName);
+    //         iso_a3 = res.results[0]["components"]["ISO_3166-1_alpha-3"];
+    //         console.log(iso_a3);
+    //         currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
+    //         console.log(currencySymbol);
+    //     }
+    // });
 
     //read in country borders php call and place border on map
     $.ajax({
@@ -343,9 +364,9 @@ let weatherForecast = L.easyButton("fas fa-temperature-low fa-lg", function (btn
         const res = JSON.parse(response);
         try {
             $("#weatherForecastModal").modal("show");
-            document.getElementById("day1").innerHTML = res.forecast.forecastday[1].date;
-            document.getElementById("day2").innerHTML = res.forecast.forecastday[2].date;
-            document.getElementById("day3").innerHTML = res.forecast.forecastday[3].date;
+            document.getElementById("day1").innerHTML = Date.today().addDays(1).toString("ddd dS");
+            document.getElementById("day2").innerHTML = Date.today().addDays(2).toString("ddd dS");
+            document.getElementById("day3").innerHTML = Date.today().addDays(3).toString("ddd dS");
             document.getElementById("forecast").innerHTML = res.forecast.forecastday[1].day.avgtemp_c;
             document.getElementById("forecast2").innerHTML = res.forecast.forecastday[2].day.avgtemp_c;
             document.getElementById("forecast3").innerHTML = res.forecast.forecastday[3].day.avgtemp_c;
@@ -378,13 +399,10 @@ let exchangeRate = L.easyButton("fas fa-dollar-sign fa-lg", function (btn, map) 
         type: 'GET',
         success: function(response){
             const result = JSON.parse(response);
-            console.log(result);
-            console.log(typeof result);
             const resultingCurrNumber = numeral(JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, "").replace(/([a-zA-Z])/g, "").trim()).format('0.00');
-            console.log(resultingCurrNumber);
             resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
-            document.getElementById("resultCurrency").innerHTML = `1 USD equals ${resultingCurrNumber} ${currencyCode}`;
-            console.log(currencyCode);
+            const date = Date.today().toString("MMMM dS yyyy");
+            document.getElementById("currentExchangeInfo").innerHTML = `As of ${date}, 1 USD equals ${resultingCurrNumber} ${currencyCode}`;
         }
     })
 }).addTo(map);
@@ -396,7 +414,7 @@ function calculate(){
     } else {
         //bring in the value of the exchange rate
         let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
-        document.getElementById("resultAmount").innerHTML = input * numberCurr;
+        document.getElementById("resultAmount").innerHTML = currencySymbol + numeral(input * numberCurr).format('0.00');
     }
 }
 
