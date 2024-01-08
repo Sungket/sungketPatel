@@ -235,6 +235,8 @@ function fetchBoundingBox(countryIdx) {
         map.removeLayer(borderLayer);
     };
 
+    airports.clearLayers();
+
     $.ajax({
         url: 'php/readCountryInfo.php?country=' + countryArray[countryIdx].iso_a2,
         type: 'GET',
@@ -282,14 +284,14 @@ function fetchBoundingBox(countryIdx) {
         success: function(result){
             xmlDoc = new DOMParser().parseFromString(result, "text/xml");
             console.log(xmlDoc);
-            // const geonames = xmlDoc.querySelectorAll("geoname");
-            // for (let i = 0; i < 50; i++){
-            //     const name = geonames[i].querySelector("name").textContent;
-            //     const lat = geonames[i].querySelector("lat").textContent;
-            //     const long = geonames[i].querySelector("lng").textContent;
-            //     let marker = L.marker([lat, long], {icon: airportMarker}).bindPopup(name);
-            //     airports.addLayer(marker);
-            // }
+            const geonames = xmlDoc.querySelectorAll("geoname");
+            for (let i = 0; i < 50; i++){
+                const name = geonames[i].querySelector("name").textContent;
+                const lat = geonames[i].querySelector("lat").textContent;
+                const long = geonames[i].querySelector("lng").textContent;
+                let marker = L.marker([lat, long], {icon: airportMarker}).bindPopup(name);
+                airports.addLayer(marker);
+            }
         }
     });
 }
