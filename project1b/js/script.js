@@ -40,30 +40,32 @@ var streets = L.tileLayer(
 
 
 
-//populate the select dropdown
+//populate the select dropdown by reading in the countrybordersgeoJSON file
 $.ajax({type:"GET", 
 url: "php/readCountryBordersGeoJSON.php", 
 success: function(array){
+    let tempArray = [];
     const obj = JSON.parse(array);
     for (let i = 0; i < obj.length; i++) {
-        // $('#countrySelect').append('<option value="' + i + '" onclick="fetchBoundingBox(' + i + ')">' + obj[i].name + '</option>');
-        // $('.form-control').append('<option value="' + i + '">' + obj[i].name + '</option>');
-        // $("#countrySelect").append('<option>' + obj[i].name + '</option>');
-
-
-        // let optionText = obj[i].name;
-        // let optionValue = i;
-        // $('#countrySelect').append('<option>'+obj[i].name+'</option>');
-
         let option = document.createElement("option");
         option.text = obj[i].name;
-        option.value = i;
-        $(".form-select").append(option);
-
-
-        // const countryObj = {name: obj[i].name, iso_a2: obj[i].iso_a2, idx: i};
-        // countryArray.push(countryObj);
+        option.value = obj[i].iso_a2;
+        tempArray.push(option);
     };
+    //sort tempArray alphabetically    
+    tempArray.sort(function (a, b) {
+        if (a.text < b.text) {
+          return -1;
+        }
+        if (a.text > b.text) {
+          return 1;
+        }
+        return 0;
+      });
+
+    tempArray.forEach(element => {
+        $(".form-select").append(element);
+    });
 }});
 
 
@@ -84,7 +86,7 @@ if(navigator.geolocation) {
             type: 'GET',
             success: function(output) {
                 const res = JSON.parse(output);
-                console.log(res);
+                // console.log(res);
                 // let currencyName = res.results[0]["annotations"]["currency"]["iso_code"];
                 // console.log(currencyName);
                 // iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
