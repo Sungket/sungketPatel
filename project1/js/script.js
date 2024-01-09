@@ -390,21 +390,21 @@ let weatherForecast = L.easyButton("fas fa-temperature-low fa-lg", function (btn
             document.getElementById("day1").innerHTML = Date.today().addDays(1).toString("ddd dS");
             document.getElementById("day2").innerHTML = Date.today().addDays(2).toString("ddd dS");
             document.getElementById("day3").innerHTML = Date.today().addDays(3).toString("ddd dS");
-            document.getElementById("forecast").innerHTML = res.forecast.forecastday[1].day.avgtemp_c;
-            document.getElementById("forecast2").innerHTML = res.forecast.forecastday[2].day.avgtemp_c;
-            document.getElementById("forecast3").innerHTML = res.forecast.forecastday[3].day.avgtemp_c;
-            document.getElementById("tempHigh").innerHTML = res.forecast.forecastday[1].day.maxtemp_c;
-            document.getElementById("tempHigh2").innerHTML = res.forecast.forecastday[2].day.maxtemp_c;
-            document.getElementById("tempHigh3").innerHTML = res.forecast.forecastday[3].day.maxtemp_c;
-            document.getElementById("tempLow").innerHTML = res.forecast.forecastday[1].day.mintemp_c;
-            document.getElementById("tempLow2").innerHTML = res.forecast.forecastday[2].day.mintemp_c;
-            document.getElementById("tempLow3").innerHTML = res.forecast.forecastday[3].day.mintemp_c;
-            document.getElementById("rain").innerHTML = res.forecast.forecastday[1].day.totalprecip_mm;
-            document.getElementById("rain2").innerHTML = res.forecast.forecastday[2].day.totalprecip_mm;
-            document.getElementById("rain3").innerHTML = res.forecast.forecastday[3].day.totalprecip_mm;
-            document.getElementById("uv").innerHTML = res.forecast.forecastday[1].day.uv;
-            document.getElementById("uv2").innerHTML = res.forecast.forecastday[2].day.uv;
-            document.getElementById("uv3").innerHTML = res.forecast.forecastday[3].day.uv;
+            document.getElementById("forecast").innerHTML = res.forecast.forecastday[0].day.avgtemp_c;
+            document.getElementById("forecast2").innerHTML = res.forecast.forecastday[1].day.avgtemp_c;
+            document.getElementById("forecast3").innerHTML = res.forecast.forecastday[2].day.avgtemp_c;
+            document.getElementById("tempHigh").innerHTML = res.forecast.forecastday[0].day.maxtemp_c;
+            document.getElementById("tempHigh2").innerHTML = res.forecast.forecastday[1].day.maxtemp_c;
+            document.getElementById("tempHigh3").innerHTML = res.forecast.forecastday[2].day.maxtemp_c;
+            document.getElementById("tempLow").innerHTML = res.forecast.forecastday[0].day.mintemp_c;
+            document.getElementById("tempLow2").innerHTML = res.forecast.forecastday[1].day.mintemp_c;
+            document.getElementById("tempLow3").innerHTML = res.forecast.forecastday[2].day.mintemp_c;
+            document.getElementById("rain").innerHTML = res.forecast.forecastday[0].day.totalprecip_mm;
+            document.getElementById("rain2").innerHTML = res.forecast.forecastday[1].day.totalprecip_mm;
+            document.getElementById("rain3").innerHTML = res.forecast.forecastday[2].day.totalprecip_mm;
+            document.getElementById("uv").innerHTML = res.forecast.forecastday[0].day.uv;
+            document.getElementById("uv2").innerHTML = res.forecast.forecastday[1].day.uv;
+            document.getElementById("uv3").innerHTML = res.forecast.forecastday[2].day.uv;
         } catch (err) {
             $("#weatherForecastModal").modal("hide");
             alert("No weather forecast information available in this area from API.")

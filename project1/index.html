@@ -39,20 +39,17 @@
     
     <div id="map"></div>
 
-    <!-- Modal Popup-->
-    <div class="modal" id="myModal">
-        <div class="modal-dialog">
+    <!-- Quick Facts Modal-->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal header">
-                    <h2 class="modal-title">Hello</h2>
+                <!-- Modal Header -->
+                <div class="modal-header bg-success bg-gradient text-white">
+                    <h5 class="modal-title">Quick Facts</h5>
                 </div>
+                <!-- Modal Body -->
                 <div class="modal-body">
                     <table class="table">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th class="text-center" colspan="2">Quick Facts</th>
-                            </tr>
-                        </thead>
                         <tbody>
                             <tr>
                                 <td>Country</td>
@@ -85,18 +82,16 @@
     </div> <!-- End modal-->
 
     <!--Weather modal-->
-    <div class="modal" id="weatherModal" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="weatherModal" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content shadow">
+                <!--Modal header-->
+                <div class="modal-header bg-primary bg-gradient text-center text-white">
+                    <h5 class="modal-title">Today's Forecast</h5>
+                </div>
+                <!-- Modal Body -->
                 <div class="modal-body">
                     <table class="table">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th scope="col" class="text-center" colspan="2">
-                                    Weather Overview
-                                </th>
-                            </tr>
-                        </thead>
                         <tbody>
                             <tr>
                                 <td scope="row">
@@ -142,21 +137,16 @@
     </div> <!-- End modal-->
 
     <!--Weather forecast modal-->
-    <div class="modal" id="weatherForecastModal" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="weatherForecastModal" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content shadow">
                 <!--Modal header-->
-                <div class="modal header">
-                    <h5 class="modal-title">Weather</h5>
+                <div class="modal-header bg-primary bg-gradient text-center text-white">
+                    <h5 class="modal-title">Three-day Forecast</h5>
                 </div>
                 <!--Modal body-->
                 <div class="modal-body">
                     <table class="table">
-                        <thead>
-                            <tr>
-                                <th class="text-center" colspan="5">Three Day Forecast</th>
-                            </tr>
-                        </thead>
                         <tbody>
                             <tr>
                                 <td></td>
@@ -251,31 +241,23 @@
         </div> <!--End modal dialog-->
     </div> <!-- End modal-->
 
-    <!-- Modal Popup-->
-    <div class="modal" id="ccModal">
-        <div class="modal-dialog">
+    <!-- Currency Modal-->
+    <div class="modal fade" id="ccModal">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal header">
+                <!-- Modal Header -->
+                <div class="modal-header bg-info bg-gradient text-white">
                     <h5 class="modal-title">Currency Converter</h5>
                 </div>
                 <!--Modal Body-->
                 <div class="modal-body">
                     <table class="table">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th class="text-center" colspan="2">
-                                    Current exchange rate
-                                </th>
-                            </tr>
-                        </thead>
                         <tr>
-                            <td class="text-center" id="currentExchangeInfo" colspan="2">
-
+                            <td class="text-center font-italic" id="currentExchangeInfo" colspan="2">
                             </td>
                         </tr>
                         <tr>
                             <td class="text-center">
-                                <!-- <label for="usd2Convert">Convert USD</label><br> -->
                                 <input type="text" id="usd2Convert" name="usd" placeholder="Input amount to convert"><br>
                                 <input type="submit" value="Submit" onclick="calculate()">
                             </td>
@@ -290,21 +272,17 @@
         </div> <!--End modal dialog-->
     </div> <!-- End modal-->
 
-        <!-- Modal Popup-->
-        <div class="modal" id="popModal">
-            <div class="modal-dialog">
+        <!--Population Modal-->
+        <div class="modal fade" id="popModal">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal header">
-                        <h5 class="modal-title">Population and Language</h5>
+                    <!-- Modal Header -->
+                    <div class="modal-header bg-success bg-gradient text-white">
+                        <h5 class="modal-title">Population Information</h5>
                     </div>
                     <!--Modal Body-->
                     <div class="modal-body">
                         <table class="table">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th class="text-center" colspan="2">Population and Language Information</th>
-                                </tr>
-                            </thead>
                             <tr>
                                 <td class="text">
                                     Population
@@ -330,11 +308,11 @@
             </div> <!--End modal dialog-->
         </div> <!-- End modal-->
 
-        <!-- Modal Popup-->
-        <div class="modal" id="newsModal">
+        <!--News Modal-->
+        <div class="modal fade" id="newsModal">
             <div class="modal-dialog modal-dialog-scrollable">
                 <div class="modal-content">
-                    <div class="modal header">
+                    <div class="modal-header">
                         <h5 class="modal-title">News</h5>
                     </div>
                     <!--Modal Body-->
@@ -350,11 +328,13 @@
             </div> <!--End modal dialog-->
         </div> <!-- End modal-->
 
-        <div class="modal" id="wikiModal">
-            <div class="modal-dialog">
+        <!-- Wikipedia Modal -->
+        <div class="modal fade" id="wikiModal">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal header">
-                        <h5 class="modal-title">Wikipedia</h5>
+                    <!-- Modal Header -->
+                    <div class="modal-header bg-success bg-gradient text-white">
+                        <h5 class="modal-title">Wikipedia Article</h5>
                     </div>
                     <!--Modal Body-->
                     <div class="modal-body" id="wiki">
