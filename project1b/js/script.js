@@ -7,7 +7,10 @@ $(window).on('load', function() {
     }
 });
 
+//global variables
+let border;
 
+// set up tile layers for map
 var streets = L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
     {
@@ -40,9 +43,10 @@ var streets = L.tileLayer(
 
 
 
+
 //populate the select dropdown by reading in the countrybordersgeoJSON file
 $.ajax({type:"GET", 
-url: "php/readCountryBordersGeoJSON.php", 
+url: "php/readISO2GeoJSON.php", 
 success: function(array){
     let tempArray = [];
     const obj = JSON.parse(array);
@@ -69,8 +73,9 @@ success: function(array){
 }});
 
 
-//below code asks asks browser for location, then alerts with the coords. Show position is the callback function to retrieve coords and 
-//pass to readISO.php.
+
+
+//below code asks asks browser for location, then sets map with the coords. 
 if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition, defaultPosition);
     } else {
@@ -102,6 +107,28 @@ if(navigator.geolocation) {
         fetchBoundingBox(0)
     }
 
-function test(value) {
+function selectedCountry(value) {
+
+    if (border) {
+        map.removeLayer(border);
+    };
+
     console.log(`value passed in through jquery and html is: ${value}`);
+    $.ajax({
+        url: "php/readCountryBorders.php", 
+        type:"GET",
+        success: function(output) {
+            const result = JSON.parse(output);
+            console.log(typeof result);
+            console.log(result);
+            result.features.forEach(feature => {
+                if (feature.properties.iso_a2 == value) {
+                    console.log(feature.properties.iso_a2);
+                    console.log(value);
+                    border = L.geoJSON(feature);
+                    border.addTo(map);
+                };
+            });
+        }
+    });
 };
