@@ -65,7 +65,7 @@ function showPosition(position) {
                     countryIndex = country.idx;
                 }
             })
-            document.getElementById("dropdownbtn").innerHTML = countryName[0].querySelector("countryName").textContent;
+            document.getElementById("countrySelect").innerHTML = countryName[0].querySelector("countryName").textContent;
             fetchBoundingBox(countryIndex);
         }});
 
@@ -108,12 +108,38 @@ var streets = L.tileLayer(
   );
 
 // fetch all country names and populate the drop down menu
+// $.ajax({type:"GET", 
+// url: "php/readCountries.php", 
+// success: function(array){
+//     const obj = JSON.parse(array);
+//     for (let i = 0; i < obj.length; i++) {
+//         $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i].name + '</a>');
+//         const countryObj = {name: obj[i].name, iso_a2: obj[i].iso_a2, idx: i};
+//         countryArray.push(countryObj);
+//     };
+// }});
+
+//populate the select dropdown
 $.ajax({type:"GET", 
 url: "php/readCountries.php", 
 success: function(array){
     const obj = JSON.parse(array);
     for (let i = 0; i < obj.length; i++) {
-        $('.dropdown-menu').append('<a class="dropdown-item" href="#" onclick="fetchBoundingBox(' + i + ')">' + obj[i].name + '</a>');
+        // $('#countrySelect').append('<option value="' + i + '" onclick="fetchBoundingBox(' + i + ')">' + obj[i].name + '</option>');
+        // $('.form-control').append('<option value="' + i + '">' + obj[i].name + '</option>');
+        // $("#countrySelect").append('<option>' + obj[i].name + '</option>');
+
+
+        // let optionText = obj[i].name;
+        // let optionValue = i;
+        // $('#countrySelect').append('<option>'+obj[i].name+'</option>');
+
+        let option = document.createElement("option");
+        option.text = obj[i].name;
+        option.value = i;
+        $(".form-select").append(option);
+
+
         const countryObj = {name: obj[i].name, iso_a2: obj[i].iso_a2, idx: i};
         countryArray.push(countryObj);
     };
@@ -203,14 +229,11 @@ function fetchBoundingBox(countryIdx) {
             midLat = (Number(north) + Number(south)) / 2;
             midLong = (Number(east) + Number(west)) / 2;
             const nameOfCountry = xmlDoc.getElementsByTagName("countryName")[0].childNodes[0].nodeValue;
-            document.getElementById("dropdownbtn").innerHTML = nameOfCountry;
+            document.getElementById("countrySelect").innerHTML = nameOfCountry;
             earthquakes(north, south, east, west);
             flagImage = "https://flagsapi.com/" + countryCode + "/flat/64.png";
         }
     });
-
-    console.log(midLat);
-    console.log(midLong);
 
     // $.ajax({
     //     url: 'php/openCageData.php?lat=' + midLat + "&lng=" + midLong,
@@ -313,7 +336,7 @@ function earthquakes(north, east, south, west) {
     map.fitBounds(borderLayer.getBounds());
 }
 
-//leaflet's easybutton modal to display quick facts about the selected country 
+//quick facts about the selected country 
 let easyButton = L.easyButton("fas fa-info fa-lg", function (btn, map) {
     $("#myModal").modal("show");
     $(easyButton).css("z-index", "100");
@@ -379,9 +402,6 @@ let weatherForecast = L.easyButton("fas fa-temperature-low fa-lg", function (btn
             document.getElementById("rain").innerHTML = res.forecast.forecastday[1].day.totalprecip_mm;
             document.getElementById("rain2").innerHTML = res.forecast.forecastday[2].day.totalprecip_mm;
             document.getElementById("rain3").innerHTML = res.forecast.forecastday[3].day.totalprecip_mm;
-            document.getElementById("wind").innerHTML = res.forecast.forecastday[1].day.maxwind_mph;
-            document.getElementById("wind2").innerHTML = res.forecast.forecastday[2].day.maxwind_mph;
-            document.getElementById("wind3").innerHTML = res.forecast.forecastday[3].day.maxwind_mph;
             document.getElementById("uv").innerHTML = res.forecast.forecastday[1].day.uv;
             document.getElementById("uv2").innerHTML = res.forecast.forecastday[2].day.uv;
             document.getElementById("uv3").innerHTML = res.forecast.forecastday[3].day.uv;
@@ -392,6 +412,7 @@ let weatherForecast = L.easyButton("fas fa-temperature-low fa-lg", function (btn
     }})
 }).addTo(map);
 
+//currency convert easybutton and modal
 let exchangeRate = L.easyButton("fas fa-dollar-sign fa-lg", function (btn, map) {
     $("#ccModal").modal("show");
     $.ajax({
@@ -418,7 +439,7 @@ function calculate(){
     }
 }
 
-//leaflet's easybutton modal to display quick facts about the selected country 
+//population easybutton and modal
 let popButton = L.easyButton("fas fa-users fa-lg", function (btn, map) {
     $("#popModal").modal("show");
     document.getElementById("popValue").innerHTML = pop;
@@ -453,7 +474,7 @@ let wikipedia = L.easyButton("fab fa-wikipedia-w fa-lg", function (btn, map) {
     })
   }).addTo(map);
 
-//leaflet's easybutton modal to display quick facts about the selected country 
+//news easybutton modal 
 let news = L.easyButton("far fa-newspaper fa-lg", function (btn, map) {
     $("#newsModal").modal("show");
     $(".news-list").empty();

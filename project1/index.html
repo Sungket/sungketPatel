@@ -22,13 +22,20 @@
 
     <div id="preloader"></div>
 
-    <div class="dropdown">
+    <span id="selectContainer">
+        <select id="countrySelect" class="form-select" onchange="fetchBoundingBox(value)">
+          <!-- populate from PHP call that returns only the codes and names from the countryborder GeoJSON file -->
+          <!-- <option value="1">Afghanistan</option> -->
+        </select>
+    </span>
+
+    <!-- <div class="dropdown">
         <button type="button" class="btn btn-primary dropdown-toggle position-static w-100" data-toggle="dropdown" id="dropdownbtn">
             Select country
         </button>
         <div class="dropdown-menu" style="z-index: 2000 !important;">
         </div>
-    </div>
+    </div> -->
     
     <div id="map"></div>
 
@@ -153,7 +160,7 @@
                         <tbody>
                             <tr>
                                 <td></td>
-                                <td scope="col">Date</td>
+                                <td scope="col"></td>
                                 <td id="day1" scope="col">Date1</td>
                                 <td id="day2" scope="col">Date2</td>
                                 <td id="day3" scope="col">Date3</td>
@@ -218,21 +225,6 @@
                                 value
                                 </td>
                             </tr>
-                            <tr>
-                                <td class="fas fa-wind"></td>    
-                                <td scope="row">
-                                    Max wind mph
-                                </td>
-                                <td class="text-end" id="wind">
-                                    value
-                                </td>
-                                <td class="text-end" id="wind2">
-                                    value
-                                </td>
-                                <td class="text-end" id="wind3">
-                                    value
-                                </td>
-                          </tr>
                           <tr>
                                 <td class="fas fa-sun"></td>
                                 <td>

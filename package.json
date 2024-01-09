@@ -6,6 +6,7 @@
     "leaflet-extra-markers": "^1.2.2",
     "leaflet.markercluster": "^1.5.3",
     "marker": "^0.1.2",
-    "markers": "^0.14.6"
+    "markers": "^0.14.6",
+    "numeral": "^2.0.6"
   }
 }

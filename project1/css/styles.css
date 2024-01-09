@@ -3,6 +3,19 @@ html, body {
     padding: 0;
   }
 
+#selectContainer {
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  padding: 11px 0;
+}
+
+#countrySelect {
+  width: 200px;
+  margin: 0 auto;
+}
+
 .container {
     width: 100vw;
 }
@@ -20,18 +33,18 @@ html, body {
     overflow-y: auto;
   }
   
-  #selectContainer {
+  /* #selectContainer {
     position: fixed;
     top: 0;
     width: 100vw;
     height: 5vh;
     padding: 0;
-  }
+  } */
   
-  #countrySelect {
+  /* #countrySelect {
     width: 200px;
     margin: 0 auto;
-  }
+  } */
 
 /* preloader */
 #preloader {
