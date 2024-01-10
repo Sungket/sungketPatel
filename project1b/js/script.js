@@ -84,6 +84,10 @@ let cityMarker = L.ExtraMarkers.icon({
 
 
 //easybuttons
+L.easyButton("fa-info", function (btn, map) {
+    $("#exampleModal").modal("show");
+  }).addTo(map);
+
 L.easyButton("fas fa-cloud-sun fa-lg", function (btn, map) {
     $("#weatherModal").modal("show");
 }).addTo(map);
@@ -93,11 +97,11 @@ L.easyButton("fas fa-temperature-low fa-lg", function (btn, map) {
 }).addTo(map);
 
 L.easyButton("fas fa-dollar-sign fa-lg", function (btn, map) {
-    $("#ccModal").modal("show");
+    $("#currencyModal").modal("show");
 }).addTo(map);
 
 L.easyButton("fas fa-users fa-lg", function (btn, map) {
-    $("#popModal").modal("show");
+    $("#populationModal").modal("show");
 }).addTo(map);
 
 L.easyButton("fab fa-wikipedia-w fa-lg", function (btn, map) {
@@ -140,7 +144,7 @@ success: function(array){
 
 
 
-//below code asks asks browser for location, then sets map with the coords. 
+//below code asks asks browser for location, then sets map with the coords. If location turned off, it pulls details of first country in dropdown list.
 if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition, defaultPosition);
     } else {
@@ -172,6 +176,11 @@ if(navigator.geolocation) {
         alert("Geolocation blocked by browser.");
         fetchBoundingBox(0)
     }
+
+
+
+
+
 
 // iso_a2 is passed in as value argument
 function selectedCountry(value) {
