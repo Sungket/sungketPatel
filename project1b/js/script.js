@@ -177,5 +177,49 @@ function selectedCountry(value) {
         }
     });
 
+    $.ajax({
+        url: "php/capitalCitiesAPI.php?country=" + value,
+        type: "GET",
+        success: function(result){
+            xmlDoc = new DOMParser().parseFromString(result, "text/xml");
+            const geonames = xmlDoc.querySelectorAll("geoname");
+            const name = geonames[0].querySelector("name").textContent;
+            const lat = geonames[0].querySelector("lat").textContent;
+            const long = geonames[0].querySelector("lng").textContent;
+            let marker = L.marker([lat, long], {icon: cityMarker}).bindPopup(name);
+            capitalCities.addLayer(marker);
+        }
+    });
 
+    $.ajax({
+        url: "php/airportsAPI.php?country=" + value,
+        type: "GET",
+        success: function(result){
+            xmlDoc = new DOMParser().parseFromString(result, "text/xml");
+            const geonames = xmlDoc.querySelectorAll("geoname");
+            for (let i = 0; i < 50; i++){
+                const name = geonames[i].querySelector("name").textContent;
+                const lat = geonames[i].querySelector("lat").textContent;
+                const long = geonames[i].querySelector("lng").textContent;
+                let marker = L.marker([lat, long], {icon: airportMarker}).bindPopup(name);
+                airports.addLayer(marker);
+            }
+        }
+    });
+
+    $.ajax({
+        url: "php/universitiesAPI.php?country=" + value,
+        type: "GET",
+        success: function(result){
+            xmlDoc = new DOMParser().parseFromString(result, "text/xml");
+            const geonames = xmlDoc.querySelectorAll("geoname");
+            for (let i = 0; i < 50; i++) {
+                const name = geonames[i].querySelector("name").textContent;
+                const lat = geonames[i].querySelector("lat").textContent;
+                const long = geonames[i].querySelector("lng").textContent;
+                let marker = L.marker([lat, long], {icon: universityMarker}).bindPopup(name);
+                universities.addLayer(marker);
+            }
+        }
+    });
 };
