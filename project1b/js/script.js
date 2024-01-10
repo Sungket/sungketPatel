@@ -113,22 +113,29 @@ function selectedCountry(value) {
         map.removeLayer(border);
     };
 
-    console.log(`value passed in through jquery and html is: ${value}`);
+    // $.ajax({
+    //     url: "php/readCountryBorders.php", 
+    //     type:"GET",
+    //     success: function(output) {
+    //         const result = JSON.parse(output);
+    //         result.features.forEach(feature => {
+    //             if (feature.properties.iso_a2 == value) {
+    //                 border = L.geoJSON(feature);
+    //                 border.addTo(map);
+    //             };
+    //         });
+    //     }
+    // });
+
     $.ajax({
         url: "php/readCountryBorders.php", 
-        type:"GET",
+        type:"POST",
+        data: {value: value},
         success: function(output) {
             const result = JSON.parse(output);
-            console.log(typeof result);
             console.log(result);
-            result.features.forEach(feature => {
-                if (feature.properties.iso_a2 == value) {
-                    console.log(feature.properties.iso_a2);
-                    console.log(value);
-                    border = L.geoJSON(feature);
-                    border.addTo(map);
-                };
-            });
+            border = L.geoJSON(result);
+            border.addTo(map);
         }
     });
 };
