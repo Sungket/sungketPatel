@@ -156,20 +156,20 @@ if(navigator.geolocation) {
         longitude = position.coords.longitude;
 
         //using openCageData to retrieve the iso_a2 of the current location of the browser, then pass into selectedCountry
-        $.ajax({
-            url: 'php/openCageData.php?lat=' + latitude + "&lng=" + longitude,
-            type: 'GET',
-            success: function(output) {
-                const res = JSON.parse(output);
-                // console.log(res);
-                // let currencyName = res.results[0]["annotations"]["currency"]["iso_code"];
-                // console.log(currencyName);
-                // iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
-                // console.log(iso_a2);
-                // currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
-                // console.log(currencySymbol);
-            }
-        });
+        // $.ajax({
+        //     url: 'php/openCageData.php?lat=' + latitude + "&lng=" + longitude,
+        //     type: 'GET',
+        //     success: function(output) {
+        //         const res = JSON.parse(output);
+        //         // console.log(res);
+        //         // let currencyName = res.results[0]["annotations"]["currency"]["iso_code"];
+        //         // console.log(currencyName);
+        //         // iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
+        //         // console.log(iso_a2);
+        //         // currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
+        //         // console.log(currencySymbol);
+        //     }
+        // });
     };
     
     function defaultPosition() {
@@ -248,6 +248,28 @@ function selectedCountry(value) {
                 let marker = L.marker([lat, long], {icon: universityMarker}).bindPopup(name);
                 universities.addLayer(marker);
             }
+        }
+    });
+
+    fetchOtherInfo(value);
+};
+
+
+function fetchOtherInfo(info) {
+    console.log(info);
+    //using openCageData to retrieve other data about the location
+    $.ajax({
+        url: 'php/openCageData.php?countrycode=' + info,
+        type: 'GET',
+        success: function(output) {
+            const res = JSON.parse(output);
+            console.log(res);
+            // let currencyName = res.results[0]["annotations"]["currency"]["iso_code"];
+            // console.log(currencyName);
+            // iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
+            // console.log(iso_a2);
+            // currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
+            // console.log(currencySymbol);
         }
     });
 };
