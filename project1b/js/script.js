@@ -86,6 +86,7 @@ if(navigator.geolocation) {
         latitude = position.coords.latitude;
         longitude = position.coords.longitude;
 
+        //using openCageData to retrieve the iso_a2 of the current location of the browser, then pass into selectedCountry
         $.ajax({
             url: 'php/openCageData.php?lat=' + latitude + "&lng=" + longitude,
             type: 'GET',
@@ -107,25 +108,12 @@ if(navigator.geolocation) {
         fetchBoundingBox(0)
     }
 
+// iso_a2 is passed in as value argument
 function selectedCountry(value) {
 
     if (border) {
         map.removeLayer(border);
     };
-
-    // $.ajax({
-    //     url: "php/readCountryBorders.php", 
-    //     type:"GET",
-    //     success: function(output) {
-    //         const result = JSON.parse(output);
-    //         result.features.forEach(feature => {
-    //             if (feature.properties.iso_a2 == value) {
-    //                 border = L.geoJSON(feature);
-    //                 border.addTo(map);
-    //             };
-    //         });
-    //     }
-    // });
 
     $.ajax({
         url: "php/readCountryBorders.php", 
@@ -133,9 +121,10 @@ function selectedCountry(value) {
         data: {value: value},
         success: function(output) {
             const result = JSON.parse(output);
-            console.log(result);
             border = L.geoJSON(result);
             border.addTo(map);
         }
     });
+
+    
 };
