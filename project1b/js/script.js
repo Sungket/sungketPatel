@@ -184,6 +184,7 @@ if(navigator.geolocation) {
 
 // iso_a2 is passed in as value argument
 function selectedCountry(value) {
+    console.log(value);
 
     if (border) {
         map.removeLayer(border);
@@ -251,11 +252,23 @@ function selectedCountry(value) {
         }
     });
 
-    fetchOtherInfo(value);
+    $.ajax({
+        url: "php/readCountryInfo.php?country=" + value,
+        type: "GET",
+        success: function(result){
+            xmlDoc = new DOMParser().parseFromString(result, "text/xml");
+            console.log(xmlDoc);
+            const info = xmlDoc.querySelectorAll("country");
+            const countryAlias = info[0].querySelector("countryName").textContent;
+            const capitalCity = info[0].querySelector("capital").textContent;
+            fetchInformation(countryAlias);
+            cityWeather(capitalCity);
+        }
+    })
 };
 
 
-function fetchOtherInfo(info) {
+function fetchInformation(info) {
     console.log(info);
     //using openCageData to retrieve other data about the location
     $.ajax({
@@ -264,12 +277,35 @@ function fetchOtherInfo(info) {
         success: function(output) {
             const res = JSON.parse(output);
             console.log(res);
-            // let currencyName = res.results[0]["annotations"]["currency"]["iso_code"];
-            // console.log(currencyName);
-            // iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
-            // console.log(iso_a2);
-            // currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
-            // console.log(currencySymbol);
+            let currencyName = res.results[0]["annotations"]["currency"]["iso_code"];
+            console.log(currencyName);
+            iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
+            console.log(iso_a2);
+            currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
+            console.log(currencySymbol);
         }
     });
 };
+
+function cityWeather(city) {
+    $.ajax({
+        url: "php/weatherForecast.php?city=" + city,
+            type: "GET",
+            success: function(result){
+            const response = JSON.parse(result);
+            console.log(response);
+
+        // try {
+        //     $("#weatherModal").modal("show");
+        //     document.getElementById('weatherOverview').innerHTML = response.current.condition.text;
+        //     document.getElementById('tempInfo').innerHTML = response.current.temp_c + " <sup>o</sup>C";
+        //     document.getElementById('feelsLike').innerHTML = response.current.feelslike_c + " <sup>o</sup>C";
+        //     document.getElementById('wind').innerHTML = response.current.wind_mph + "mph";
+        // }
+        // catch(err) {
+        //     $("#weatherModal").modal("hide");
+        //     alert('No weather data available from API in this area.')
+        // }
+    },
+    });
+}
