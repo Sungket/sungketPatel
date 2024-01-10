@@ -72,7 +72,7 @@ let cityMarker = L.ExtraMarkers.icon({
   var overlayMaps = {
     "Airports": airports,
     "Universities" : universities,
-    "Major Cities": capitalCities,
+    "Capital Cities": capitalCities,
     // "Earthquakes": earthquakesList,
   };
   
@@ -81,14 +81,33 @@ let cityMarker = L.ExtraMarkers.icon({
   }).setView([54.5, -4], 6);
   
   var layerControl = L.control.layers(basemaps, overlayMaps).addTo(map);
-  
-  L.easyButton("fa-info", function (btn, map) {
-    $("#exampleModal").modal("show");
-  }).addTo(map);
 
 
+//easybuttons
+L.easyButton("fas fa-cloud-sun fa-lg", function (btn, map) {
+    $("#weatherModal").modal("show");
+}).addTo(map);
 
-  
+L.easyButton("fas fa-temperature-low fa-lg", function (btn, map) {
+    $("#weatherForecastModal").modal("show");
+}).addTo(map);
+
+L.easyButton("fas fa-dollar-sign fa-lg", function (btn, map) {
+    $("#ccModal").modal("show");
+}).addTo(map);
+
+L.easyButton("fas fa-users fa-lg", function (btn, map) {
+    $("#popModal").modal("show");
+}).addTo(map);
+
+L.easyButton("fab fa-wikipedia-w fa-lg", function (btn, map) {
+    $("#wikiModal").modal("show");
+}).addTo(map);
+
+L.easyButton("far fa-newspaper fa-lg", function (btn, map) {
+    $("#newsModal").modal("show");
+}).addTo(map);
+
 
 //populate the select dropdown by reading in the countrybordersgeoJSON file
 $.ajax({type:"GET", 
