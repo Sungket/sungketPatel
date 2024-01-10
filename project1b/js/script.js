@@ -10,6 +10,10 @@ $(window).on('load', function() {
 //global variables
 let border;
 
+
+
+
+
 // set up tile layers for map
 var streets = L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
@@ -26,16 +30,57 @@ var streets = L.tileLayer(
         "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
     }
   );
+
+
+
+//set marker icons and layers
+
+airports = L.markerClusterGroup();
+
+let airportMarker = L.ExtraMarkers.icon({
+    icon: 'fas fa-plane',
+    markerColor: 'green',
+    shape: 'penta',
+    prefix: 'fa'
+});
+
+
+universities = L.markerClusterGroup();
+
+let universityMarker = L.ExtraMarkers.icon({
+    icon: 'fas fa-university',
+    markerColor: 'black',
+    shape: 'square',
+    prefix: 'fa'
+});
+
+
+capitalCities = L.markerClusterGroup();
+
+let cityMarker = L.ExtraMarkers.icon({
+    icon: 'far fa-building',
+    markerColor: 'blue',
+    shape: 'circle',
+    prefix: 'fa'
+});
+
   var basemaps = {
     "Streets": streets,
     "Satellite": satellite
   };
+
+  var overlayMaps = {
+    "Airports": airports,
+    "Universities" : universities,
+    "Major Cities": capitalCities,
+    // "Earthquakes": earthquakesList,
+  };
   
-  var map = L.map("map", {
-    layers: [streets]
+  let map = L.map("map", {
+    layers: [streets, airports, universities, capitalCities, /*earthquakesList*/]
   }).setView([54.5, -4], 6);
   
-  var layerControl = L.control.layers(basemaps).addTo(map);
+  var layerControl = L.control.layers(basemaps, overlayMaps).addTo(map);
   
   L.easyButton("fa-info", function (btn, map) {
     $("#exampleModal").modal("show");
@@ -43,6 +88,7 @@ var streets = L.tileLayer(
 
 
 
+  
 
 //populate the select dropdown by reading in the countrybordersgeoJSON file
 $.ajax({type:"GET", 
@@ -115,6 +161,10 @@ function selectedCountry(value) {
         map.removeLayer(border);
     };
 
+    airports.clearLayers();
+    universities.clearLayers();
+    capitalCities.clearLayers();
+
     $.ajax({
         url: "php/readCountryBorders.php", 
         type:"POST",
@@ -123,8 +173,9 @@ function selectedCountry(value) {
             const result = JSON.parse(output);
             border = L.geoJSON(result);
             border.addTo(map);
+            map.fitBounds(border.getBounds());
         }
     });
 
-    
+
 };
