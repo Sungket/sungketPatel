@@ -84,9 +84,9 @@ let cityMarker = L.ExtraMarkers.icon({
 
 
 //easybuttons
-L.easyButton("fa-info", function (btn, map) {
-    $("#exampleModal").modal("show");
-  }).addTo(map);
+// L.easyButton("fa-info", function (btn, map) {
+//     $("#exampleModal").modal("show");
+//   }).addTo(map);
 
 L.easyButton("fas fa-cloud-sun fa-lg", function (btn, map) {
     $("#weatherModal").modal("show");
@@ -180,6 +180,7 @@ if(navigator.geolocation) {
 
 // iso_a2 is passed in as value argument
 function selectedCountry(value) {
+    //below logs the country ISO A2 designation
     console.log(value);
 
     if (border) {
@@ -253,7 +254,6 @@ function selectedCountry(value) {
         type: "GET",
         success: function(result){
             xmlDoc = new DOMParser().parseFromString(result, "text/xml");
-            console.log(xmlDoc);
             const info = xmlDoc.querySelectorAll("country");
             const countryAlias = info[0].querySelector("countryName").textContent;
             const capitalCity = info[0].querySelector("capital").textContent;
@@ -265,6 +265,7 @@ function selectedCountry(value) {
 
 
 function fetchInformation(info) {
+    //below logs the name of the country which is used as an arg for the openCageAPI
     console.log(info);
     //using openCageData to retrieve other data about the location
     $.ajax({
@@ -283,14 +284,15 @@ function fetchInformation(info) {
     });
 };
 
+//Weather function
 function cityWeather(city) {
+    //below logs the name of the capital city which is used as the location arg into weatherAPI
     console.log(city);
     $.ajax({
         url: "php/weatherForecast.php?city=" + city,
             type: "GET",
             success: function(result){
             const response = JSON.parse(result);
-            console.log(response);
 
         try {
             $('#weatherModalLabel').html(response.location.name + ", " + response.location.country);
@@ -315,4 +317,32 @@ function cityWeather(city) {
         }
     },
     });
+}
+
+
+//currency converter function
+function currency(currencyCode) {
+    $.ajax({
+        url: "php/exchangeRate.php?app_id=44a738b0aab34f73906f57e69037439a&symbols=" + currencyCode,
+        type: 'GET',
+        success: function(response){
+            const result = JSON.parse(response);
+            const resultingCurrNumber = numeral(JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, "").replace(/([a-zA-Z])/g, "").trim()).format('0.00');
+            resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
+            const date = Date.today().toString("MMMM dS yyyy");
+            document.getElementById("currentExchangeInfo").innerHTML = `As of ${date}, 1 USD equals ${resultingCurrNumber} ${currencyCode}`;
+        }
+    })
+}
+
+
+function calculate(){
+    const input = Number(document.getElementById("usd2Convert").value);
+    if (isNaN(input)) {
+        alert("Please enter a valid number");
+    } else {
+        //bring in the value of the exchange rate
+        let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
+        document.getElementById("resultAmount").innerHTML = currencySymbol + numeral(input * numberCurr).format('0.00');
+    }
 }
