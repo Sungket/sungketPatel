@@ -84,9 +84,9 @@ let cityMarker = L.ExtraMarkers.icon({
 
 
 //easybuttons
-// L.easyButton("fa-info", function (btn, map) {
-//     $("#exampleModal").modal("show");
-//   }).addTo(map);
+L.easyButton("fa-info", function (btn, map) {
+    $("#quickModal").modal("show");
+  }).addTo(map);
 
 L.easyButton("fas fa-cloud-sun fa-lg", function (btn, map) {
     $("#weatherModal").modal("show");
@@ -255,8 +255,21 @@ function selectedCountry(value) {
         success: function(result){
             xmlDoc = new DOMParser().parseFromString(result, "text/xml");
             const info = xmlDoc.querySelectorAll("country");
+            console.log(info);
             const countryAlias = info[0].querySelector("countryName").textContent;
             const capitalCity = info[0].querySelector("capital").textContent;
+
+            //populate quick facts modal as it uses the same API
+            $("#countryName").html(countryAlias);
+            // $("#flagImage").html("https://flagsapi.com/" + value + "/flat/64.png");
+            $("#flagImage").html("");
+            let img = document.createElement('img');
+            img.src = "https://flagsapi.com/" + value + "/flat/64.png";
+            document.getElementById("flagImage").appendChild(img);
+            $("#capitalCity").html(capitalCity);
+            $("#areakm").html(numeral(info[0].querySelector("areaInSqKm").textContent).format('0,0'));
+            $("#continent").html(info[0].querySelector("continentName").textContent);
+
             fetchInformation(countryAlias);
             cityWeather(capitalCity);
         }
@@ -284,6 +297,8 @@ function fetchInformation(info) {
         }
     });
 };
+
+
 
 //Weather function
 function cityWeather(city) {
@@ -345,10 +360,6 @@ function calculate() {
     } else {
         //bring in the value of the exchange rate
         let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
-        console.log(numberCurr);
-        console.log(input);
-        const resultAmount = numeral(input * numberCurr).format('0.00')
-        console.log(resultAmount);
-        $("#resultAmount").val(resultAmount);
+        $("#resultAmount").val(numeral(input * numberCurr).format('0.00'));
     }
 }

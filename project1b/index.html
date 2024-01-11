@@ -31,6 +31,48 @@
   
   <div id="map"></div>
 
+    <!-- Quick Facts Modal-->
+    <div class="modal fade" id="quickModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header bg-success bg-gradient text-white">
+                    <h5 class="modal-title">Quick Facts</h5>
+                </div>
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Country</td>
+                                <td id="countryName"></td>
+                            </tr>
+                            <tr>
+                                <td>Flag</td>
+                                <td id="flagImage"></td>
+                            </tr>
+                            <tr>
+                                <td>Capital City</td>
+                                <td id="capitalCity"></td>
+                            </tr>
+                            <tr>
+                                <td>Area in sq km</td>
+                                <td id="areakm"></td>
+                            </tr>
+                            <tr>
+                                <td>Continent</td>
+                                <td id="continent"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div> <!--End modal content-->
+        </div> <!--End modal dialog-->
+    </div> <!-- End modal-->  
+
     <!--Weather modal-->
     <div class="modal fade" id="weatherModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
@@ -105,19 +147,6 @@
                         </div>
                     </form>
                 </div>
-                    <!-- <table class="table">
-                        <tr>
-                            <td class="text-center font-italic" id="currentExchangeInfo" colspan="2">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">
-                                <input type="text" id="usd2Convert" name="usd" placeholder="Input amount to convert"><br>
-                                <input type="submit" value="Submit" onclick="calculate()">
-                            </td>
-                            <td class="text-end" id="resultAmount">Enter amount to convert</td>
-                        </tr>
-                    </table> -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
