@@ -386,6 +386,13 @@ function wikipedia(input) {
                     if (infoType == "country" && title == input) {
                         $(".card-title").html(title);
                         $(".card-text").html(article);
+                        $(".card-img-top").html("");
+                        let imgString = entry.querySelector("thumbnailImg").textContent;
+                        imgString = imgString.replace("</thumbnailImg>", "");
+                        document.getElementById('cardImage').src = imgString;
+                        let wikiString = entry.querySelector("wikipediaUrl").textContent;
+                        wikiString = wikiString.replace("</wikipediaUrl>", "");
+                        document.getElementById('wikilink').href = wikiString;
                     }
                 }
             }
