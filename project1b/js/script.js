@@ -92,10 +92,6 @@ L.easyButton("fas fa-cloud-sun fa-lg", function (btn, map) {
     $("#weatherModal").modal("show");
 }).addTo(map);
 
-L.easyButton("fas fa-temperature-low fa-lg", function (btn, map) {
-    $("#weatherForecastModal").modal("show");
-}).addTo(map);
-
 L.easyButton("fas fa-dollar-sign fa-lg", function (btn, map) {
     $("#currencyModal").modal("show");
 }).addTo(map);
@@ -288,6 +284,7 @@ function fetchInformation(info) {
 };
 
 function cityWeather(city) {
+    console.log(city);
     $.ajax({
         url: "php/weatherForecast.php?city=" + city,
             type: "GET",
@@ -295,17 +292,27 @@ function cityWeather(city) {
             const response = JSON.parse(result);
             console.log(response);
 
-        // try {
-        //     $("#weatherModal").modal("show");
-        //     document.getElementById('weatherOverview').innerHTML = response.current.condition.text;
-        //     document.getElementById('tempInfo').innerHTML = response.current.temp_c + " <sup>o</sup>C";
-        //     document.getElementById('feelsLike').innerHTML = response.current.feelslike_c + " <sup>o</sup>C";
-        //     document.getElementById('wind').innerHTML = response.current.wind_mph + "mph";
-        // }
-        // catch(err) {
-        //     $("#weatherModal").modal("hide");
-        //     alert('No weather data available from API in this area.')
-        // }
+        try {
+            $('#weatherModalLabel').html(response.location.name + ", " + response.location.country);
+            $('#todayHigh').html(response.current.temp_c + " <sup>o</sup>C");
+            $('#currentCondition').html(response.current.condition.text);
+            $('#conditionIcon').attr("src", response.current.condition.icon);
+
+            $('#fc1Low').html(response.forecast.forecastday[0].day.mintemp_c + " <sup>o</sup>C");
+            $('#fc1Day').html(response.forecast.forecastday[0].date);
+
+            $('#fc2High').html(response.forecast.forecastday[1].day.maxtemp_c + " <sup>o</sup>C");
+            $('#fc2ConditionIcon').attr("src", response.forecast.forecastday[1].day.condition.icon);
+            $('#fc2Day').html(response.forecast.forecastday[1].date);
+
+            $('#fc3High').html(response.forecast.forecastday[2].day.maxtemp_c + " <sup>o</sup>C");
+            $('#fc3ConditionIcon').attr("src", response.forecast.forecastday[2].day.condition.icon);
+            $('#fc3Day').html(response.forecast.forecastday[2].date);
+        }
+        catch(err) {
+            $("#weatherModal").modal("hide");
+            alert('No weather data available from API in this area.')
+        }
     },
     });
 }

@@ -370,7 +370,7 @@
         <div class="modal-content shadow">
             <!--Modal header-->
             <div class="modal-header bg-primary bg-gradient text-center text-white">
-                <h5 class="modal-title">Today's Forecast</h5>
+                <h5 class="modal-title" id="weatherModalLabel">Today's Forecast</h5>
             </div>
             <!-- Modal Body -->
             <div class="modal-body">
@@ -387,27 +387,24 @@
                         
                         <div class="col text-center m-3">
                           
-                            <p id="location" class="fw-bold fs-6">location</p>
                             <p id="todayHigh" class="fw-bold fs-6">todayHighTemp</p>
-                            <p id="todayLow" class="fw-bold fs-6">todayLowTemp</p>
-                            <p id="todayConditions" class="fw-bold fs-6">todayConditionsIcon</p>
-
-                            <p id="fc1High" class="fw-bold fs-6">fc1HighTemp</p>
-                            <p id="fc1Conditions" class="fw-bold fs-6">fc1ConditionsIcon</p>
-                            <p id="fc1Day" class="fw-bold fs-6">fc1Day</p>
+                            <p id="currentCondition" class="fw-bold fs-6">currentConditions</p>
+                            <img src="" id="conditionIcon" class="fw-bold fs-6"/>
+                            <p id="fc1Low" class="fw-bold fs-6">fc1LowTemp</p>
 
                             <p id="fc2High" class="fw-bold fs-6">fc2HighTemp</p>
-                            <p id="fc2Conditions" class="fw-bold fs-6">fc2ConditionsIcon</p>
+                            <img id="fc2ConditionIcon" class="fw-bold fs-6"/>
                             <p id="fc2Day" class="fw-bold fs-6">fc2Day</p>
 
                             <p id="fc3High" class="fw-bold fs-6">fc3HighTemp</p>
-                            <p id="fc3Conditions" class="fw-bold fs-6">fc3ConditionsIcon</p>
+                            <img id="fc3ConditionIcon" class="fw-bold fs-6"/>
                             <p id="fc3Day" class="fw-bold fs-6">fc3Day</p>
 
                 </div>
 
             <!--Modal footer-->
             <div class="modal-footer">
+                <p id="fc1Day" class="fw-bold fs-6">fc1Day</p>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div> <!--End modal content-->
