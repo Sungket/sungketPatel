@@ -3,7 +3,8 @@
     error_reporting(E_ALL);
     
     $countrycode = $_GET["countrycode"];
-    $string = str_replace(' ', '+', $countrycode);
+    // $string = str_replace(' ', '+', $countrycode);
+    $string = urlencode($countrycode);
 
     // $url = "https://api.opencagedata.com/geocode/v1/json?q=" . $lat . "+" . $long . "&key=172e21212f8e4ad0ab0b91814752f05c";
     $url = "https://api.opencagedata.com/geocode/v1/json?q=countrycode=" . $string . "&key=172e21212f8e4ad0ab0b91814752f05c";
@@ -14,5 +15,4 @@
 
     curl_close($ch);
     
-    // echo $countrycode;
     echo $response_json; 

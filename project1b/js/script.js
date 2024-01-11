@@ -296,6 +296,7 @@ function fetchInformation(info) {
             currency(currencyName);
         }
     });
+    wikipedia(info);
 };
 
 
@@ -351,7 +352,7 @@ function currency(currencyCode) {
             $("#currentExchangeInfo").html(`As of ${date}, 1 USD equals ${resultingCurrNumber} ${currencyCode}`);
         }
     });
-}
+};
 function calculate() {
     console.log(resultCurrency);
     const input = Number(document.getElementById("usd2Convert").value);
@@ -362,4 +363,32 @@ function calculate() {
         let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
         $("#resultAmount").val(numeral(input * numberCurr).format('0.00'));
     }
-}
+};
+
+
+function wikipedia(input) {
+    //inputting in the country name on initial load up
+    console.log(input);
+    $.ajax({
+        url: "php/wikipedia.php?input=" + input,
+        type: "GET",
+        success: function(response){
+            console.log(response);
+            const xmlDoc = new DOMParser().parseFromString(response, "text/xml")
+            const entries = xmlDoc.querySelectorAll("entry");
+            if (typeof entries === 'undefined') {
+                document.getElementById("wikiTitle").innerHTML = "No news available in this area";
+            } else {
+                for (const entry of entries) {
+                    const infoType = entry.querySelector("feature").textContent;
+                    const title = entry.querySelector("title").textContent;
+                    const article = entry.querySelector("summary").textContent;
+                    if (infoType == "country" && title == input) {
+                        $(".card-title").html(title);
+                        $(".card-text").html(article);
+                    }
+                }
+            }
+        }
+    });
+};

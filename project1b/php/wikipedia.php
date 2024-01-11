@@ -1,10 +1,10 @@
 <?php
-    $north = $_GET["north"];
-    $south = $_GET["south"];
-    $east = $_GET["east"];
-    $west = $_GET["west"];
+    ini_set('display_errors', 'On');
+    error_reporting(E_ALL);
 
-    $url = "http://api.geonames.org/wikipediaBoundingBox?north=" . $north . "&south=" . $south . "&east=" . $east . "&west=" . $west . "&username=sungket";
+    $input = urlencode($_GET["input"]);
+
+    $url = "http://api.geonames.org/wikipediaSearch?q=" . $input . "&maxRows=3&username=sungket";
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_HTTPGET, true);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
