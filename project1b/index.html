@@ -85,15 +85,23 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content shadow">
                 <!-- Modal Header -->
-                <div class="modal-header bg-info bg-gradient text-white">
+                <div class="modal-header bg-primary bg-gradient text-white">
                     <h5 class="modal-title">Currency Converter</h5>
+                    <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <!--Modal Body-->
                 <div class="modal-body">
                     <form>
-                        <div class="form-floating">
-                            <input type="number" id="usd2Convert" name="usd" placeholder="Input amount to convert"><br>
-                            <input type="submit" value="Submit" onclick="calculate()">
+                        <div class="form-floating mb-3">
+                            <p id="currentExchangeInfo"></p>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="number" id="usd2Convert" name="usd" placeholder="Convert from USD" min="1" step="1">
+                            <a class="btn btn-success btn-sm" onclick="calculate()" role="button">Calculate</a>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" id="resultAmount" class="form-control" disabled>
+                            <label for="resultAmount">Result</label>
                         </div>
                     </form>
                 </div>

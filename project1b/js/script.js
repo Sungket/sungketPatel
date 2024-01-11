@@ -280,6 +280,7 @@ function fetchInformation(info) {
             console.log(iso_a2);
             currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
             console.log(currencySymbol);
+            currency(currencyName);
         }
     });
 };
@@ -320,29 +321,34 @@ function cityWeather(city) {
 }
 
 
-//currency converter function
+//currency converter functions
+let resultCurrency;
 function currency(currencyCode) {
     $.ajax({
         url: "php/exchangeRate.php?app_id=44a738b0aab34f73906f57e69037439a&symbols=" + currencyCode,
         type: 'GET',
         success: function(response){
             const result = JSON.parse(response);
+            console.log(result);
             const resultingCurrNumber = numeral(JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, "").replace(/([a-zA-Z])/g, "").trim()).format('0.00');
             resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
             const date = Date.today().toString("MMMM dS yyyy");
-            document.getElementById("currentExchangeInfo").innerHTML = `As of ${date}, 1 USD equals ${resultingCurrNumber} ${currencyCode}`;
+            $("#currentExchangeInfo").html(`As of ${date}, 1 USD equals ${resultingCurrNumber} ${currencyCode}`);
         }
-    })
+    });
 }
-
-
-function calculate(){
+function calculate() {
+    console.log(resultCurrency);
     const input = Number(document.getElementById("usd2Convert").value);
     if (isNaN(input)) {
         alert("Please enter a valid number");
     } else {
         //bring in the value of the exchange rate
         let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
-        document.getElementById("resultAmount").innerHTML = currencySymbol + numeral(input * numberCurr).format('0.00');
+        console.log(numberCurr);
+        console.log(input);
+        const resultAmount = numeral(input * numberCurr).format('0.00')
+        console.log(resultAmount);
+        $("#resultAmount").val(resultAmount);
     }
 }
