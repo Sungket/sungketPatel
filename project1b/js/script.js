@@ -269,7 +269,6 @@ function selectedCountry(value) {
         success: function(result){
             xmlDoc = new DOMParser().parseFromString(result, "text/xml");
             const info = xmlDoc.querySelectorAll("country");
-            console.log(info);
             const countryAlias = info[0].querySelector("countryName").textContent;
             const capitalCity = info[0].querySelector("capital").textContent;
             north = info[0].querySelector("north").textContent;
@@ -311,6 +310,7 @@ function fetchInformation(info) {
             currency(currencyName);
             news(iso_a2, info);
             wikipedia(info);
+            population(iso_a2);
         }
     });
 
@@ -389,6 +389,7 @@ function wikipedia(input) {
             console.log(response);
             const xmlDoc = new DOMParser().parseFromString(response, "text/xml")
             const entries = xmlDoc.querySelectorAll("entry");
+            console.log(entries);
             if (typeof entries === 'undefined') {
                 document.getElementById("wikiTitle").innerHTML = "No news available in this area";
             } else {
@@ -449,6 +450,8 @@ function news(isoa2, countryname) {
 };
 
 function earthquake(north, east, south, west) {
+    earthquakes.clearLayers();
+
     $.ajax({
         url: 'php/earthquakes.php?north=' + north + "&south=" + south + "&east=" + east + "&west=" + west,
         type: 'GET',
@@ -466,3 +469,19 @@ function earthquake(north, east, south, west) {
         }
     })
 };
+
+function population(iso_a2) {
+    $.ajax({
+        url: "php/RESTCountries.php?isoa2=" + iso_a2,
+        type: "GET",
+        success: function(response) {
+            const resp = JSON.parse(response);
+            console.log(resp);
+            $.each(resp[0].languages, function (key, value) {
+                $("#langs").append("<span>" + JSON.stringify(value).replace(/"/g,"") + ", " + "</span>");
+            });
+            $("#population").html(numeral(resp[0].population).format('0,0'));
+            $("#demonyms").html(resp[0].demonyms.eng.m);
+        }
+    })
+}
