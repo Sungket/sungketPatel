@@ -11,9 +11,6 @@ $(window).on('load', function() {
 let border;
 
 
-
-
-
 // set up tile layers for map
 var streets = L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
@@ -30,7 +27,6 @@ var streets = L.tileLayer(
         "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
     }
   );
-
 
 
 //set marker icons and layers
@@ -64,6 +60,16 @@ let cityMarker = L.ExtraMarkers.icon({
     prefix: 'fa'
 });
 
+
+earthquakes = L.markerClusterGroup();
+
+let eqMarker = L.ExtraMarkers.icon({
+    icon: 'fas fa-bullseye',
+    markerColor: 'yellow',
+    shape: 'circle',
+    prefix: 'fa'
+});
+
   var basemaps = {
     "Streets": streets,
     "Satellite": satellite
@@ -73,11 +79,11 @@ let cityMarker = L.ExtraMarkers.icon({
     "Airports": airports,
     "Universities" : universities,
     "Capital Cities": capitalCities,
-    // "Earthquakes": earthquakesList,
+    "Earthquakes": earthquakes,
   };
   
   let map = L.map("map", {
-    layers: [streets, airports, universities, capitalCities, /*earthquakesList*/]
+    layers: [streets, airports, universities, capitalCities, earthquakes]
   }).setView([54.5, -4], 6);
   
   var layerControl = L.control.layers(basemaps, overlayMaps).addTo(map);
@@ -136,8 +142,6 @@ success: function(array){
         $(".form-select").append(element);
     });
 }});
-
-
 
 
 //below code asks asks browser for location, then sets map with the coords. If location turned off, it pulls details of first country in dropdown list.
@@ -223,13 +227,18 @@ function selectedCountry(value) {
         success: function(result){
             xmlDoc = new DOMParser().parseFromString(result, "text/xml");
             const geonames = xmlDoc.querySelectorAll("geoname");
-            for (let i = 0; i < 50; i++){
-                const name = geonames[i].querySelector("name").textContent;
-                const lat = geonames[i].querySelector("lat").textContent;
-                const long = geonames[i].querySelector("lng").textContent;
-                let marker = L.marker([lat, long], {icon: airportMarker}).bindPopup(name);
-                airports.addLayer(marker);
+            try{
+                for (let i = 0; i < 50; i++){
+                    const name = geonames[i].querySelector("name").textContent;
+                    const lat = geonames[i].querySelector("lat").textContent;
+                    const long = geonames[i].querySelector("lng").textContent;
+                    let marker = L.marker([lat, long], {icon: airportMarker}).bindPopup(name);
+                    airports.addLayer(marker);
+                }
+            } catch {
+                console.log('exhausted airport data');
             }
+
         }
     });
 
@@ -239,13 +248,18 @@ function selectedCountry(value) {
         success: function(result){
             xmlDoc = new DOMParser().parseFromString(result, "text/xml");
             const geonames = xmlDoc.querySelectorAll("geoname");
-            for (let i = 0; i < 50; i++) {
-                const name = geonames[i].querySelector("name").textContent;
-                const lat = geonames[i].querySelector("lat").textContent;
-                const long = geonames[i].querySelector("lng").textContent;
-                let marker = L.marker([lat, long], {icon: universityMarker}).bindPopup(name);
-                universities.addLayer(marker);
+            try{
+                for (let i = 0; i < 50; i++) {
+                    const name = geonames[i].querySelector("name").textContent;
+                    const lat = geonames[i].querySelector("lat").textContent;
+                    const long = geonames[i].querySelector("lng").textContent;
+                    let marker = L.marker([lat, long], {icon: universityMarker}).bindPopup(name);
+                    universities.addLayer(marker);
+                }
+            } catch {
+                console.log('exhausted university data');
             }
+
         }
     });
 
@@ -255,8 +269,13 @@ function selectedCountry(value) {
         success: function(result){
             xmlDoc = new DOMParser().parseFromString(result, "text/xml");
             const info = xmlDoc.querySelectorAll("country");
+            console.log(info);
             const countryAlias = info[0].querySelector("countryName").textContent;
             const capitalCity = info[0].querySelector("capital").textContent;
+            north = info[0].querySelector("north").textContent;
+            east = info[0].querySelector("east").textContent;
+            south = info[0].querySelector("south").textContent;
+            west = info[0].querySelector("west").textContent;
 
             //populate quick facts modal as it uses the same API
             $("#countryName").html(countryAlias);
@@ -270,6 +289,7 @@ function selectedCountry(value) {
 
             fetchInformation(countryAlias);
             cityWeather(capitalCity);
+            earthquake(north, east, south, west);
         }
     })
 };
@@ -290,9 +310,10 @@ function fetchInformation(info) {
             currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
             currency(currencyName);
             news(iso_a2, info);
+            wikipedia(info);
         }
     });
-    wikipedia(info);
+
 };
 
 
@@ -323,7 +344,7 @@ function cityWeather(city) {
             $('#fc3ConditionIcon').attr("src", response.forecast.forecastday[2].day.condition.icon);
             $('#fc3Day').html(response.forecast.forecastday[2].date);
         }
-        catch(err) {
+        catch {
             $("#weatherModal").modal("hide");
             alert('No weather data available from API in this area.')
         }
@@ -425,4 +446,23 @@ function news(isoa2, countryname) {
             }
         }
     });
+};
+
+function earthquake(north, east, south, west) {
+    $.ajax({
+        url: 'php/earthquakes.php?north=' + north + "&south=" + south + "&east=" + east + "&west=" + west,
+        type: 'GET',
+        success: function(response) {
+            const resp = JSON.parse(response);
+            for (let i = 0; i < resp.earthquakes.length; i++){
+                const date = resp.earthquakes[i].datetime;
+                const depth = resp.earthquakes[i].depth;
+                const magnitude = resp.earthquakes[i].magnitude;
+                const lat = resp.earthquakes[i].lat;
+                const long = resp.earthquakes[i].lng;
+                let marker = L.marker([lat, long], {icon: eqMarker}).bindPopup("<h5>Earthquake</h5>" + "<br><b>Date and time: </b>" + date + "<br><b>Depth: </b>" + depth + "<br><b>Magnitude: </b>" + magnitude);
+                earthquakes.addLayer(marker);
+            }
+        }
+    })
 };
