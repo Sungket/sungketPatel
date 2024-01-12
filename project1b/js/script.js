@@ -255,7 +255,6 @@ function selectedCountry(value) {
         success: function(result){
             xmlDoc = new DOMParser().parseFromString(result, "text/xml");
             const info = xmlDoc.querySelectorAll("country");
-            console.log(info);
             const countryAlias = info[0].querySelector("countryName").textContent;
             const capitalCity = info[0].querySelector("capital").textContent;
 
@@ -274,6 +273,7 @@ function selectedCountry(value) {
             cityWeather(capitalCity);
         }
     })
+    news(value);
 };
 
 
@@ -286,13 +286,9 @@ function fetchInformation(info) {
         type: 'GET',
         success: function(output) {
             const res = JSON.parse(output);
-            console.log(res);
             let currencyName = res.results[0]["annotations"]["currency"]["iso_code"];
-            console.log(currencyName);
             iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
-            console.log(iso_a2);
             currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
-            console.log(currencySymbol);
             currency(currencyName);
         }
     });
@@ -304,7 +300,6 @@ function fetchInformation(info) {
 //Weather function
 function cityWeather(city) {
     //below logs the name of the capital city which is used as the location arg into weatherAPI
-    console.log(city);
     $.ajax({
         url: "php/weatherForecast.php?city=" + city,
             type: "GET",
@@ -345,7 +340,6 @@ function currency(currencyCode) {
         type: 'GET',
         success: function(response){
             const result = JSON.parse(response);
-            console.log(result);
             const resultingCurrNumber = numeral(JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, "").replace(/([a-zA-Z])/g, "").trim()).format('0.00');
             resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
             const date = Date.today().toString("MMMM dS yyyy");
@@ -354,7 +348,6 @@ function currency(currencyCode) {
     });
 };
 function calculate() {
-    console.log(resultCurrency);
     const input = Number(document.getElementById("usd2Convert").value);
     if (isNaN(input)) {
         alert("Please enter a valid number");
@@ -368,7 +361,6 @@ function calculate() {
 
 function wikipedia(input) {
     //inputting in the country name on initial load up
-    console.log(input);
     $.ajax({
         url: "php/wikipedia.php?input=" + input,
         type: "GET",
@@ -395,6 +387,43 @@ function wikipedia(input) {
                         document.getElementById('wikilink').href = wikiString;
                     }
                 }
+            }
+        }
+    });
+};
+
+function news(isoa2) {
+    $("#newsContent").empty();
+
+    $.ajax({
+        url: "php/newsAPI.php?country=" + isoa2,
+        type: "GET",
+        success: function(result){
+            const resp = JSON.parse(result);
+            if (resp.totalResults !== 0) {
+                articles = resp.articles;
+                for (article of articles) {
+                    let str = `<table class="table table-borderless mb-0">       
+                    <tr>
+                        <td rowspan="2" width="50%">
+                        <img class="img-fluid rounded" src="https://ichef.bbci.co.uk/news/240/cpsprodpb/669D/production/_130096262_img_5432.jpg" alt="" title="">
+                        </td>
+                        <td>
+                        <a href="${article.url}" class="fw-bold fs-6 text-black" target="_blank">${article.title}</a>
+                        </td> 
+                    </tr>
+                    <tr>       
+                        <td class="align-bottom pb-0">
+                        <p class="fw-light fs-6 mb-1">${article.author}</p>
+                        </td>               
+                    </tr>
+                </table>`;
+    
+                $("#newsContent").append(str);
+            };
+            } else {
+                let str = `<p>No news available for this country</p>`
+                $("#newsContent").append(str);
             }
         }
     });
