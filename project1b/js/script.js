@@ -260,7 +260,6 @@ function selectedCountry(value) {
 
             //populate quick facts modal as it uses the same API
             $("#countryName").html(countryAlias);
-            // $("#flagImage").html("https://flagsapi.com/" + value + "/flat/64.png");
             $("#flagImage").html("");
             let img = document.createElement('img');
             img.src = "https://flagsapi.com/" + value + "/flat/64.png";
@@ -273,7 +272,6 @@ function selectedCountry(value) {
             cityWeather(capitalCity);
         }
     })
-    news(value);
 };
 
 
@@ -286,10 +284,12 @@ function fetchInformation(info) {
         type: 'GET',
         success: function(output) {
             const res = JSON.parse(output);
+            console.log(res);
             let currencyName = res.results[0]["annotations"]["currency"]["iso_code"];
             iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
             currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
             currency(currencyName);
+            news(iso_a2, info);
         }
     });
     wikipedia(info);
@@ -299,7 +299,7 @@ function fetchInformation(info) {
 
 //Weather function
 function cityWeather(city) {
-    //below logs the name of the capital city which is used as the location arg into weatherAPI
+    //below logs the name of the capital city which is used as the location arg into weather API
     $.ajax({
         url: "php/weatherForecast.php?city=" + city,
             type: "GET",
@@ -392,23 +392,21 @@ function wikipedia(input) {
     });
 };
 
-function news(isoa2) {
+function news(isoa2, countryname) {
     $("#newsContent").empty();
 
     $.ajax({
         url: "php/newsAPI.php?country=" + isoa2,
         type: "GET",
         success: function(result){
+            $("#newsLocation").html(countryname);
             const resp = JSON.parse(result);
             if (resp.totalResults !== 0) {
                 articles = resp.articles;
                 for (article of articles) {
                     let str = `<table class="table table-borderless mb-0">       
                     <tr>
-                        <td rowspan="2" width="50%">
-                        <img class="img-fluid rounded" src="https://ichef.bbci.co.uk/news/240/cpsprodpb/669D/production/_130096262_img_5432.jpg" alt="" title="">
-                        </td>
-                        <td>
+                        <td colspan="2">
                         <a href="${article.url}" class="fw-bold fs-6 text-black" target="_blank">${article.title}</a>
                         </td> 
                     </tr>
