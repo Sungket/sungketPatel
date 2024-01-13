@@ -9,7 +9,7 @@ $(window).on('load', function() {
 
 //global variables
 let border;
-
+let firstCountry;
 
 // set up tile layers for map
 var streets = L.tileLayer(
@@ -141,13 +141,15 @@ success: function(array){
     tempArray.forEach(element => {
         $(".form-select").append(element);
     });
+    firstCountry = tempArray[0].attributes.value.value;
 }});
 
 
 //below code asks asks browser for location, then sets map with the coords. If location turned off, it pulls details of first country in dropdown list.
 if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition, defaultPosition);
-    } else {
+    navigator.geolocation.getCurrentPosition(showPosition, window.onload = defaultPosition);
+    } 
+    else {
         defaultPosition();
     }
 
@@ -156,30 +158,22 @@ if(navigator.geolocation) {
         longitude = position.coords.longitude;
 
         //using openCageData to retrieve the iso_a2 of the current location of the browser, then pass into selectedCountry
-        // $.ajax({
-        //     url: 'php/openCageData.php?lat=' + latitude + "&lng=" + longitude,
-        //     type: 'GET',
-        //     success: function(output) {
-        //         const res = JSON.parse(output);
-        //         // console.log(res);
-        //         // let currencyName = res.results[0]["annotations"]["currency"]["iso_code"];
-        //         // console.log(currencyName);
-        //         // iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
-        //         // console.log(iso_a2);
-        //         // currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
-        //         // console.log(currencySymbol);
-        //     }
-        // });
+        $.ajax({
+            url: 'php/openCageDataLatLng.php?lat=' + latitude + "&lng=" + longitude,
+            type: 'GET',
+            success: function(output) {
+                const res = JSON.parse(output);
+                iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
+                selectedCountry(iso_a2);
+                // currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
+                // console.log(currencySymbol);
+            }
+        });
     };
     
     function defaultPosition() {
-        alert("Geolocation blocked by browser.");
-        fetchBoundingBox(0)
-    }
-
-
-
-
+        selectedCountry(firstCountry);
+    };
 
 
 // iso_a2 is passed in as value argument
@@ -303,7 +297,6 @@ function fetchInformation(info) {
         type: 'GET',
         success: function(output) {
             const res = JSON.parse(output);
-            console.log(res);
             let currencyName = res.results[0]["annotations"]["currency"]["iso_code"];
             iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
             currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
@@ -317,7 +310,6 @@ function fetchInformation(info) {
 };
 
 
-
 //Weather function
 function cityWeather(city) {
     //below logs the name of the capital city which is used as the location arg into weather API
@@ -326,7 +318,6 @@ function cityWeather(city) {
             type: "GET",
             success: function(result){
             const response = JSON.parse(result);
-            console.log(response);
 
         try {
             $('#lastUpdated').html((response.current.last_updated).replace(/"/g, ""));
@@ -390,7 +381,6 @@ function wikipedia(input) {
         url: "php/wikipedia.php?input=" + input,
         type: "GET",
         success: function(response){
-            console.log(response);
             // const data = JSON.parse(response);
             // console.log(data);
             const xmlDoc = new DOMParser().parseFromString(response, "text/xml")
@@ -482,7 +472,6 @@ function population(iso_a2) {
         type: "GET",
         success: function(response) {
             const resp = JSON.parse(response);
-            console.log(resp);
             $.each(resp[0].languages, function (key, value) {
                 $("#langs").append("<span>" + JSON.stringify(value).replace(/"/g,"") + ", " + "</span>");
             });
