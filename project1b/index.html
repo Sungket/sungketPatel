@@ -44,12 +44,11 @@
                     <table class="table">
                         <tbody>
                             <tr>
-                                <td>Country</td>
-                                <td id="countryName"></td>
+                                <td id="flagImage" colspan="2" class="text-center"></td>
                             </tr>
                             <tr>
-                                <td>Flag</td>
-                                <td id="flagImage"></td>
+                                <td>Country</td>
+                                <td id="countryName"></td>
                             </tr>
                             <tr>
                                 <td>Capital City</td>
@@ -73,55 +72,95 @@
         </div> <!--End modal dialog-->
     </div> <!-- End modal-->  
 
-    <!--Weather modal-->
-    <div class="modal fade" id="weatherModal" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-        <div class="modal-content shadow">
-            <!--Modal header-->
-            <div class="modal-header bg-primary bg-gradient text-center text-white">
-                <h5 class="modal-title" id="weatherModalLabel">Today's Forecast</h5>
+
+    <div id="weatherModal" class="modal fade" tabindex="-1" data-backdrop="false" data-keyboard="false" aria-labelledby="weatherModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content shadow">    
+            <!--Modal Header  -->
+            <div class="modal-header bg-primary bg-gradient text-white">
+              <h5 class="modal-title" id="weatherModalLabel">Weather in</h5>
+              <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <!-- Modal Body -->
             <div class="modal-body">
-
-                <!-- <div id="pre-load"></div> -->
-
-                <div class="row">
-
-                    <div class="col border m-2">
-          
-                      <p class="fw-bold fs-5 mt-1">TODAY</p>
+              <!-- <div id="pre-load"></div> -->
+              <div class="row">
+                <div class="col border m-2">
+      
+                  <p class="fw-bold fs-5 mt-1">TODAY</p>
+                  
+                  <div class="row">
+                    <div class="col text-center m-3">
                       
-                      <div class="row">
+                      <p id="currentCondition" class="fw-bold fs-6"></p>
                         
-                        <div class="col text-center m-3">
-                          
-                            <p id="todayHigh" class="fw-bold fs-6">todayHighTemp</p>
-                            <p id="currentCondition" class="fw-bold fs-6">currentConditions</p>
-                            <img src="" id="conditionIcon" class="fw-bold fs-6"/>
-                            <p id="fc1Low" class="fw-bold fs-6">fc1LowTemp</p>
+                    </div>
+                    <div class="col text-center">
+                      
+                      <img id="conditionIcon" class="img-fluid mt-0" src="" alt="" title="">
+                        
+                    </div>              
+                    <div class="col text-center">
+                      
+                      <p class="fw-bold fs-4 mb-0"><span id="todayHigh">3</span><sup>o</sup><span class="tempMetric">c</span></p>
+                      <p class="fs-5 mt-0 text-secondary"><span id="fc1Low">-2</span><sup>o</sup><span class="tempMetric">c</span></p>
+                        
+                    </div>              
+                  </div>
+                </div>   
+              </div>
+      
+              <div class="row">
+                <div class="col border m-2">
+                  <div class="row">
+                    <div class="col text-center">
+      
+                      <p id="fc2Day" class="fw-bold fs-6 mt-3"></p>
+                    </div>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col text-center">
+                      
+                      <p class="fw-bold fs-4 mb-0"><span id="fc2High"></span><sup>o</sup>c</p>
+                      <p class="fs-5 mt-0 text-secondary"><span id="fc2Low"></span><sup>o</sup>c</p>
+                      
+                    </div>
+                    <div class="col text-center">
+                      <img id="fc2ConditionIcon" src="" alt="" title="">
+                    </div>    
+                  </div>
+                </div>   
 
-                            <p id="fc2High" class="fw-bold fs-6">fc2HighTemp</p>
-                            <img id="fc2ConditionIcon" class="fw-bold fs-6"/>
-                            <p id="fc2Day" class="fw-bold fs-6">fc2Day</p>
-
-                            <p id="fc3High" class="fw-bold fs-6">fc3HighTemp</p>
-                            <img id="fc3ConditionIcon" class="fw-bold fs-6"/>
-                            <p id="fc3Day" class="fw-bold fs-6">fc3Day</p>
-                        </div>
-                      </div>
-                    </div>   
-                </div>
+                <div class="col border m-2">
+      
+                  <div class="row">
+                    <div class="col text-center">
+                      <p id="fc3Day" class="fw-bold fs-6 mt-3"></p>
+                    </div>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col text-center">
+                      
+                      <p class="fw-bold fs-4 mb-0"><span id="fc3High"></span><sup>o</sup>c</p>
+                      <p class="fs-5 mt-0 text-secondary"><span id="fc3Low"></span><sup>o</sup>c</p>
+                      
+                    </div>
+                    <div class="col text-center">
+                      <img id="fc3ConditionIcon" src="" alt="" title="">
+                    </div>    
+                  </div>
+                </div>         
+             </div>   
             </div>
-            <!--Modal footer-->
             <div class="modal-footer">
-                <p id="fc1Day" class="fw-bold fs-6">fc1Day</p>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+              <p class="fs-6 fw-light">Last updated <span id="lastUpdated"></span>. Powered by <a href="https://www.weatherapi.com/" target="_blank" title="Free Weather API">WeatherAPI.com</a></p>
             </div>
-        </div> <!--End modal content-->
-    </div> <!--End modal dialog-->
-    </div> <!-- End modal-->
-
+          </div>
+        </div>
+    </div>
 
     <!-- Currency Modal-->
     <div class="modal fade" id="currencyModal" role="dialog" aria-hidden="true">

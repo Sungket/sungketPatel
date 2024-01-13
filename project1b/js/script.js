@@ -326,21 +326,25 @@ function cityWeather(city) {
             type: "GET",
             success: function(result){
             const response = JSON.parse(result);
+            console.log(response);
 
         try {
-            $('#weatherModalLabel').html(response.location.name + ", " + response.location.country);
-            $('#todayHigh').html(response.current.temp_c + " <sup>o</sup>C");
+            $('#lastUpdated').html((response.current.last_updated).replace(/"/g, ""));
+            $('#weatherModalLabel').html("Weather in " + response.location.name + ", " + response.location.country);
+            $('#todayHigh').html(response.current.temp_c);
             $('#currentCondition').html(response.current.condition.text);
             $('#conditionIcon').attr("src", response.current.condition.icon);
 
-            $('#fc1Low').html(response.forecast.forecastday[0].day.mintemp_c + " <sup>o</sup>C");
+            $('#fc1Low').html(response.forecast.forecastday[0].day.mintemp_c);
             $('#fc1Day').html(response.forecast.forecastday[0].date);
 
-            $('#fc2High').html(response.forecast.forecastday[1].day.maxtemp_c + " <sup>o</sup>C");
+            $('#fc2High').html(response.forecast.forecastday[1].day.maxtemp_c);
+            $('#fc2Low').html(response.forecast.forecastday[1].day.mintemp_c);
             $('#fc2ConditionIcon').attr("src", response.forecast.forecastday[1].day.condition.icon);
             $('#fc2Day').html(response.forecast.forecastday[1].date);
 
-            $('#fc3High').html(response.forecast.forecastday[2].day.maxtemp_c + " <sup>o</sup>C");
+            $('#fc3High').html(response.forecast.forecastday[2].day.maxtemp_c);
+            $('#fc3Low').html(response.forecast.forecastday[2].day.mintemp_c);
             $('#fc3ConditionIcon').attr("src", response.forecast.forecastday[2].day.condition.icon);
             $('#fc3Day').html(response.forecast.forecastday[2].date);
         }
@@ -387,17 +391,19 @@ function wikipedia(input) {
         type: "GET",
         success: function(response){
             console.log(response);
+            // const data = JSON.parse(response);
+            // console.log(data);
             const xmlDoc = new DOMParser().parseFromString(response, "text/xml")
             const entries = xmlDoc.querySelectorAll("entry");
-            console.log(entries);
             if (typeof entries === 'undefined') {
-                document.getElementById("wikiTitle").innerHTML = "No news available in this area";
+                document.getElementById("wikiTitle").innerHTML = "No articles available for this country";
             } else {
                 for (const entry of entries) {
                     const infoType = entry.querySelector("feature").textContent;
                     const title = entry.querySelector("title").textContent;
                     const article = entry.querySelector("summary").textContent;
-                    if (infoType == "country" && title == input) {
+                    if ((infoType == "country" && title == input) || 
+                    (infoType == "country" && title.includes(input))) {
                         $(".card-title").html(title);
                         $(".card-text").html(article);
                         $(".card-img-top").html("");
