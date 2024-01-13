@@ -1,4 +1,7 @@
 <?php
+	ini_set('display_errors', 'On');
+	error_reporting(E_ALL);
+    
     $city = $_GET["city"];
 
     $url = "http://api.weatherapi.com/v1/forecast.json?key=6242e9eb22454acc88a81609232612&q=" . $city . "&days=" . 3;

@@ -1,4 +1,7 @@
 <?php
+    ini_set('display_errors', 'On');
+    error_reporting(E_ALL);
+
     $value = $_POST["value"];
 
     $jsonString = file_get_contents(__DIR__ . '/../utils/countryBorders.geo.json');
@@ -13,7 +16,6 @@
             break;
         }
     }
-    
 
     $encodedCoords = json_encode($coords);
     echo $encodedCoords;

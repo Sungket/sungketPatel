@@ -1,4 +1,7 @@
 <?php
+    ini_set('display_errors', 'On');
+    error_reporting(E_ALL);
+
     $iso = $_GET["country"];
 
     $url = "http://api.geonames.org/countryInfo?country=" . $iso . "&username=sungket";

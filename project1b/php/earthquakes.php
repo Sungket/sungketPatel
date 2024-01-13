@@ -1,4 +1,7 @@
 <?php
+    ini_set('display_errors', 'On');
+    error_reporting(E_ALL);
+
     $north = $_GET["north"];
     $south = $_GET["south"];
     $east = $_GET["east"];

@@ -1,4 +1,7 @@
 <?php
+    ini_set('display_errors', 'On');
+    error_reporting(E_ALL);
+
     $country = $_GET["country"];
 
     $url = "http://api.geonames.org/search?featureCode=PPLC&country=" . $country . "&username=sungket";

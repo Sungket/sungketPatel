@@ -1,4 +1,7 @@
 <?php
+	ini_set('display_errors', 'On');
+	error_reporting(E_ALL);
+
     $jsonString = file_get_contents(__DIR__ . '/../utils/countryBorders.geo.json');
     //change to an array below
     $jsonData = json_decode($jsonString, true);

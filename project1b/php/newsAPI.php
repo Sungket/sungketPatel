@@ -1,4 +1,7 @@
 <?php
+    ini_set('display_errors', 'On');
+    error_reporting(E_ALL);
+
     $country = $_GET["country"];
 
     $url = "https://newsapi.org/v2/top-headlines?country=" . $country . "&pageSize=10&apiKey=b9b539d3256c4a5e8f5f838814eca746";

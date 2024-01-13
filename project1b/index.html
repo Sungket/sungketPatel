@@ -38,6 +38,7 @@
                 <!-- Modal Header -->
                 <div class="modal-header bg-success bg-gradient text-white">
                     <h5 class="modal-title">Quick Facts</h5>
+                    <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <!-- Modal Body -->
                 <div class="modal-body">
@@ -175,10 +176,10 @@
                 <div class="modal-body">
                     <form>
                         <div class="form-floating mb-3">
-                            <p id="currentExchangeInfo"></p>
+                            <p class="text-center" id="currentExchangeInfo"></p>
                         </div>
-                        <div class="form-floating mb-3">
-                            <input type="number" id="usd2Convert" name="usd" placeholder="Convert from USD" min="1" step="1">
+                        <div class="form-floating mb-3 row d-flex justify-content-center">
+                            <input class="text-center inputlg" type="number" id="usd2Convert" name="usd" placeholder="Convert from USD" min="1" step="1">
                             <a class="btn btn-success btn-sm" onclick="calculate()" role="button">Calculate</a>
                         </div>
                         <div class="form-floating mb-3">
@@ -202,6 +203,7 @@
                 <!-- Modal Header -->
                 <div class="modal-header bg-success bg-gradient text-white">
                     <h5 class="modal-title">Population Facts</h5>
+                    <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <!-- Modal Body -->
                 <div class="modal-body">
