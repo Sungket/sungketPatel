@@ -210,7 +210,7 @@ function selectedCountry(value) {
             const name = geonames[0].querySelector("name").textContent;
             const lat = geonames[0].querySelector("lat").textContent;
             const long = geonames[0].querySelector("lng").textContent;
-            let marker = L.marker([lat, long], {icon: cityMarker}).bindPopup(name);
+            let marker = L.marker([lat, long], {icon: cityMarker}).bindPopup(name + cityImage);
             capitalCities.addLayer(marker);
         }
     });
@@ -289,8 +289,7 @@ function selectedCountry(value) {
 
 
 function fetchInformation(info) {
-    //below logs the name of the country which is used as an arg for the openCageAPI
-    console.log(info);
+    //info arg is the name of the country which is used as an arg for the openCageAPI
     //using openCageData to retrieve other data about the location
     $.ajax({
         url: 'php/openCageData.php?countrycode=' + info,
@@ -310,7 +309,7 @@ function fetchInformation(info) {
 };
 
 
-//Weather function
+//Weather function for the capital city of the country
 function cityWeather(city) {
     //below logs the name of the capital city which is used as the location arg into weather API
     $.ajax({
@@ -374,15 +373,32 @@ function calculate() {
     }
 };
 
-
+//wikipedia function takes in the name of the country as arg
 function wikipedia(input) {
+    let image1;
+    let image2;
+    let image3;
+
     //inputting in the country name on initial load up
+    $.ajax({
+        url: "php/unsplashPhotos.php?loc=" + input,
+        type: "GET",
+        async: false,
+        success: function(response) {
+            const output = JSON.parse(response);
+            console.log(output);
+            image1 = output.results[0].urls.thumb;
+            image2 = output.results[1].urls.thumb;
+            image3 = output.results[2].urls.thumb;
+        }
+    })
+
     $.ajax({
         url: "php/wikipedia.php?input=" + input,
         type: "GET",
+        async: false,
         success: function(response){
-            // const data = JSON.parse(response);
-            // console.log(data);
+            photos(input);
             const xmlDoc = new DOMParser().parseFromString(response, "text/xml")
             const entries = xmlDoc.querySelectorAll("entry");
             if (typeof entries === 'undefined') {
@@ -399,7 +415,9 @@ function wikipedia(input) {
                         $(".card-img-top").html("");
                         let imgString = entry.querySelector("thumbnailImg").textContent;
                         imgString = imgString.replace("</thumbnailImg>", "");
-                        document.getElementById('cardImage').src = imgString;
+                        document.getElementById('image1').src = image1;
+                        document.getElementById('image2').src = image2;
+                        document.getElementById('image3').src = image3;
                         let wikiString = entry.querySelector("wikipediaUrl").textContent;
                         wikiString = wikiString.replace("</wikipediaUrl>", "");
                         document.getElementById('wikilink').href = wikiString;

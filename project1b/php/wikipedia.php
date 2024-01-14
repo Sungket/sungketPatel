@@ -6,9 +6,6 @@
 
     $url = "http://api.geonames.org/wikipediaSearch?q=" . $input . "&maxRows=10&username=sungket";
 
-    // $url = "https://en.wikipedia.org/w/api.php?action=opensearch&prop=extracts&exintro&explaintext&format=xml&namespace=0&search=" . $input
-    //     . "&limit=5";
-
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_HTTPGET, true);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
