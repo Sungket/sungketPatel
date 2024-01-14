@@ -386,7 +386,6 @@ function wikipedia(input) {
         async: false,
         success: function(response) {
             const output = JSON.parse(response);
-            console.log(output);
             image1 = output.results[0].urls.thumb;
             image2 = output.results[1].urls.thumb;
             image3 = output.results[2].urls.thumb;
