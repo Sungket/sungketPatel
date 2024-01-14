@@ -210,7 +210,7 @@ function selectedCountry(value) {
             const name = geonames[0].querySelector("name").textContent;
             const lat = geonames[0].querySelector("lat").textContent;
             const long = geonames[0].querySelector("lng").textContent;
-            let marker = L.marker([lat, long], {icon: cityMarker}).bindPopup(name + cityImage);
+            let marker = L.marker([lat, long], {icon: cityMarker}).bindPopup(name);
             capitalCities.addLayer(marker);
         }
     });
@@ -398,7 +398,6 @@ function wikipedia(input) {
         type: "GET",
         async: false,
         success: function(response){
-            photos(input);
             const xmlDoc = new DOMParser().parseFromString(response, "text/xml")
             const entries = xmlDoc.querySelectorAll("entry");
             if (typeof entries === 'undefined') {
