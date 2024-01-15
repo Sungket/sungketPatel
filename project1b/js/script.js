@@ -163,7 +163,6 @@ if(navigator.geolocation) {
             type: 'GET',
             success: function(output) {
                 const res = JSON.parse(output);
-                console.log(res);
                 iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
                 dropdownCountryOnStartup = res.results[0]["components"]["country"];
                 console.log(dropdownCountryOnStartup);
@@ -356,23 +355,26 @@ function currency(currencyCode) {
         url: "php/exchangeRate.php?app_id=44a738b0aab34f73906f57e69037439a&symbols=" + currencyCode,
         type: 'GET',
         success: function(response){
+            $("#usd2Convert").val("");
+            $('#resultAmount').val("");
             const result = JSON.parse(response);
             const resultingCurrNumber = numeral(JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, "").replace(/([a-zA-Z])/g, "").trim()).format('0.00');
             resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
             const date = Date.today().toString("MMMM dS yyyy");
             $("#currentExchangeInfo").html(`As of ${date}, 1 USD equals ${resultingCurrNumber} ${currencyCode}`);
+            $("#usd2Convert").on('keyup', function() {
+                const input = Number(document.getElementById("usd2Convert").value);
+                //bring in the value of the exchange rate
+                let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
+                $("#resultAmount").val(numeral(input * numberCurr).format('0.00'));
+            });
+            $("#usd2Convert").on('change', function() {
+                const input = Number(document.getElementById("usd2Convert").value);
+                let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
+                $("#resultAmount").val(numeral(input * numberCurr).format('0.00'));
+            });
         }
     });
-};
-function calculate() {
-    const input = Number(document.getElementById("usd2Convert").value);
-    if (isNaN(input)) {
-        alert("Please enter a valid number");
-    } else {
-        //bring in the value of the exchange rate
-        let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
-        $("#resultAmount").val(numeral(input * numberCurr).format('0.00'));
-    }
 };
 
 //wikipedia function takes in the name of the country as arg
