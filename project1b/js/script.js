@@ -179,9 +179,6 @@ if(navigator.geolocation) {
 
 // iso_a2 is passed in as value argument
 function selectedCountry(value) {
-    //below logs the country ISO A2 designation
-    console.log(value);
-
     if (border) {
         map.removeLayer(border);
     };
