@@ -348,7 +348,7 @@ function cityWeather(city) {
 }
 
 
-//currency converter functions
+//currency converter function
 let resultCurrency;
 function currency(currencyCode) {
     $.ajax({
@@ -362,15 +362,13 @@ function currency(currencyCode) {
             resultCurrency = JSON.stringify(result.rates).replace(/{/,"").replace(/}/,"").replace(/"+/g,"").replace(/:/, " : ");
             const date = Date.today().toString("MMMM dS yyyy");
             $("#currentExchangeInfo").html(`As of ${date}, 1 USD equals ${resultingCurrNumber} ${currencyCode}`);
+            let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
             $("#usd2Convert").on('keyup', function() {
                 const input = Number(document.getElementById("usd2Convert").value);
-                //bring in the value of the exchange rate
-                let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
                 $("#resultAmount").val(numeral(input * numberCurr).format('0.00'));
             });
             $("#usd2Convert").on('change', function() {
                 const input = Number(document.getElementById("usd2Convert").value);
-                let numberCurr = Number(resultCurrency.replace(/([a-zA-Z])/g, "").replace(/:/, "").trim());
                 $("#resultAmount").val(numeral(input * numberCurr).format('0.00'));
             });
         }
