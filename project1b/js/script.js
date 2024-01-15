@@ -163,10 +163,12 @@ if(navigator.geolocation) {
             type: 'GET',
             success: function(output) {
                 const res = JSON.parse(output);
+                console.log(res);
                 iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
+                dropdownCountryOnStartup = res.results[0]["components"]["country"];
+                console.log(dropdownCountryOnStartup);
                 selectedCountry(iso_a2);
-                // currencySymbol = res.results[0]["annotations"]["currency"]["symbol"];
-                // console.log(currencySymbol);
+                document.getElementById("countrySelect").value = iso_a2;
             }
         });
     };
