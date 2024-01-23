@@ -165,7 +165,6 @@ if(navigator.geolocation) {
                 const res = JSON.parse(output);
                 iso_a2 = res.results[0]["components"]["ISO_3166-1_alpha-2"];
                 dropdownCountryOnStartup = res.results[0]["components"]["country"];
-                console.log(dropdownCountryOnStartup);
                 selectedCountry(iso_a2);
                 document.getElementById("countrySelect").value = iso_a2;
             }
@@ -315,7 +314,6 @@ function cityWeather(city) {
             type: "GET",
             success: function(result){
             const response = JSON.parse(result);
-
         try {
             $('#lastUpdated').html((response.current.last_updated).replace(/"/g, ""));
             $('#weatherModalLabel').html("Weather in " + response.location.name + ", " + response.location.country);
@@ -323,16 +321,16 @@ function cityWeather(city) {
             $('#currentCondition').html(response.current.condition.text);
             $('#conditionIcon').attr("src", response.current.condition.icon);
 
-            $('#fc1Low').html(response.forecast.forecastday[0].day.mintemp_c);
+            $('#fc1Low').html(Math.round(response.forecast.forecastday[0].day.mintemp_c));
             $('#fc1Day').html(response.forecast.forecastday[0].date);
 
-            $('#fc2High').html(response.forecast.forecastday[1].day.maxtemp_c);
-            $('#fc2Low').html(response.forecast.forecastday[1].day.mintemp_c);
+            $('#fc2High').html(Math.round(response.forecast.forecastday[1].day.maxtemp_c));
+            $('#fc2Low').html(Math.round(response.forecast.forecastday[1].day.mintemp_c));
             $('#fc2ConditionIcon').attr("src", response.forecast.forecastday[1].day.condition.icon);
             $('#fc2Day').html(response.forecast.forecastday[1].date);
 
-            $('#fc3High').html(response.forecast.forecastday[2].day.maxtemp_c);
-            $('#fc3Low').html(response.forecast.forecastday[2].day.mintemp_c);
+            $('#fc3High').html(Math.round(response.forecast.forecastday[2].day.maxtemp_c));
+            $('#fc3Low').html(Math.round(response.forecast.forecastday[2].day.mintemp_c));
             $('#fc3ConditionIcon').attr("src", response.forecast.forecastday[2].day.condition.icon);
             $('#fc3Day').html(response.forecast.forecastday[2].date);
         }
