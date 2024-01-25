@@ -1,20 +1,33 @@
+const { clippingParents } = require("@popperjs/core");
+
+console.log('reading script...')
+
 $("#searchInp").on("keyup", function () {
   
   // your code
   
 });
 
-$("#refreshBtn").click(function () {
+$("#refreshBtn").on("click", function () {
   
   if ($("#personnelBtn").hasClass("active")) {
-    
+    console.log('personnel btn pressed');
     // Refresh personnel table
+    // AJAX call to search all personnel
     
   } else {
     
     if ($("#departmentsBtn").hasClass("active")) {
-      
+      console.log('btn pressed');
       // Refresh department table
+      // AJAX call to getAllDepartments.php
+      $.ajax({
+        url: "php/getAllDepartments.php",
+        type: 'GET',
+        success: function (result) {
+          console.log(result);
+        }
+      })
       
     } else {
       
@@ -57,10 +70,10 @@ $("#locationsBtn").click(function () {
 });
 
 $("#editPersonnelModal").on("show.bs.modal", function (e) {
-  
+  console.log('edit personnel btn pressed');
   $.ajax({
     url:
-      "https://coding.itcareerswitch.co.uk/companydirectory/libs/php/getPersonnelByID.php",
+      "php/getPersonnelByID.php",
     type: "POST",
     dataType: "json",
     data: {
