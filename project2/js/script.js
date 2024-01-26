@@ -28,17 +28,35 @@ $("#refreshBtn").on("click", function () {
 
           for (let i = 0; i < result.data.length; i++){
             let tableRef = document.getElementById('departmentsTable');
-            let newRow = tableRef.insertRow(-1);
-            let deptCell = newRow.insertCell(0);
+            let row = tableRef.insertRow(-1);
+            let deptCell = row.insertCell(0);
+            deptCell.className = 'align-middle text-nowrap';
             let deptText = document.createTextNode(result.data[i].name);
             deptCell.appendChild(deptText);
             result.location.forEach(element => {
               if (element.id === result.data[i].locationID) {
-                let locationCell = newRow.insertCell(1);
+                let locationCell = row.insertCell(1);
+                locationCell.className = 'aalign-middle text-nowrap d-none d-md-table-cell';
                 let locationText = document.createTextNode(element.name);
                 locationCell.appendChild(locationText);
               };             
             });
+            let btnCell = row.insertCell(2);
+            btnCell.className = "align-middle text-end text-nowrap";
+            let btn = document.createElement("button");
+            btn.type = 'button';
+            btn.className = 'btn btn-primary btn-sm mx-1';
+            btn.setAttribute('data-bs-toggle', "modal");
+            btn.setAttribute("data-bs-target", "#deleteDepartmentModal");
+            btn.setAttribute("data-id", "1");
+            btn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>'
+            let btn2 = document.createElement("button");
+            btn2.type = 'button';
+            btn2.className = 'btn btn-primary btn-sm deleteDepartmentBtn';
+            btn2.setAttribute("data-id", "1");
+            btn2.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
+            btnCell.appendChild(btn);
+            btnCell.appendChild(btn2);
           };
         }
       });
