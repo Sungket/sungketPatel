@@ -32,7 +32,7 @@
 
 	}	
 
-	// SQL does not accept parameters and so is not prepared
+	// First query. SQL does not accept parameters and so is not prepared
 
 	$query = 'SELECT id, name, locationID FROM department';
 
@@ -61,11 +61,40 @@
 
 	}
 
+	// Second query. SQL does not accept parameters and so is not prepared
+
+	$query = 'SELECT id, name FROM location';
+
+	$result2 = $conn->query($query); //performs query against the database
+
+	if (!$result2) {
+
+		$output['status']['code'] = "400";
+		$output['status']['name'] = "executed";
+		$output['status']['description'] = "query failed";	
+		$output['data'] = [];
+
+		mysqli_close($conn);
+
+		echo json_encode($output); 
+
+		exit;
+	}
+
+	$location = [];
+
+	while ($row = mysqli_fetch_assoc($result2)) {
+
+		array_push($location, $row);
+
+	}
+
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
 	$output['data'] = $data;
+	$output['location'] = $location;
 	
 	mysqli_close($conn);
 

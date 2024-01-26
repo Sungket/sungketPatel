@@ -23,42 +23,25 @@ $("#refreshBtn").on("click", function () {
         url: "php/getAllDepartments.php",
         type: 'GET',
         success: function (result) {
-          // result is coming back as an array, not JSON. No need to parse
           console.log(result.data[0]);
           console.log(result);
 
           for (let i = 0; i < result.data.length; i++){
             let tableRef = document.getElementById('departmentsTable');
             let newRow = tableRef.insertRow(-1);
-            let newCell = newRow.insertCell(0);
-            let newText = document.createTextNode(
-              `<td class="align-middle text-nowrap">${result.data[i].name}</td><td class="align-middle text-nowrap d-none d-md-table-cell">${result.data[i].locationID}
-              </td><td class="align-middle text-end text-nowrap">
-              <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" data-id="1">
-              <i class="fa-solid fa-pencil fa-fw"></i></button>
-              <button type="button" class="btn btn-primary btn-sm deleteDepartmentBtn" data-id="1">
-              <i class="fa-solid fa-trash fa-fw"></i>
-            </button>
-          </td>`
-            );
-            newCell.appendChild(newText);
+            let deptCell = newRow.insertCell(0);
+            let deptText = document.createTextNode(result.data[i].name);
+            deptCell.appendChild(deptText);
+            result.location.forEach(element => {
+              if (element.id === result.data[i].locationID) {
+                let locationCell = newRow.insertCell(1);
+                let locationText = document.createTextNode(element.name);
+                locationCell.appendChild(locationText);
+              };             
+            });
           };
-
-          // for (let i = 0; i < result.data.length; i++){
-          //   const row = document.createElement('tr');
-          //   row.innerHTML = `<td class="align-middle text-nowrap">${result.data[i].name}</td><td class="align-middle text-nowrap d-none d-md-table-cell">${result.data[i].locationID}
-          //   </td>            <td class="align-middle text-end text-nowrap">
-          //   <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" data-id="1">
-          //     <i class="fa-solid fa-pencil fa-fw"></i>
-          //   </button>
-          //   <button type="button" class="btn btn-primary btn-sm deleteDepartmentBtn" data-id="1">
-          //     <i class="fa-solid fa-trash fa-fw"></i>
-          //   </button>
-          // </td>`;
-          // };
         }
-      })
-      
+      });
     } else {
       
       // Refresh location table
@@ -111,6 +94,8 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
     },
     success: function (result) {
       var resultCode = result.status.code;
+      
+      console.log(result);
 
       if (resultCode == 200) {
         // Update the hidden input with the employee id so that
