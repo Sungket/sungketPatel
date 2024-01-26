@@ -1,7 +1,5 @@
 // const { clippingParents } = require("@popperjs/core");
 
-console.log('reading script...')
-
 $("#searchInp").on("keyup", function () {
   
   // your code
@@ -25,7 +23,39 @@ $("#refreshBtn").on("click", function () {
         url: "php/getAllDepartments.php",
         type: 'GET',
         success: function (result) {
+          // result is coming back as an array, not JSON. No need to parse
+          console.log(result.data[0]);
           console.log(result);
+
+          for (let i = 0; i < result.data.length; i++){
+            let tableRef = document.getElementById('departmentsTable');
+            let newRow = tableRef.insertRow(-1);
+            let newCell = newRow.insertCell(0);
+            let newText = document.createTextNode(
+              `<td class="align-middle text-nowrap">${result.data[i].name}</td><td class="align-middle text-nowrap d-none d-md-table-cell">${result.data[i].locationID}
+              </td><td class="align-middle text-end text-nowrap">
+              <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" data-id="1">
+              <i class="fa-solid fa-pencil fa-fw"></i></button>
+              <button type="button" class="btn btn-primary btn-sm deleteDepartmentBtn" data-id="1">
+              <i class="fa-solid fa-trash fa-fw"></i>
+            </button>
+          </td>`
+            );
+            newCell.appendChild(newText);
+          };
+
+          // for (let i = 0; i < result.data.length; i++){
+          //   const row = document.createElement('tr');
+          //   row.innerHTML = `<td class="align-middle text-nowrap">${result.data[i].name}</td><td class="align-middle text-nowrap d-none d-md-table-cell">${result.data[i].locationID}
+          //   </td>            <td class="align-middle text-end text-nowrap">
+          //   <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" data-id="1">
+          //     <i class="fa-solid fa-pencil fa-fw"></i>
+          //   </button>
+          //   <button type="button" class="btn btn-primary btn-sm deleteDepartmentBtn" data-id="1">
+          //     <i class="fa-solid fa-trash fa-fw"></i>
+          //   </button>
+          // </td>`;
+          // };
         }
       })
       
