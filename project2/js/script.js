@@ -12,19 +12,47 @@ $("#refreshBtn").on("click", function () {
     console.log('personnel btn pressed');
     // Refresh personnel table
     // AJAX call to search all personnel
+    $.ajax({
+      url: "php/getAll.php",
+      type: "GET",
+      success: function (result) {
+        console.log(result);
+        for (let i = 0; i < result.data.length; i++){
+          let tableRef = document.getElementById('personnelTable');
+          let row = tableRef.insertRow(-1);
+          let nameCell = row.insertCell(0);
+          nameCell.className = 'align-middle text-nowrap';
+          let nameText = document.createTextNode(result.data[i].lastName + ", " + result.data[i].firstName);
+          nameCell.appendChild(nameText);
+          let jobCell = row.insertCell(1);
+          jobCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+          let jobText = document.createTextNode(result.data[i].jobTitle);
+          jobCell.appendChild(jobText);
+          let departmentCell = row.insertCell(2);
+          departmentCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+          let departmentText = document.createTextNode(result.data[i].department);
+          departmentCell.appendChild(departmentText);
+          let locationCell = row.insertCell(3);
+          locationCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+          let locationText = document.createTextNode(result.data[i].location);
+          locationCell.appendChild(locationText);
+          let emailCell = row.insertCell(4);
+          emailCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+          let emailText = document.createTextNode(result.data[i].email);
+          emailCell.appendChild(emailText);
+        }
+      }
+    });
     
   } else {
     
     if ($("#departmentsBtn").hasClass("active")) {
       console.log('btn pressed');
       // Refresh department table
-      // AJAX call to getAllDepartments.php
       $.ajax({
         url: "php/getAllDepartments.php",
         type: 'GET',
         success: function (result) {
-          console.log(result.data[0]);
-          console.log(result);
 
           for (let i = 0; i < result.data.length; i++){
             let tableRef = document.getElementById('departmentsTable');
@@ -36,7 +64,7 @@ $("#refreshBtn").on("click", function () {
             result.location.forEach(element => {
               if (element.id === result.data[i].locationID) {
                 let locationCell = row.insertCell(1);
-                locationCell.className = 'aalign-middle text-nowrap d-none d-md-table-cell';
+                locationCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
                 let locationText = document.createTextNode(element.name);
                 locationCell.appendChild(locationText);
               };             
