@@ -9,13 +9,11 @@ $("#searchInp").on("keyup", function () {
 $("#refreshBtn").on("click", function () {
   
   if ($("#personnelBtn").hasClass("active")) {
-    console.log('personnel btn pressed');
     // Refresh personnel table
     $.ajax({
       url: "php/getAll.php",
       type: "GET",
       success: function (result) {
-        console.log(result);
         for (let i = 0; i < result.data.length; i++){
           let tableRef = document.getElementById('personnelTable');
           let row = tableRef.insertRow(-1);
@@ -62,7 +60,6 @@ $("#refreshBtn").on("click", function () {
   } else {
     
     if ($("#departmentsBtn").hasClass("active")) {
-      console.log('btn pressed');
       // Refresh department table
       $.ajax({
         url: "php/getAllDepartments.php",
@@ -106,6 +103,33 @@ $("#refreshBtn").on("click", function () {
     } else {
       
       // Refresh location table
+      $.ajax({
+        url: "php/getAllLocations.php",
+        type: 'GET',
+        success: function(result) {
+          console.log(result);
+          for (let i = 0; i < result.data.length; i++) {
+            let tableRef = document.getElementById('locationsTable');
+            let row = tableRef.insertRow(-1);
+            let locNameCell = row.insertCell(0);
+            locNameCell.className = 'align-middle text-nowrap';
+            let locationText = document.createTextNode(result.data[i].name);
+            locNameCell.appendChild(locationText);
+            let btnCell = row.insertCell(1);
+            btnCell.className = "align-middle text-end text-nowrap";
+            let editButton = document.createElement("button");
+            editButton.type = 'button';
+            editButton.className = "btn btn-primary btn-sm mx-1";
+            editButton.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
+            let deleteButton = document.createElement("button");
+            deleteButton.type = 'button';
+            deleteButton.className = 'btn btn-primary btn-sm';
+            deleteButton.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
+            btnCell.appendChild(editButton);
+            btnCell.appendChild(deleteButton);
+          }
+        }
+      });
       
     }
     
