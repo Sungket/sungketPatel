@@ -11,7 +11,6 @@ $("#refreshBtn").on("click", function () {
   if ($("#personnelBtn").hasClass("active")) {
     console.log('personnel btn pressed');
     // Refresh personnel table
-    // AJAX call to search all personnel
     $.ajax({
       url: "php/getAll.php",
       type: "GET",
@@ -40,6 +39,22 @@ $("#refreshBtn").on("click", function () {
           emailCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
           let emailText = document.createTextNode(result.data[i].email);
           emailCell.appendChild(emailText);
+          let btnCell = row.insertCell(5);
+          btnCell.className = '';
+          let editBtn = document.createElement('button');
+          editBtn.type = 'button';
+          editBtn.className = 'btn btn-primary btn-sm mx-1';
+          editBtn.setAttribute('data-bs-toggle', 'modal');
+          editBtn.setAttribute('data-bs-target', '#editPersonnelModal');
+          editBtn.setAttribute('data-id', '23');
+          editBtn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
+          let deleteBtn = document.createElement('button');
+          deleteBtn.type = 'button';
+          deleteBtn.className = "btn btn-primary btn-sm deletePersonnelBtn";
+          deleteBtn.setAttribute('data-id', '23');
+          deleteBtn.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
+          btnCell.appendChild(editBtn);
+          btnCell.appendChild(deleteBtn);
         }
       }
     });
