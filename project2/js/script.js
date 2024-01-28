@@ -3,7 +3,17 @@
 $("#searchInp").on("keyup", function () {
   
   // your code
-  
+  $.ajax({
+    url: "php/SearchAll.php",
+    type: "POST",
+    data: {
+      txt : $(this).val()
+    },
+    success: function(result){
+      console.log(result);
+    }
+  })
+
 });
 
 $("#refreshBtn").on("click", function () {
@@ -107,7 +117,6 @@ $("#refreshBtn").on("click", function () {
         url: "php/getAllLocations.php",
         type: 'GET',
         success: function(result) {
-          console.log(result);
           for (let i = 0; i < result.data.length; i++) {
             let tableRef = document.getElementById('locationsTable');
             let row = tableRef.insertRow(-1);
