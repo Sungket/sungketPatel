@@ -10,7 +10,25 @@ $("#searchInp").on("keyup", function () {
       txt : $(this).val()
     },
     success: function(result){
-      console.log(result);
+      console.log(result); // the search works. Now need to display it in results.
+      let resultCode = result.status.code;
+
+      if (resultCode == 200) {
+        // for (let i = 0; i < result.data.found.length; i++) {
+        //   //refresh upon every keyup
+        //   //new table showing all results returned from php file
+        //   //dynamically create new table upon every key up regardless of what section you are in
+
+        // }
+
+        //$.each(result.data.found, function(record){
+          let tableref = document.getElementById('searchFilterTable');
+          let row = tableref.insertRow(-1);
+          let nameCell = row.insertCell(0);
+          let nameText = document.createTextNode(result.data.found[0].firstName);
+          nameCell.appendChild(nameText);
+        //})
+      }
     }
   })
 
