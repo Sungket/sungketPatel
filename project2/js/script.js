@@ -20,14 +20,53 @@ $("#searchInp").on("keyup", function () {
         //   //dynamically create new table upon every key up regardless of what section you are in
 
         // }
+        $('#personnelTable').empty();
+        $('#departmentsTable').empty();
+        $('#locationsTable').empty();
 
-        //$.each(result.data.found, function(record){
+        for (let i = 0; i < result.data.found.length; i++){
+          if (i == 0){
+            $('#searchFilterTable').empty();
+          }
           let tableref = document.getElementById('searchFilterTable');
           let row = tableref.insertRow(-1);
           let nameCell = row.insertCell(0);
-          let nameText = document.createTextNode(result.data.found[0].firstName);
+          nameCell.className = 'align-middle text-nowrap';
+          let nameText = document.createTextNode(result.data.found[i].firstName + ", " + result.data.found[i].lastName);
           nameCell.appendChild(nameText);
-        //})
+          let jobCell = row.insertCell(1);
+          jobCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+          let jobText = document.createTextNode(result.data.found[i].jobTitle);
+          jobCell.appendChild(jobText);
+          let departmentCell = row.insertCell(2);
+          departmentCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+          let departmentText = document.createTextNode(result.data.found[i].departmentName);
+          departmentCell.appendChild(departmentText);
+          let locationCell = row.insertCell(3);
+          locationCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+          let locationText = document.createTextNode(result.data.found[i].locationName);
+          locationCell.appendChild(locationText);
+          let emailCell = row.insertCell(4);
+          emailCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+          let emailText = document.createTextNode(result.data.found[i].email);
+          emailCell.appendChild(emailText);
+          let btnCell = row.insertCell(5);
+          btnCell.className = '';
+          let editBtn = document.createElement('button');
+          editBtn.type = 'button';
+          editBtn.className = 'btn btn-primary btn-sm mx-1';
+          editBtn.setAttribute('data-bs-toggle', 'modal');
+          editBtn.setAttribute('data-bs-target', '#editPersonnelModal');
+          editBtn.setAttribute('data-id', '23');
+          editBtn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
+          let deleteBtn = document.createElement('button');
+          deleteBtn.type = 'button';
+          deleteBtn.className = "btn btn-primary btn-sm deletePersonnelBtn";
+          deleteBtn.setAttribute('data-id', '23');
+          deleteBtn.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
+          btnCell.appendChild(editBtn);
+          btnCell.appendChild(deleteBtn);
+        }
       }
     }
   })
@@ -35,6 +74,10 @@ $("#searchInp").on("keyup", function () {
 });
 
 $("#refreshBtn").on("click", function () {
+  $('#personnelTable').empty();
+  $('#departmentsTable').empty();
+  $('#locationsTable').empty();
+  $('#searchFilterTable').empty();
   
   if ($("#personnelBtn").hasClass("active")) {
     // Refresh personnel table
@@ -42,6 +85,7 @@ $("#refreshBtn").on("click", function () {
       url: "php/getAll.php",
       type: "GET",
       success: function (result) {
+        $('#personnelTable').empty();
         for (let i = 0; i < result.data.length; i++){
           let tableRef = document.getElementById('personnelTable');
           let row = tableRef.insertRow(-1);
@@ -93,7 +137,7 @@ $("#refreshBtn").on("click", function () {
         url: "php/getAllDepartments.php",
         type: 'GET',
         success: function (result) {
-
+          $('#departmentsTable').empty();
           for (let i = 0; i < result.data.length; i++){
             let tableRef = document.getElementById('departmentsTable');
             let row = tableRef.insertRow(-1);
@@ -135,6 +179,7 @@ $("#refreshBtn").on("click", function () {
         url: "php/getAllLocations.php",
         type: 'GET',
         success: function(result) {
+          $('#locationsTable').empty();
           for (let i = 0; i < result.data.length; i++) {
             let tableRef = document.getElementById('locationsTable');
             let row = tableRef.insertRow(-1);

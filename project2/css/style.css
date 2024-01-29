@@ -12,6 +12,11 @@ section {
   height: calc(100vh - 20px);
 }
 
+.searchbar-content {
+  flex: 1;
+  overflow-y: scroll;
+}
+
 .tab-content {
   flex: 1;
   overflow-y: scroll;
