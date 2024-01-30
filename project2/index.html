@@ -231,19 +231,24 @@
             <!-- <input type="hidden" id="editPersonnelEmployeeID"> -->
   
             <div class="form-floating mb-3">
-              <select class="form-select" id="editPersonnelDepartment" placeholder="Department">
+              <select class="form-select" id="departmentDropdown" placeholder="Department">
               </select>
-              <label for="editPersonnelDepartment">Department</label>
+              <label for="filterDepartment">Department</label>
             </div>  
   
             <div class="form-floating">
-              <select class="form-select" id="editPersonnelDepartment" placeholder="Department">
+              <select class="form-select" id="locationDropdown" placeholder="Location">
               </select>
-              <label for="editPersonnelDepartment">Location</label>
+              <label for="filterLocation">Location</label>
             </div>  
   
           </form>
   
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" form="filterForm" class="btn btn-outline-primary btn-sm myBtn">APPLY</button>
+          <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
         </div>
 
       </div>

@@ -1,5 +1,127 @@
 // const { clippingParents } = require("@popperjs/core");
 
+function refreshPersonnelTable() {
+  $.ajax({
+    url: "php/getAll.php",
+    type: "GET",
+    success: function (result) {
+      $('#personnelTable').empty();
+      for (let i = 0; i < result.data.length; i++){
+        let tableRef = document.getElementById('personnelTable');
+        let row = tableRef.insertRow(-1);
+        let nameCell = row.insertCell(0);
+        nameCell.className = 'align-middle text-nowrap';
+        let nameText = document.createTextNode(result.data[i].lastName + ", " + result.data[i].firstName);
+        nameCell.appendChild(nameText);
+        let jobCell = row.insertCell(1);
+        jobCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+        let jobText = document.createTextNode(result.data[i].jobTitle);
+        jobCell.appendChild(jobText);
+        let departmentCell = row.insertCell(2);
+        departmentCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+        let departmentText = document.createTextNode(result.data[i].department);
+        departmentCell.appendChild(departmentText);
+        let locationCell = row.insertCell(3);
+        locationCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+        let locationText = document.createTextNode(result.data[i].location);
+        locationCell.appendChild(locationText);
+        let emailCell = row.insertCell(4);
+        emailCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+        let emailText = document.createTextNode(result.data[i].email);
+        emailCell.appendChild(emailText);
+        let btnCell = row.insertCell(5);
+        btnCell.className = '';
+        let editBtn = document.createElement('button');
+        editBtn.type = 'button';
+        editBtn.className = 'btn btn-primary btn-sm mx-1';
+        editBtn.setAttribute('data-bs-toggle', 'modal');
+        editBtn.setAttribute('data-bs-target', '#editPersonnelModal');
+        editBtn.setAttribute('data-id', '23');
+        editBtn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
+        let deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className = "btn btn-primary btn-sm deletePersonnelBtn";
+        deleteBtn.setAttribute('data-id', '23');
+        deleteBtn.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
+        btnCell.appendChild(editBtn);
+        btnCell.appendChild(deleteBtn);
+      }
+    }
+  });
+}
+
+function refreshDepartmentTable() {
+  $.ajax({
+    url: "php/getAllDepartments.php",
+    type: 'GET',
+    success: function (result) {
+      $('#departmentsTable').empty();
+      for (let i = 0; i < result.data.length; i++){
+        let tableRef = document.getElementById('departmentsTable');
+        let row = tableRef.insertRow(-1);
+        let deptCell = row.insertCell(0);
+        deptCell.className = 'align-middle text-nowrap';
+        let deptText = document.createTextNode(result.data[i].name);
+        deptCell.appendChild(deptText);
+        result.location.forEach(element => {
+          if (element.id === result.data[i].locationID) {
+            let locationCell = row.insertCell(1);
+            locationCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+            let locationText = document.createTextNode(element.name);
+            locationCell.appendChild(locationText);
+          };             
+        });
+        let btnCell = row.insertCell(2);
+        btnCell.className = "align-middle text-end text-nowrap";
+        let btn = document.createElement("button");
+        btn.type = 'button';
+        btn.className = 'btn btn-primary btn-sm mx-1';
+        btn.setAttribute('data-bs-toggle', "modal");
+        btn.setAttribute("data-bs-target", "#deleteDepartmentModal");
+        btn.setAttribute("data-id", "1");
+        btn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>'
+        let btn2 = document.createElement("button");
+        btn2.type = 'button';
+        btn2.className = 'btn btn-primary btn-sm deleteDepartmentBtn';
+        btn2.setAttribute("data-id", "1");
+        btn2.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
+        btnCell.appendChild(btn);
+        btnCell.appendChild(btn2);
+      };
+    }
+  });
+}
+
+function refreshLocationTable() {
+  $.ajax({
+    url: "php/getAllLocations.php",
+    type: 'GET',
+    success: function(result) {
+      $('#locationsTable').empty();
+      for (let i = 0; i < result.data.length; i++) {
+        let tableRef = document.getElementById('locationsTable');
+        let row = tableRef.insertRow(-1);
+        let locNameCell = row.insertCell(0);
+        locNameCell.className = 'align-middle text-nowrap';
+        let locationText = document.createTextNode(result.data[i].name);
+        locNameCell.appendChild(locationText);
+        let btnCell = row.insertCell(1);
+        btnCell.className = "align-middle text-end text-nowrap";
+        let editButton = document.createElement("button");
+        editButton.type = 'button';
+        editButton.className = "btn btn-primary btn-sm mx-1";
+        editButton.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
+        let deleteButton = document.createElement("button");
+        deleteButton.type = 'button';
+        deleteButton.className = 'btn btn-primary btn-sm';
+        deleteButton.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
+        btnCell.appendChild(editButton);
+        btnCell.appendChild(deleteButton);
+      }
+    }
+  }); 
+}
+
 $("#searchInp").on("keyup", function () {
   
   // your code
@@ -81,138 +203,42 @@ $("#refreshBtn").on("click", function () {
   
   if ($("#personnelBtn").hasClass("active")) {
     // Refresh personnel table
-    $.ajax({
-      url: "php/getAll.php",
-      type: "GET",
-      success: function (result) {
-        $('#personnelTable').empty();
-        for (let i = 0; i < result.data.length; i++){
-          let tableRef = document.getElementById('personnelTable');
-          let row = tableRef.insertRow(-1);
-          let nameCell = row.insertCell(0);
-          nameCell.className = 'align-middle text-nowrap';
-          let nameText = document.createTextNode(result.data[i].lastName + ", " + result.data[i].firstName);
-          nameCell.appendChild(nameText);
-          let jobCell = row.insertCell(1);
-          jobCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
-          let jobText = document.createTextNode(result.data[i].jobTitle);
-          jobCell.appendChild(jobText);
-          let departmentCell = row.insertCell(2);
-          departmentCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
-          let departmentText = document.createTextNode(result.data[i].department);
-          departmentCell.appendChild(departmentText);
-          let locationCell = row.insertCell(3);
-          locationCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
-          let locationText = document.createTextNode(result.data[i].location);
-          locationCell.appendChild(locationText);
-          let emailCell = row.insertCell(4);
-          emailCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
-          let emailText = document.createTextNode(result.data[i].email);
-          emailCell.appendChild(emailText);
-          let btnCell = row.insertCell(5);
-          btnCell.className = '';
-          let editBtn = document.createElement('button');
-          editBtn.type = 'button';
-          editBtn.className = 'btn btn-primary btn-sm mx-1';
-          editBtn.setAttribute('data-bs-toggle', 'modal');
-          editBtn.setAttribute('data-bs-target', '#editPersonnelModal');
-          editBtn.setAttribute('data-id', '23');
-          editBtn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
-          let deleteBtn = document.createElement('button');
-          deleteBtn.type = 'button';
-          deleteBtn.className = "btn btn-primary btn-sm deletePersonnelBtn";
-          deleteBtn.setAttribute('data-id', '23');
-          deleteBtn.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
-          btnCell.appendChild(editBtn);
-          btnCell.appendChild(deleteBtn);
-        }
-      }
-    });
+
+    refreshPersonnelTable();
     
   } else {
     
     if ($("#departmentsBtn").hasClass("active")) {
       // Refresh department table
-      $.ajax({
-        url: "php/getAllDepartments.php",
-        type: 'GET',
-        success: function (result) {
-          $('#departmentsTable').empty();
-          for (let i = 0; i < result.data.length; i++){
-            let tableRef = document.getElementById('departmentsTable');
-            let row = tableRef.insertRow(-1);
-            let deptCell = row.insertCell(0);
-            deptCell.className = 'align-middle text-nowrap';
-            let deptText = document.createTextNode(result.data[i].name);
-            deptCell.appendChild(deptText);
-            result.location.forEach(element => {
-              if (element.id === result.data[i].locationID) {
-                let locationCell = row.insertCell(1);
-                locationCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
-                let locationText = document.createTextNode(element.name);
-                locationCell.appendChild(locationText);
-              };             
-            });
-            let btnCell = row.insertCell(2);
-            btnCell.className = "align-middle text-end text-nowrap";
-            let btn = document.createElement("button");
-            btn.type = 'button';
-            btn.className = 'btn btn-primary btn-sm mx-1';
-            btn.setAttribute('data-bs-toggle', "modal");
-            btn.setAttribute("data-bs-target", "#deleteDepartmentModal");
-            btn.setAttribute("data-id", "1");
-            btn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>'
-            let btn2 = document.createElement("button");
-            btn2.type = 'button';
-            btn2.className = 'btn btn-primary btn-sm deleteDepartmentBtn';
-            btn2.setAttribute("data-id", "1");
-            btn2.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
-            btnCell.appendChild(btn);
-            btnCell.appendChild(btn2);
-          };
-        }
-      });
+      refreshDepartmentTable();
     } else {
       
       // Refresh location table
-      $.ajax({
-        url: "php/getAllLocations.php",
-        type: 'GET',
-        success: function(result) {
-          $('#locationsTable').empty();
-          for (let i = 0; i < result.data.length; i++) {
-            let tableRef = document.getElementById('locationsTable');
-            let row = tableRef.insertRow(-1);
-            let locNameCell = row.insertCell(0);
-            locNameCell.className = 'align-middle text-nowrap';
-            let locationText = document.createTextNode(result.data[i].name);
-            locNameCell.appendChild(locationText);
-            let btnCell = row.insertCell(1);
-            btnCell.className = "align-middle text-end text-nowrap";
-            let editButton = document.createElement("button");
-            editButton.type = 'button';
-            editButton.className = "btn btn-primary btn-sm mx-1";
-            editButton.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
-            let deleteButton = document.createElement("button");
-            deleteButton.type = 'button';
-            deleteButton.className = 'btn btn-primary btn-sm';
-            deleteButton.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
-            btnCell.appendChild(editButton);
-            btnCell.appendChild(deleteButton);
-          }
-        }
-      });
-      
-    }
-    
+      refreshLocationTable();
+    } 
   }
-  
 });
 
-$("#filterBtn").click(function () {
-  
+$("#filterBtn").on("click", function () {
   // Open a modal of your own design that allows the user to apply a filter to the personnel table on either department or location
-  
+  $.ajax({
+    url: "php/getAllDepartments.php",
+    type: "GET",
+    success: function(result) {
+      console.log(result);
+      $.each(result.data, function(i) {
+        let option = document.createElement('option');
+        option.text = result.data[i].name;
+        console.log(option.text);
+        $("#departmentDropdown").append(option);
+      })
+      $.each(result.location, function(i) {
+        let option = document.createElement('option');
+        option.text = result.location[i].name;
+        $("#locationDropdown").append(option);
+      })
+    }
+  })
 });
 
 $("#addBtn").click(function () {
@@ -221,23 +247,23 @@ $("#addBtn").click(function () {
   
 });
 
-$("#personnelBtn").click(function () {
+$("#personnelBtn").on("click", refreshPersonnelTable()
   
   // Call function to refresh personnel table
   
-});
+);
 
-$("#departmentsBtn").click(function () {
+$("#departmentsBtn").on("click", refreshDepartmentTable()
   
   // Call function to refresh department table
   
-});
+);
 
-$("#locationsBtn").click(function () {
+$("#locationsBtn").on("click", refreshLocationTable() 
   
   // Call function to refresh location table
   
-});
+);
 
 $("#editPersonnelModal").on("show.bs.modal", function (e) {
   $.ajax({
