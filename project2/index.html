@@ -26,7 +26,7 @@
             <button id="refreshBtn" type="button" class="btn btn-primary">
               <i class="fa-solid fa-refresh fa-fw"></i>
             </button>
-            <button id="filterBtn" type="button" class="btn btn-primary">
+            <button id="filterBtn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal" data-id="">
               <i class="fa-solid fa-filter fa-fw"></i>
             </button>          
             <button id="addBtn" type="button" class="btn btn-primary">
@@ -151,7 +151,7 @@
   
   </section>
       
-  <div id="editPersonnelModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div id="editPersonnelModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="editPersonnelModalLabel" aria-hidden="true">
     
     <!--   the last two classes centre the modal and, if the content is too long, ensures  -->
     <!--   that the header and footer are always on display by making the body scroll -->
@@ -210,6 +210,48 @@
       
     </div>
     
+  </div>
+
+  <div id="filterModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="filterModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+
+      <div class="modal-content shadow">
+
+        <div class="modal-header bg-primary bg-gradient text-white">
+          <h5 class="modal-title">Filter personnel</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+  
+        <div class="modal-body">
+  
+          <form id="filterForm">
+    
+            <!-- the below line passes the employee id -->
+            <!-- <input type="hidden" id="editPersonnelEmployeeID"> -->
+  
+            <div class="form-floating mb-3">
+              <select class="form-select" id="editPersonnelDepartment" placeholder="Department">
+              </select>
+              <label for="editPersonnelDepartment">Department</label>
+            </div>  
+  
+            <div class="form-floating">
+              <select class="form-select" id="editPersonnelDepartment" placeholder="Department">
+              </select>
+              <label for="editPersonnelDepartment">Location</label>
+            </div>  
+  
+          </form>
+  
+        </div>
+
+      </div>
+
+
+
+    </div>
+
   </div>
 
   <script src="js/jquery.min.js"></script>

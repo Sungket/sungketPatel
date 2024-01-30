@@ -10,7 +10,7 @@ $("#searchInp").on("keyup", function () {
       txt : $(this).val()
     },
     success: function(result){
-      console.log(result); // the search works. Now need to display it in results.
+
       let resultCode = result.status.code;
 
       if (resultCode == 200) {
@@ -240,7 +240,6 @@ $("#locationsBtn").click(function () {
 });
 
 $("#editPersonnelModal").on("show.bs.modal", function (e) {
-  console.log('edit personnel btn pressed');
   $.ajax({
     url:
       "php/getPersonnelByID.php",
@@ -251,8 +250,6 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
     },
     success: function (result) {
       var resultCode = result.status.code;
-      
-      console.log(result);
 
       if (resultCode == 200) {
         // Update the hidden input with the employee id so that

@@ -12,8 +12,8 @@ section {
   height: calc(100vh - 20px);
 }
 
+/* Need to fix how this table display as it is messing with the flex. Scoll arrows can always be seen when tbls are empty */
 .searchbar-content {
-  flex: 1;
   overflow-y: scroll;
 }
 
