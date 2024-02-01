@@ -122,6 +122,53 @@ function refreshLocationTable() {
   }); 
 }
 
+function searchFilter(result) {
+  for (let i = 0; i < result.data.found.length; i++){
+    if (i == 0){
+      $('#searchFilterTable').empty();
+    }
+    let tableref = document.getElementById('searchFilterTable');
+    let row = tableref.insertRow(-1);
+    let nameCell = row.insertCell(0);
+    nameCell.className = 'align-middle text-nowrap';
+    let nameText = document.createTextNode(result.data.found[i].firstName + ", " + result.data.found[i].lastName);
+    nameCell.appendChild(nameText);
+    let jobCell = row.insertCell(1);
+    jobCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+    let jobText = document.createTextNode(result.data.found[i].jobTitle);
+    jobCell.appendChild(jobText);
+    let departmentCell = row.insertCell(2);
+    departmentCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+    let departmentText = document.createTextNode(result.data.found[i].departmentName);
+    departmentCell.appendChild(departmentText);
+    let locationCell = row.insertCell(3);
+    locationCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+    let locationText = document.createTextNode(result.data.found[i].locationName);
+    locationCell.appendChild(locationText);
+    let emailCell = row.insertCell(4);
+    emailCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
+    let emailText = document.createTextNode(result.data.found[i].email);
+    emailCell.appendChild(emailText);
+    let btnCell = row.insertCell(5);
+    btnCell.className = '';
+    let editBtn = document.createElement('button');
+    editBtn.type = 'button';
+    editBtn.className = 'btn btn-primary btn-sm mx-1';
+    editBtn.setAttribute('data-bs-toggle', 'modal');
+    editBtn.setAttribute('data-bs-target', '#editPersonnelModal');
+    editBtn.setAttribute('data-id', '23');
+    editBtn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
+    let deleteBtn = document.createElement('button');
+    deleteBtn.type = 'button';
+    deleteBtn.className = "btn btn-primary btn-sm deletePersonnelBtn";
+    deleteBtn.setAttribute('data-id', '23');
+    deleteBtn.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
+    btnCell.appendChild(editBtn);
+    btnCell.appendChild(deleteBtn);
+  }
+}
+
+
 $("#searchInp").on("keyup", function () {
   
   // your code
@@ -136,59 +183,13 @@ $("#searchInp").on("keyup", function () {
       let resultCode = result.status.code;
 
       if (resultCode == 200) {
-        // for (let i = 0; i < result.data.found.length; i++) {
-        //   //refresh upon every keyup
-        //   //new table showing all results returned from php file
-        //   //dynamically create new table upon every key up regardless of what section you are in
 
-        // }
         $('#personnelTable').empty();
         $('#departmentsTable').empty();
         $('#locationsTable').empty();
 
-        for (let i = 0; i < result.data.found.length; i++){
-          if (i == 0){
-            $('#searchFilterTable').empty();
-          }
-          let tableref = document.getElementById('searchFilterTable');
-          let row = tableref.insertRow(-1);
-          let nameCell = row.insertCell(0);
-          nameCell.className = 'align-middle text-nowrap';
-          let nameText = document.createTextNode(result.data.found[i].firstName + ", " + result.data.found[i].lastName);
-          nameCell.appendChild(nameText);
-          let jobCell = row.insertCell(1);
-          jobCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
-          let jobText = document.createTextNode(result.data.found[i].jobTitle);
-          jobCell.appendChild(jobText);
-          let departmentCell = row.insertCell(2);
-          departmentCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
-          let departmentText = document.createTextNode(result.data.found[i].departmentName);
-          departmentCell.appendChild(departmentText);
-          let locationCell = row.insertCell(3);
-          locationCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
-          let locationText = document.createTextNode(result.data.found[i].locationName);
-          locationCell.appendChild(locationText);
-          let emailCell = row.insertCell(4);
-          emailCell.className = 'align-middle text-nowrap d-none d-md-table-cell';
-          let emailText = document.createTextNode(result.data.found[i].email);
-          emailCell.appendChild(emailText);
-          let btnCell = row.insertCell(5);
-          btnCell.className = '';
-          let editBtn = document.createElement('button');
-          editBtn.type = 'button';
-          editBtn.className = 'btn btn-primary btn-sm mx-1';
-          editBtn.setAttribute('data-bs-toggle', 'modal');
-          editBtn.setAttribute('data-bs-target', '#editPersonnelModal');
-          editBtn.setAttribute('data-id', '23');
-          editBtn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
-          let deleteBtn = document.createElement('button');
-          deleteBtn.type = 'button';
-          deleteBtn.className = "btn btn-primary btn-sm deletePersonnelBtn";
-          deleteBtn.setAttribute('data-id', '23');
-          deleteBtn.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
-          btnCell.appendChild(editBtn);
-          btnCell.appendChild(deleteBtn);
-        }
+        searchFilter(result);
+        
       }
     }
   })
@@ -196,25 +197,27 @@ $("#searchInp").on("keyup", function () {
 });
 
 $("#refreshBtn").on("click", function () {
-  $('#personnelTable').empty();
-  $('#departmentsTable').empty();
-  $('#locationsTable').empty();
+
   $('#searchFilterTable').empty();
   
   if ($("#personnelBtn").hasClass("active")) {
     // Refresh personnel table
-
+    $('#personnelTable').empty();
     refreshPersonnelTable();
     
   } else {
     
     if ($("#departmentsBtn").hasClass("active")) {
       // Refresh department table
+      $('#departmentsTable').empty();
       refreshDepartmentTable();
+
     } else {
       
       // Refresh location table
+      $('#locationsTable').empty();
       refreshLocationTable();
+
     } 
   }
 });
@@ -225,20 +228,114 @@ $("#filterBtn").on("click", function () {
     url: "php/getAllDepartments.php",
     type: "GET",
     success: function(result) {
-      console.log(result);
       $.each(result.data, function(i) {
         let option = document.createElement('option');
         option.text = result.data[i].name;
-        console.log(option.text);
+        option.value = result.data[i].name;
         $("#departmentDropdown").append(option);
       })
       $.each(result.location, function(i) {
         let option = document.createElement('option');
         option.text = result.location[i].name;
+        option.value = result.location[i].name;
         $("#locationDropdown").append(option);
       })
     }
   })
+
+  // if a department is selected in the dropdown, reduce the number of options in the location dropdown
+    $('#departmentDropdown').on("click", function(e) {
+    console.log(e.target.value);
+    $.ajax({
+      url: "php/SearchAll.php",
+      type: "POST",
+      data: {
+        txt : e.target.value
+      },
+      success: function (result) {
+        let resultCode = result.status.code;
+
+        if (resultCode == 200) {
+          // searchFilter(result);
+          $("#locationDropdown").empty();
+
+          //rebuild the location dropdown which is now based on department
+          let option = document.createElement('option');
+          option.text = result.data.found[0].locationName;
+          option.value = result.data.found[0].locationName;
+          $("#locationDropdown").append(option);
+        }
+      }
+    })
+  })
+
+  // if a location is selected in the dropdown, reduce the number of options in the departments dropdown
+  $('#locationDropdown').on("click", function(e) {
+    console.log(e.target.value);
+    $.ajax({
+      url: "php/SearchAll.php",
+      type: "POST",
+      data: {
+        txt : e.target.value
+      },
+      success: function (result) {
+        let resultCode = result.status.code;
+
+        if (resultCode == 200) {
+          // searchFilter(result);
+          $("#departmentDropdown").empty();
+
+          let departmentArray = [];
+
+          //rebuild the department dropdown which is now based on location
+          $.each(result.data.found, function(i) {
+            let option = document.createElement('option');
+            option.text = result.data.found[i].departmentName;
+            option.value = result.data.found[i].departmentName;
+            const val = option.text;
+
+            if (!departmentArray.includes(val)){
+              $("#departmentDropdown").append(option);
+            }
+            departmentArray.push(result.data.found[i].departmentName);
+          })
+        }
+      }
+    })
+  })
+
+  // event when submitting form
+  $("#filterForm").on("submit", function(e) {
+    e.preventDefault();
+    let value = $('select[id="departmentDropdown"] option:selected').val();
+    console.log(value);
+    
+  })
+
+  // The following block of code works, however it is actuated when clicking on dd option
+  // $('#departmentDropdown').on("click", function(e) {
+  //   console.log(e.target.value);
+  //   $.ajax({
+  //     url: "php/SearchAll.php",
+  //     type: "POST",
+  //     data: {
+  //       txt : e.target.value
+  //     },
+  //     success: function (result) {
+  //       let resultCode = result.status.code;
+
+  //       if (resultCode == 200) {
+  //         $('#personnelTable').empty();
+  //         $('#departmentsTable').empty();
+  //         $('#locationsTable').empty();
+
+  //         console.log(result);
+  //         searchFilter(result);
+  //       }
+  //     }
+  //   })
+  // })
+
 });
 
 $("#addBtn").click(function () {
@@ -247,23 +344,23 @@ $("#addBtn").click(function () {
   
 });
 
-$("#personnelBtn").on("click", refreshPersonnelTable()
-  
+$("#personnelBtn").on("click", function() {
   // Call function to refresh personnel table
-  
-);
+  $('#searchFilterTable').empty()
+  refreshPersonnelTable()
+});
 
-$("#departmentsBtn").on("click", refreshDepartmentTable()
-  
+$("#departmentsBtn").on("click", function() {
   // Call function to refresh department table
-  
-);
+  $('#searchFilterTable').empty()
+  refreshDepartmentTable()
+});
 
-$("#locationsBtn").on("click", refreshLocationTable() 
-  
-  // Call function to refresh location table
-  
-);
+$("#locationsBtn").on("click", function() {
+  // Call function to refresh location table 
+  $('#searchFilterTable').empty()
+  refreshLocationTable() 
+});
 
 $("#editPersonnelModal").on("show.bs.modal", function (e) {
   $.ajax({
