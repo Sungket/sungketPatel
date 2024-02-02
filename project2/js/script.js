@@ -380,35 +380,21 @@ $("#filterBtn").on("click", function () {
     }
   })
 
-  // The following block of code works, however it is actuated when clicking on dd option
-  // $('#departmentDropdown').on("click", function(e) {
-  //   console.log(e.target.value);
-  //   $.ajax({
-  //     url: "php/SearchAll.php",
-  //     type: "POST",
-  //     data: {
-  //       txt : e.target.value
-  //     },
-  //     success: function (result) {
-  //       let resultCode = result.status.code;
-
-  //       if (resultCode == 200) {
-  //         $('#personnelTable').empty();
-  //         $('#departmentsTable').empty();
-  //         $('#locationsTable').empty();
-
-  //         console.log(result);
-  //         searchFilter(result);
-  //       }
-  //     }
-  //   })
-  // })
-
 });
 
-$("#addBtn").click(function () {
+$("#addBtn").on("click", function () {
   
   // Replicate the logic of the refresh button click to open the add modal for the table that is currently on display
+  if ($("#personnelBtn").hasClass("active")) {
+    $("#addModalTitle").html("Add Personnel")
+    
+  } else {
+    if ($("#departmentsBtn").hasClass("active")) {
+      $("#addModalTitle").html("Add Department")
+    } else {
+      $("#addModalTitle").html("Add Location")
+    }
+  }
   
 });
 
