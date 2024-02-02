@@ -224,92 +224,160 @@ $("#refreshBtn").on("click", function () {
 
 $("#filterBtn").on("click", function () {
   // Open a modal of your own design that allows the user to apply a filter to the personnel table on either department or location
+  //clear all existing options in list
+  $('#departmentDropdown').empty();
+  $('#locationDropdown').empty();
+
   $.ajax({
     url: "php/getAllDepartments.php",
     type: "GET",
     success: function(result) {
-      $.each(result.data, function(i) {
+
+      for (let i = 0; i < result.data.length + 1; i++){
         let option = document.createElement('option');
-        option.text = result.data[i].name;
-        option.value = result.data[i].name;
+        if (i == 0) {
+          option.text = "All";
+          option.value = "all";
+        } else {
+          option.text = result.data[i -1].name;
+          option.value = result.data[i -1].name;
+        }
         $("#departmentDropdown").append(option);
-      })
-      $.each(result.location, function(i) {
+      }
+
+      // $.each(result.data, function(i) {
+      //   let option = document.createElement('option');
+      //   option.text = result.data[i].name;
+      //   option.value = result.data[i].name;
+      //   $("#departmentDropdown").append(option);
+      // })
+      // $.each(result.location, function(i) {
+      //   let option = document.createElement('option');
+      //   option.text = result.location[i].name;
+      //   option.value = result.location[i].name;
+      //   $("#locationDropdown").append(option);
+      // })
+
+      for (let i = 0; i < result.location.length + 1; i++){
         let option = document.createElement('option');
-        option.text = result.location[i].name;
-        option.value = result.location[i].name;
+        if (i == 0) {
+          option.text = "All";
+          option.value = "all";
+        } else {
+          option.text = result.location[i -1].name;
+          option.value = result.location[i -1].name;
+        }
         $("#locationDropdown").append(option);
-      })
+      }
     }
   })
 
   // if a department is selected in the dropdown, reduce the number of options in the location dropdown
-    $('#departmentDropdown').on("click", function(e) {
-    console.log(e.target.value);
-    $.ajax({
-      url: "php/SearchAll.php",
-      type: "POST",
-      data: {
-        txt : e.target.value
-      },
-      success: function (result) {
-        let resultCode = result.status.code;
+  //   $('#departmentDropdown').on("click", function(e) {
+  //   console.log(e.target.value);
+  //   $.ajax({
+  //     url: "php/SearchAll.php",
+  //     type: "POST",
+  //     data: {
+  //       txt : e.target.value
+  //     },
+  //     success: function (result) {
+  //       let resultCode = result.status.code;
 
-        if (resultCode == 200) {
-          // searchFilter(result);
-          $("#locationDropdown").empty();
+  //       if (resultCode == 200) {
+  //         // searchFilter(result);
+  //         $("#locationDropdown").empty();
 
-          //rebuild the location dropdown which is now based on department
-          let option = document.createElement('option');
-          option.text = result.data.found[0].locationName;
-          option.value = result.data.found[0].locationName;
-          $("#locationDropdown").append(option);
-        }
-      }
-    })
-  })
+  //         //rebuild the location dropdown which is now based on department
+  //         let option = document.createElement('option');
+  //         option.text = result.data.found[0].locationName;
+  //         option.value = result.data.found[0].locationName;
+  //         $("#locationDropdown").append(option);
+  //       }
+  //     }
+  //   })
+  // })
 
   // if a location is selected in the dropdown, reduce the number of options in the departments dropdown
-  $('#locationDropdown').on("click", function(e) {
-    console.log(e.target.value);
-    $.ajax({
-      url: "php/SearchAll.php",
-      type: "POST",
-      data: {
-        txt : e.target.value
-      },
-      success: function (result) {
-        let resultCode = result.status.code;
+  // $('#locationDropdown').on("click", function(e) {
+  //   console.log(e.target.value);
+  //   $.ajax({
+  //     url: "php/SearchAll.php",
+  //     type: "POST",
+  //     data: {
+  //       txt : e.target.value
+  //     },
+  //     success: function (result) {
+  //       let resultCode = result.status.code;
 
-        if (resultCode == 200) {
-          // searchFilter(result);
-          $("#departmentDropdown").empty();
+  //       if (resultCode == 200) {
+  //         searchFilter(result);
+  //         $("#departmentDropdown").empty();
 
-          let departmentArray = [];
+  //         let departmentArray = [];
 
-          //rebuild the department dropdown which is now based on location
-          $.each(result.data.found, function(i) {
-            let option = document.createElement('option');
-            option.text = result.data.found[i].departmentName;
-            option.value = result.data.found[i].departmentName;
-            const val = option.text;
+  //         //rebuild the department dropdown which is now based on location
+  //         $.each(result.data.found, function(i) {
+  //           let option = document.createElement('option');
+  //           option.text = result.data.found[i].departmentName;
+  //           option.value = result.data.found[i].departmentName;
+  //           const val = option.text;
 
-            if (!departmentArray.includes(val)){
-              $("#departmentDropdown").append(option);
-            }
-            departmentArray.push(result.data.found[i].departmentName);
-          })
-        }
-      }
-    })
-  })
+  //           if (!departmentArray.includes(val)){
+  //             $("#departmentDropdown").append(option);
+  //           }
+  //           departmentArray.push(result.data.found[i].departmentName);
+  //         })
+  //       }
+  //     }
+  //   })
+  // })
 
   // event when submitting form
   $("#filterForm").on("submit", function(e) {
     e.preventDefault();
-    let value = $('select[id="departmentDropdown"] option:selected').val();
-    console.log(value);
+    $('#personnelTable').empty();
+    $('#departmentsTable').empty();
+    $('#locationsTable').empty();
+    let dept = $('select[id="departmentDropdown"] option:selected').val();
+    let locn = $('select[id="locationDropdown"] option:selected').val();
+    console.log(dept + ', ' + locn);
     
+    if(dept == "all" && locn == "all") {
+      $('#searchFilterTable').empty();
+      refreshPersonnelTable();
+    }
+    else if (dept != "all" && (locn == "all" || locn != "all")) {
+      console.log(dept);
+      $.ajax({
+        url: "php/SearchAll.php",
+        type: "POST",
+        data: {
+          txt: dept
+        },
+        success: function(result) {
+          let resultCode = result.status.code;
+          if (resultCode == 200) {
+            searchFilter(result);
+          }
+        }
+      })
+    } else if (dept == "all" && locn != "all") {
+      console.log(locn);
+      $.ajax({
+        url: "php/SearchAll.php",
+        type: "POST",
+        data: {
+          txt: locn
+        },
+        success: function(result) {
+          let resultCode = result.status.code;
+          if (resultCode == 200) {
+            searchFilter(result);
+          }
+        }
+      })
+    }
   })
 
   // The following block of code works, however it is actuated when clicking on dd option
