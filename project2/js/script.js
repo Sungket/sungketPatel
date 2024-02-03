@@ -386,14 +386,169 @@ $("#addBtn").on("click", function () {
   
   // Replicate the logic of the refresh button click to open the add modal for the table that is currently on display
   if ($("#personnelBtn").hasClass("active")) {
+    //add personnel label
     $("#addModalTitle").html("Add Personnel")
-    
+
+    //clear form
+    $("#form").empty();
+
+    //create 'add personnel' form
+    const form = document.getElementById("form");
+
+    const div = document.createElement("div");
+    div.setAttribute("class", "form-floating mb-3");
+
+    const firstNameInput = document.createElement("input");
+    firstNameInput.setAttribute("type", "text");
+    firstNameInput.setAttribute("class", "form-control");
+    firstNameInput.setAttribute("id", "inputFirstName");
+    firstNameInput.setAttribute("placeholder", "First Name");
+    firstNameInput.setAttribute("required", "");
+    const firstNameInputLabel = document.createElement("label");
+    firstNameInputLabel.setAttribute("for", "firstNameInput");
+    firstNameInputLabel.innerHTML = "First Name";
+
+    const div2 = document.createElement("div");
+    div2.setAttribute("class", "form-floating mb-3");
+
+    const lastNameInput = document.createElement("input");
+    lastNameInput.setAttribute("type", "text");
+    lastNameInput.setAttribute("class", "form-control");
+    lastNameInput.setAttribute("id", "inputLastName");
+    lastNameInput.setAttribute("placeholder", "Last name");
+    lastNameInput.setAttribute("required", "");
+    const lastNameInputLabel = document.createElement("label");
+    lastNameInputLabel.setAttribute("for", "lastNameInput");
+    lastNameInputLabel.innerHTML = "Last Name";
+
+    const div3 = document.createElement("div");
+    div3.setAttribute("class", "form-floating mb-3");
+
+    const jobTitleInput = document.createElement("input");
+    jobTitleInput.setAttribute("type", "text");
+    jobTitleInput.setAttribute("class", "form-control");
+    jobTitleInput.setAttribute("id", "inputLastName");
+    jobTitleInput.setAttribute("placeholder", "Last name");
+    jobTitleInput.setAttribute("required", "");
+    const jobTitleInputLabel = document.createElement("label");
+    jobTitleInputLabel.setAttribute("for", "lastNameInput");
+    jobTitleInputLabel.innerHTML = "Last Name";
+
+    const div4 = document.createElement("div");
+    div4.setAttribute("class", "form-floating mb-3");
+
+    const emailInput = document.createElement("input");
+    emailInput.setAttribute("type", "text");
+    emailInput.setAttribute("class", "form-control");
+    emailInput.setAttribute("id", "inputEmail");
+    emailInput.setAttribute("placeholder", "email");
+    emailInput.setAttribute("required", "");
+    const emailInputLabel = document.createElement("label");
+    emailInputLabel.setAttribute("for", "emailInput");
+    emailInputLabel.innerHTML = "Email";
+
+    const div5 = document.createElement("div");
+    div5.setAttribute("class", "form-floating mb-3");
+
+    const departmentSelect = document.createElement("select");
+    departmentSelect.setAttribute("class", "form-select");
+    departmentSelect.setAttribute("id", "departmentDropdown");
+    departmentSelect.setAttribute("placeholder", "Department");
+    const departmentSelectLabel = document.createElement("label");
+    departmentSelectLabel.setAttribute("for", "departmentSelect");
+    departmentSelect.innerHTML = "Department";
+
+    div.appendChild(firstNameInput);
+    div.appendChild(firstNameInputLabel);
+    form.appendChild(div);
+
+    div2.appendChild(lastNameInput);
+    div2.appendChild(lastNameInputLabel);
+    form.appendChild(div2);
+
+    div3.appendChild(jobTitleInput);
+    div3.appendChild(jobTitleInputLabel);
+    form.appendChild(div3);
+
+    div4.appendChild(emailInput);
+    div4.appendChild(emailInputLabel);
+    form.appendChild(div4);
+
+    div5.appendChild(departmentSelect);
+    div5.appendChild(departmentSelectLabel);
+    form.appendChild(div5);
+
+
   } else {
     if ($("#departmentsBtn").hasClass("active")) {
+      //add department modal
       $("#addModalTitle").html("Add Department")
+
+      //clear form
+      $("#form").empty();
+
+      //create 'add department' form
+      const form = document.getElementById("form")
+
+      const div = document.createElement("div");
+      div.setAttribute("class", "form-floating mb-3");
+
+      const departmentNameInput = document.createElement("input");
+      departmentNameInput.setAttribute("type", "text");
+      departmentNameInput.setAttribute("class", "form-control");
+      departmentNameInput.setAttribute("id", "departmentNameInput");
+      departmentNameInput.setAttribute("placeholder", "Name of Location");
+      departmentNameInput.setAttribute("required", "");
+      const departmentNameInputLabel = document.createElement("label");
+      departmentNameInputLabel.setAttribute("for", "departmentName");
+
+      const div2 = document.createElement("div");
+      div2.setAttribute("class", "form-floating mb-3");
+
+      const departmentLocationInput = document.createElement("select");
+      departmentLocationInput.setAttribute("class", "form-select");
+      departmentLocationInput.setAttribute("id", "departmentLocationDropdown");
+      departmentLocationInput.setAttribute("placeholder", "Location");
+      const departmentLocationLabel = document.createElement("label");
+      departmentLocationLabel.setAttribute("for", "departmentLocationInput");
+      departmentLocationLabel.innerHTML = "Location";
+
+      div.appendChild(departmentNameInput);
+      div.appendChild(departmentNameInputLabel);
+      form.appendChild(div);
+
+      div2.appendChild(departmentLocationInput);
+      div2.appendChild(departmentLocationLabel);
+      form.appendChild(div2);
+
     } else {
+      //add location modal
       $("#addModalTitle").html("Add Location")
-    }
+
+      //clear form
+      $("#form").empty();
+
+      //create 'add location' form
+      const form = document.getElementById("form")
+
+      const div = document.createElement("div");
+      div.setAttribute("class", "form-floating mb-3");
+
+      const locationInput = document.createElement("input");
+      locationInput.setAttribute("type", "text");
+      locationInput.setAttribute("class", "form-control");
+      locationInput.setAttribute("id", "inputLocationName");
+      locationInput.setAttribute("placeholder", "Location Name");
+      locationInput.setAttribute("required", "");
+      const locationInputLabel = document.createElement("label");
+      locationInputLabel.setAttribute("for", "locationInput");
+      locationInputLabel.innerHTML = "Location";
+
+      div.appendChild(locationInput);
+      div.appendChild(locationInputLabel);
+
+      form.appendChild(div);
+      }
   }
   
 });
