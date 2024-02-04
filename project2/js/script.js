@@ -521,6 +521,30 @@ $("#addBtn").on("click", function () {
       div2.appendChild(departmentLocationLabel);
       form.appendChild(div2);
 
+      //read in locations to populate the locations dropdown.
+      $.ajax({
+        url: "php/getAllLocations.php",
+        type: "GET",
+        success: function(result) {
+          console.log(typeof result);
+
+          
+          let resultCode = result.status.code;
+          if (resultCode == 200) {
+            console.log(result);
+            
+            for (let i = 0; i < result.data.length; i++) {
+              let option = document.createElement("option");
+              option.text = result.data[i].name;
+              $("#departmentLocationDropdown").append(option);
+            }
+            // $.each(JSON.parse(result), function (i) {
+
+            // })
+          }
+        }
+      })
+
     } else {
       //add location modal
       $("#addModalTitle").html("Add Location")
