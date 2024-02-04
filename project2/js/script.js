@@ -478,6 +478,11 @@ $("#addBtn").on("click", function () {
     div5.appendChild(departmentSelectLabel);
     form.appendChild(div5);
 
+    //hitting save in personnel tab passes through to the following ajax call.
+    const submit = document.getElementById("submit");
+    submit.onclick = function() {
+      console.log('personnel submit btn pressed');
+    }  
 
   } else {
     if ($("#departmentsBtn").hasClass("active")) {
@@ -501,6 +506,7 @@ $("#addBtn").on("click", function () {
       departmentNameInput.setAttribute("required", "");
       const departmentNameInputLabel = document.createElement("label");
       departmentNameInputLabel.setAttribute("for", "departmentName");
+      departmentNameInputLabel.innerHTML = "Enter name of Department"
 
       const div2 = document.createElement("div");
       div2.setAttribute("class", "form-floating mb-3");
@@ -536,14 +542,33 @@ $("#addBtn").on("click", function () {
             for (let i = 0; i < result.data.length; i++) {
               let option = document.createElement("option");
               option.text = result.data[i].name;
+              option.value = result.data[i].id;
               $("#departmentLocationDropdown").append(option);
             }
-            // $.each(JSON.parse(result), function (i) {
-
-            // })
           }
         }
       })
+
+      //hitting save in department tab passes through to the following ajax call.
+      const submit = document.getElementById("submit");
+      submit.onclick = function() {
+        console.log('dept submit btn pressed');
+        const dept = document.getElementById("departmentNameInput").value;
+        const deptlocn = document.getElementById("departmentLocationDropdown").value;
+        console.log(dept + ", " + deptlocn);
+        $.ajax({
+          url: "php/insertDepartment.php",
+          type: "POST",
+          data: {
+            name: dept,
+            locationID: deptlocn
+          },
+          success: function(result) {
+            console.log('department added!');
+            console.log(result);
+          }
+        })
+      }  
 
     } else {
       //add location modal
@@ -572,6 +597,15 @@ $("#addBtn").on("click", function () {
       div.appendChild(locationInputLabel);
 
       form.appendChild(div);
+
+      //hitting save in location tab passes through to the following ajax call.
+      const submit = document.getElementById("submit");
+      submit.onclick = function () {
+        console.log('submit location btn pressed');
+        // $.ajax({
+        //   url: "php/"
+        // })
+      }
       }
   }
   

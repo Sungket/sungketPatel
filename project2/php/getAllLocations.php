@@ -30,7 +30,7 @@
 
     // SQL does not accept parameters and so is not prepared
 
-    $query = 'SELECT name FROM location';
+    $query = 'SELECT name, id FROM location';
 
     $result = $conn->query($query);
 
