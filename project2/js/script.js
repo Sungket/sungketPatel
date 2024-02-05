@@ -390,10 +390,10 @@ $("#addBtn").on("click", function () {
     $("#addModalTitle").html("Add Personnel")
 
     //clear form
-    $("#form").empty();
+    $("#addForm").empty();
 
     //create 'add personnel' form
-    const form = document.getElementById("form");
+    const form = document.getElementById("addForm");
 
     const div = document.createElement("div");
     div.setAttribute("class", "form-floating mb-3");
@@ -403,7 +403,8 @@ $("#addBtn").on("click", function () {
     firstNameInput.setAttribute("class", "form-control");
     firstNameInput.setAttribute("id", "inputFirstName");
     firstNameInput.setAttribute("placeholder", "First Name");
-    firstNameInput.setAttribute("required", "");
+    firstNameInput.setAttribute("oninvalid", "Missed info");
+    firstNameInput.setAttribute("required", "required");
     const firstNameInputLabel = document.createElement("label");
     firstNameInputLabel.setAttribute("for", "inputFirstName");
     firstNameInputLabel.innerHTML = "First Name";
@@ -416,7 +417,7 @@ $("#addBtn").on("click", function () {
     lastNameInput.setAttribute("class", "form-control");
     lastNameInput.setAttribute("id", "inputLastName");
     lastNameInput.setAttribute("placeholder", "Last name");
-    lastNameInput.setAttribute("required", "");
+    lastNameInput.setAttribute("required", "required");
     const lastNameInputLabel = document.createElement("label");
     lastNameInputLabel.setAttribute("for", "inputLastName");
     lastNameInputLabel.innerHTML = "Last Name";
@@ -438,10 +439,10 @@ $("#addBtn").on("click", function () {
     div4.setAttribute("class", "form-floating mb-3");
 
     const emailInput = document.createElement("input");
-    emailInput.setAttribute("type", "text");
+    emailInput.setAttribute("type", "email");
     emailInput.setAttribute("class", "form-control");
     emailInput.setAttribute("id", "inputEmail");
-    emailInput.setAttribute("placeholder", "email");
+    emailInput.setAttribute("placeholder", "Enter Email");
     emailInput.setAttribute("required", "");
     const emailInputLabel = document.createElement("label");
     emailInputLabel.setAttribute("for", "inputEmail");
@@ -503,8 +504,27 @@ $("#addBtn").on("click", function () {
       console.log('personnel submit btn pressed');
       const fname = document.getElementById("inputFirstName").value;
       const lname = document.getElementById("inputLastName").value;
+      const job = document.getElementById("inputJobTitle").value;
       const email = document.getElementById("inputEmail").value;
       const dept = document.getElementById("personnelDepartmentDropdown").value;
+
+      console.log(dept);
+      
+      $.ajax({
+        url: "php/insertPersonnel.php",
+        type: "POST",
+        data: {
+          firstName: fname,
+          lastName: lname,
+          jobTitle: job,
+          email: email,
+          departmentID: dept
+        },
+        success: function(result) {
+          console.log('person added!');
+          console.log(result);
+        }
+      })
     }  
 
   } else {
@@ -513,10 +533,10 @@ $("#addBtn").on("click", function () {
       $("#addModalTitle").html("Add Department")
 
       //clear form
-      $("#form").empty();
+      $("#addForm").empty();
 
       //create 'add department' form
-      const form = document.getElementById("form")
+      const form = document.getElementById("addForm")
 
       const div = document.createElement("div");
       div.setAttribute("class", "form-floating mb-3");
@@ -595,10 +615,10 @@ $("#addBtn").on("click", function () {
       $("#addModalTitle").html("Add Location")
 
       //clear form
-      $("#form").empty();
+      $("#addForm").empty();
 
       //create 'add location' form
-      const form = document.getElementById("form")
+      const form = document.getElementById("addForm")
 
       const div = document.createElement("div");
       div.setAttribute("class", "form-floating mb-3");
