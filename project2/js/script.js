@@ -602,9 +602,19 @@ $("#addBtn").on("click", function () {
       const submit = document.getElementById("submit");
       submit.onclick = function () {
         console.log('submit location btn pressed');
-        // $.ajax({
-        //   url: "php/"
-        // })
+        const locnName = document.getElementById("inputLocationName").value;
+        console.log(locnName);
+        $.ajax({
+          url: "php/insertLocation.php",
+          type: "POST",
+          data: {
+            name: locnName,
+          },
+          success: function(result) {
+            console.log('location added!');
+            console.log(result);
+          }
+        })
       }
       }
   }
