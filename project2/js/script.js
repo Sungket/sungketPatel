@@ -405,7 +405,7 @@ $("#addBtn").on("click", function () {
     firstNameInput.setAttribute("placeholder", "First Name");
     firstNameInput.setAttribute("required", "");
     const firstNameInputLabel = document.createElement("label");
-    firstNameInputLabel.setAttribute("for", "firstNameInput");
+    firstNameInputLabel.setAttribute("for", "inputFirstName");
     firstNameInputLabel.innerHTML = "First Name";
 
     const div2 = document.createElement("div");
@@ -418,7 +418,7 @@ $("#addBtn").on("click", function () {
     lastNameInput.setAttribute("placeholder", "Last name");
     lastNameInput.setAttribute("required", "");
     const lastNameInputLabel = document.createElement("label");
-    lastNameInputLabel.setAttribute("for", "lastNameInput");
+    lastNameInputLabel.setAttribute("for", "inputLastName");
     lastNameInputLabel.innerHTML = "Last Name";
 
     const div3 = document.createElement("div");
@@ -427,12 +427,12 @@ $("#addBtn").on("click", function () {
     const jobTitleInput = document.createElement("input");
     jobTitleInput.setAttribute("type", "text");
     jobTitleInput.setAttribute("class", "form-control");
-    jobTitleInput.setAttribute("id", "inputLastName");
+    jobTitleInput.setAttribute("id", "inputJobTitle");
     jobTitleInput.setAttribute("placeholder", "Last name");
     jobTitleInput.setAttribute("required", "");
     const jobTitleInputLabel = document.createElement("label");
-    jobTitleInputLabel.setAttribute("for", "lastNameInput");
-    jobTitleInputLabel.innerHTML = "Last Name";
+    jobTitleInputLabel.setAttribute("for", "inputJobTitle");
+    jobTitleInputLabel.innerHTML = "Job Title";
 
     const div4 = document.createElement("div");
     div4.setAttribute("class", "form-floating mb-3");
@@ -444,7 +444,7 @@ $("#addBtn").on("click", function () {
     emailInput.setAttribute("placeholder", "email");
     emailInput.setAttribute("required", "");
     const emailInputLabel = document.createElement("label");
-    emailInputLabel.setAttribute("for", "emailInput");
+    emailInputLabel.setAttribute("for", "inputEmail");
     emailInputLabel.innerHTML = "Email";
 
     const div5 = document.createElement("div");
@@ -452,10 +452,10 @@ $("#addBtn").on("click", function () {
 
     const departmentSelect = document.createElement("select");
     departmentSelect.setAttribute("class", "form-select");
-    departmentSelect.setAttribute("id", "departmentDropdown");
+    departmentSelect.setAttribute("id", "personnelDepartmentDropdown");
     departmentSelect.setAttribute("placeholder", "Department");
     const departmentSelectLabel = document.createElement("label");
-    departmentSelectLabel.setAttribute("for", "departmentSelect");
+    departmentSelectLabel.setAttribute("for", "personnelDepartmentDropdown");
     departmentSelect.innerHTML = "Department";
 
     div.appendChild(firstNameInput);
@@ -478,10 +478,33 @@ $("#addBtn").on("click", function () {
     div5.appendChild(departmentSelectLabel);
     form.appendChild(div5);
 
+    //read getAllDepartments to populate the departments dropdown.
+    $.ajax({
+      url: "php/getAllDepartments.php",
+      type: "GET",
+      success: function(result) {
+        let resultCode = result.status.code;
+        if (resultCode == 200) {
+          console.log(result);
+          
+          for (let i = 0; i < result.data.length; i++) {
+            let option = document.createElement("option");
+            option.text = result.data[i].name;
+            option.value = result.data[i].id;
+            $("#personnelDepartmentDropdown").append(option);
+          }
+        }
+      }
+    })
+
     //hitting save in personnel tab passes through to the following ajax call.
     const submit = document.getElementById("submit");
     submit.onclick = function() {
       console.log('personnel submit btn pressed');
+      const fname = document.getElementById("inputFirstName").value;
+      const lname = document.getElementById("inputLastName").value;
+      const email = document.getElementById("inputEmail").value;
+      const dept = document.getElementById("personnelDepartmentDropdown").value;
     }  
 
   } else {
@@ -505,7 +528,7 @@ $("#addBtn").on("click", function () {
       departmentNameInput.setAttribute("placeholder", "Name of Location");
       departmentNameInput.setAttribute("required", "");
       const departmentNameInputLabel = document.createElement("label");
-      departmentNameInputLabel.setAttribute("for", "departmentName");
+      departmentNameInputLabel.setAttribute("for", "departmentNameInput");
       departmentNameInputLabel.innerHTML = "Enter name of Department"
 
       const div2 = document.createElement("div");
@@ -516,7 +539,7 @@ $("#addBtn").on("click", function () {
       departmentLocationInput.setAttribute("id", "departmentLocationDropdown");
       departmentLocationInput.setAttribute("placeholder", "Location");
       const departmentLocationLabel = document.createElement("label");
-      departmentLocationLabel.setAttribute("for", "departmentLocationInput");
+      departmentLocationLabel.setAttribute("for", "departmentLocationDropdown");
       departmentLocationLabel.innerHTML = "Location";
 
       div.appendChild(departmentNameInput);
@@ -532,9 +555,6 @@ $("#addBtn").on("click", function () {
         url: "php/getAllLocations.php",
         type: "GET",
         success: function(result) {
-          console.log(typeof result);
-
-          
           let resultCode = result.status.code;
           if (resultCode == 200) {
             console.log(result);
@@ -590,7 +610,7 @@ $("#addBtn").on("click", function () {
       locationInput.setAttribute("placeholder", "Location Name");
       locationInput.setAttribute("required", "");
       const locationInputLabel = document.createElement("label");
-      locationInputLabel.setAttribute("for", "locationInput");
+      locationInputLabel.setAttribute("for", "inputLocationName");
       locationInputLabel.innerHTML = "Location";
 
       div.appendChild(locationInput);
