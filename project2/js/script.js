@@ -245,19 +245,6 @@ $("#filterBtn").on("click", function () {
         $("#departmentDropdown").append(option);
       }
 
-      // $.each(result.data, function(i) {
-      //   let option = document.createElement('option');
-      //   option.text = result.data[i].name;
-      //   option.value = result.data[i].name;
-      //   $("#departmentDropdown").append(option);
-      // })
-      // $.each(result.location, function(i) {
-      //   let option = document.createElement('option');
-      //   option.text = result.location[i].name;
-      //   option.value = result.location[i].name;
-      //   $("#locationDropdown").append(option);
-      // })
-
       for (let i = 0; i < result.location.length + 1; i++){
         let option = document.createElement('option');
         if (i == 0) {
@@ -382,18 +369,29 @@ $("#filterBtn").on("click", function () {
 
 });
 
+// ------ ADD BUTTON SECTION ------------------
+
 $("#addBtn").on("click", function () {
   
   // Replicate the logic of the refresh button click to open the add modal for the table that is currently on display
   if ($("#personnelBtn").hasClass("active")) {
+    
     //add personnel label
     $("#addModalTitle").html("Add Personnel")
 
-    //clear form
-    $("#addForm").empty();
+    $("#modalBody").empty();
+    $("#modalFooter").empty();
 
-    //create 'add personnel' form
-    const form = document.getElementById("addForm");
+    //clear form
+    // $("#addForm").empty();
+
+    //build the modal body for adding Personnel
+    const modalBody = document.getElementById("modalBody")
+
+    const footer = document.getElementById("modalFooter");
+
+    const personnelForm = document.createElement("form");
+    personnelForm.setAttribute("id", "personnelForm");
 
     const div = document.createElement("div");
     div.setAttribute("class", "form-floating mb-3");
@@ -404,7 +402,7 @@ $("#addBtn").on("click", function () {
     firstNameInput.setAttribute("id", "inputFirstName");
     firstNameInput.setAttribute("placeholder", "First Name");
     firstNameInput.setAttribute("oninvalid", "Missed info");
-    firstNameInput.setAttribute("required", "required");
+    firstNameInput.setAttribute("required", "");
     const firstNameInputLabel = document.createElement("label");
     firstNameInputLabel.setAttribute("for", "inputFirstName");
     firstNameInputLabel.innerHTML = "First Name";
@@ -417,7 +415,7 @@ $("#addBtn").on("click", function () {
     lastNameInput.setAttribute("class", "form-control");
     lastNameInput.setAttribute("id", "inputLastName");
     lastNameInput.setAttribute("placeholder", "Last name");
-    lastNameInput.setAttribute("required", "required");
+    lastNameInput.setAttribute("required", "");
     const lastNameInputLabel = document.createElement("label");
     lastNameInputLabel.setAttribute("for", "inputLastName");
     lastNameInputLabel.innerHTML = "Last Name";
@@ -459,26 +457,6 @@ $("#addBtn").on("click", function () {
     departmentSelectLabel.setAttribute("for", "personnelDepartmentDropdown");
     departmentSelect.innerHTML = "Department";
 
-    div.appendChild(firstNameInput);
-    div.appendChild(firstNameInputLabel);
-    form.appendChild(div);
-
-    div2.appendChild(lastNameInput);
-    div2.appendChild(lastNameInputLabel);
-    form.appendChild(div2);
-
-    div3.appendChild(jobTitleInput);
-    div3.appendChild(jobTitleInputLabel);
-    form.appendChild(div3);
-
-    div4.appendChild(emailInput);
-    div4.appendChild(emailInputLabel);
-    form.appendChild(div4);
-
-    div5.appendChild(departmentSelect);
-    div5.appendChild(departmentSelectLabel);
-    form.appendChild(div5);
-
     //read getAllDepartments to populate the departments dropdown.
     $.ajax({
       url: "php/getAllDepartments.php",
@@ -498,45 +476,95 @@ $("#addBtn").on("click", function () {
       }
     })
 
-    //hitting save in personnel tab passes through to the following ajax call.
-    const submit = document.getElementById("submit");
-    submit.onclick = function() {
-      console.log('personnel submit btn pressed');
-      const fname = document.getElementById("inputFirstName").value;
-      const lname = document.getElementById("inputLastName").value;
-      const job = document.getElementById("inputJobTitle").value;
-      const email = document.getElementById("inputEmail").value;
-      const dept = document.getElementById("personnelDepartmentDropdown").value;
+    div.appendChild(firstNameInput);
+    div.appendChild(firstNameInputLabel);
+    personnelForm.appendChild(div);
 
-      console.log(dept);
-      
-      $.ajax({
-        url: "php/insertPersonnel.php",
-        type: "POST",
-        data: {
-          firstName: fname,
-          lastName: lname,
-          jobTitle: job,
-          email: email,
-          departmentID: dept
-        },
-        success: function(result) {
-          console.log('person added!');
-          console.log(result);
-        }
+    div2.appendChild(lastNameInput);
+    div2.appendChild(lastNameInputLabel);
+    personnelForm.appendChild(div2);
+
+    div3.appendChild(jobTitleInput);
+    div3.appendChild(jobTitleInputLabel);
+    personnelForm.appendChild(div3);
+
+    div4.appendChild(emailInput);
+    div4.appendChild(emailInputLabel);
+    personnelForm.appendChild(div4);
+
+    div5.appendChild(departmentSelect);
+    div5.appendChild(departmentSelectLabel);
+    personnelForm.appendChild(div5);
+
+    //create the relevant submit button
+
+    const savebutton = document.createElement("button");
+    savebutton.setAttribute("type", "submit");
+    savebutton.setAttribute("form", "personnelForm");
+    savebutton.setAttribute("class", "btn btn-outline-primary btn-sm myBtn");
+    savebutton.innerHTML = "SAVE";
+    const cancelbutton = document.createElement("button");
+    cancelbutton.setAttribute("type", "button");
+    cancelbutton.setAttribute("class", "btn btn-outline-primary btn-sm myBtn");
+    cancelbutton.setAttribute("data-bs-dismiss", "modal");
+    cancelbutton.innerHTML = "CANCEL";
+
+    modalBody.appendChild(personnelForm);
+    footer.appendChild(savebutton);
+    footer.appendChild(cancelbutton);
+
+    //hitting save in personnel tab passes through to the following ajax call.
+      $("#personnelForm").on("submit", function (e) {
+        e.preventDefault();
+
+        console.log('personnel submit btn pressed');
+        const fname = document.getElementById("inputFirstName").value;
+        const lname = document.getElementById("inputLastName").value;
+        const job = document.getElementById("inputJobTitle").value;
+        const email = document.getElementById("inputEmail").value;
+        const dept = document.getElementById("personnelDepartmentDropdown").value;
+  
+        console.log(dept);
+        
+        $.ajax({
+          url: "php/insertPersonnel.php",
+          type: "POST",
+          data: {
+            firstName: fname,
+            lastName: lname,
+            jobTitle: job,
+            email: email,
+            departmentID: dept
+          },
+          success: function(result) {
+            console.log('person added!');
+            console.log(result);
+            $("#addModal").modal("hide");
+          }
+        })
       })
-    }  
 
   } else {
+
+
+// ---------------- START OF DEPARTMENT ADD MODAL --------------------------
+
+
     if ($("#departmentsBtn").hasClass("active")) {
+
       //add department modal
       $("#addModalTitle").html("Add Department")
 
-      //clear form
-      $("#addForm").empty();
+      $("#modalBody").empty();
+      $("#modalFooter").empty();
 
-      //create 'add department' form
-      const form = document.getElementById("addForm")
+      //build the modal body for adding a Department
+      const modalBody = document.getElementById("modalBody")
+
+      const footer = document.getElementById("modalFooter");
+
+      const departmentForm = document.createElement("form");
+      departmentForm.setAttribute("id", "departmentForm");
 
       const div = document.createElement("div");
       div.setAttribute("class", "form-floating mb-3");
@@ -562,14 +590,6 @@ $("#addBtn").on("click", function () {
       departmentLocationLabel.setAttribute("for", "departmentLocationDropdown");
       departmentLocationLabel.innerHTML = "Location";
 
-      div.appendChild(departmentNameInput);
-      div.appendChild(departmentNameInputLabel);
-      form.appendChild(div);
-
-      div2.appendChild(departmentLocationInput);
-      div2.appendChild(departmentLocationLabel);
-      form.appendChild(div2);
-
       //read in locations to populate the locations dropdown.
       $.ajax({
         url: "php/getAllLocations.php",
@@ -589,9 +609,35 @@ $("#addBtn").on("click", function () {
         }
       })
 
+      div.appendChild(departmentNameInput);
+      div.appendChild(departmentNameInputLabel);
+      departmentForm.appendChild(div);
+
+      div2.appendChild(departmentLocationInput);
+      div2.appendChild(departmentLocationLabel);
+      departmentForm.appendChild(div2);
+
+
+      //create the relevant submit button
+
+      const savebutton = document.createElement("button");
+      savebutton.setAttribute("type", "submit");
+      savebutton.setAttribute("form", "departmentForm");
+      savebutton.setAttribute("class", "btn btn-outline-primary btn-sm myBtn");
+      savebutton.innerHTML = "SAVE";
+      const cancelbutton = document.createElement("button");
+      cancelbutton.setAttribute("type", "button");
+      cancelbutton.setAttribute("class", "btn btn-outline-primary btn-sm myBtn");
+      cancelbutton.setAttribute("data-bs-dismiss", "modal");
+      cancelbutton.innerHTML = "CANCEL";
+
+      modalBody.appendChild(departmentForm);
+      footer.appendChild(savebutton);
+      footer.appendChild(cancelbutton);
+
       //hitting save in department tab passes through to the following ajax call.
-      const submit = document.getElementById("submit");
-      submit.onclick = function() {
+      $("#departmentForm").on("submit", function (e) {
+        e.preventDefault();
         console.log('dept submit btn pressed');
         const dept = document.getElementById("departmentNameInput").value;
         const deptlocn = document.getElementById("departmentLocationDropdown").value;
@@ -606,19 +652,91 @@ $("#addBtn").on("click", function () {
           success: function(result) {
             console.log('department added!');
             console.log(result);
+            $("#addModal").modal("hide");
           }
         })
-      }  
+      })
+
+
+      //clear form
+      // $("#addForm").empty();
+
+      //create 'add department' form
+      // const form = document.getElementById("addForm")
+
+      // const div = document.createElement("div");
+      // div.setAttribute("class", "form-floating mb-3");
+
+      // const departmentNameInput = document.createElement("input");
+      // departmentNameInput.setAttribute("type", "text");
+      // departmentNameInput.setAttribute("class", "form-control");
+      // departmentNameInput.setAttribute("id", "departmentNameInput");
+      // departmentNameInput.setAttribute("placeholder", "Name of Location");
+      // departmentNameInput.setAttribute("required", "");
+      // const departmentNameInputLabel = document.createElement("label");
+      // departmentNameInputLabel.setAttribute("for", "departmentNameInput");
+      // departmentNameInputLabel.innerHTML = "Enter name of Department"
+
+      // const div2 = document.createElement("div");
+      // div2.setAttribute("class", "form-floating mb-3");
+
+      // const departmentLocationInput = document.createElement("select");
+      // departmentLocationInput.setAttribute("class", "form-select");
+      // departmentLocationInput.setAttribute("id", "departmentLocationDropdown");
+      // departmentLocationInput.setAttribute("placeholder", "Location");
+      // const departmentLocationLabel = document.createElement("label");
+      // departmentLocationLabel.setAttribute("for", "departmentLocationDropdown");
+      // departmentLocationLabel.innerHTML = "Location";
+
+      // div.appendChild(departmentNameInput);
+      // div.appendChild(departmentNameInputLabel);
+      // form.appendChild(div);
+
+      // div2.appendChild(departmentLocationInput);
+      // div2.appendChild(departmentLocationLabel);
+      // form.appendChild(div2);
+
+      // //read in locations to populate the locations dropdown.
+      // $.ajax({
+      //   url: "php/getAllLocations.php",
+      //   type: "GET",
+      //   success: function(result) {
+      //     let resultCode = result.status.code;
+      //     if (resultCode == 200) {
+      //       console.log(result);
+            
+      //       for (let i = 0; i < result.data.length; i++) {
+      //         let option = document.createElement("option");
+      //         option.text = result.data[i].name;
+      //         option.value = result.data[i].id;
+      //         $("#departmentLocationDropdown").append(option);
+      //       }
+      //     }
+      //   }
+      // })
+
+// --------------------END OF DEPARTMENT ADD MODAL ------------------------------
+
+
+
+
+
 
     } else {
       //add location modal
       $("#addModalTitle").html("Add Location")
 
-      //clear form
-      $("#addForm").empty();
+      // Build the form, fetch the id of the parent div
 
-      //create 'add location' form
-      const form = document.getElementById("addForm")
+      $("#modalBody").empty();
+      $("#modalFooter").empty();
+
+      const modalBody = document.getElementById("modalBody");
+
+      const footer = document.getElementById("modalFooter");
+
+      const locationForm = document.createElement("form");
+      locationForm.setAttribute("id", "locationForm");
 
       const div = document.createElement("div");
       div.setAttribute("class", "form-floating mb-3");
@@ -636,11 +754,27 @@ $("#addBtn").on("click", function () {
       div.appendChild(locationInput);
       div.appendChild(locationInputLabel);
 
-      form.appendChild(div);
+      locationForm.appendChild(div);
 
-      //hitting save in location tab passes through to the following ajax call.
-      const submit = document.getElementById("submit");
-      submit.onclick = function () {
+      //create the relevant submit button
+      const savebutton = document.createElement("button");
+      savebutton.setAttribute("type", "submit");
+      savebutton.setAttribute("form", "locationForm");
+      savebutton.setAttribute("class", "btn btn-outline-primary btn-sm myBtn");
+      savebutton.innerHTML = "SAVE";
+      const cancelbutton = document.createElement("button");
+      cancelbutton.setAttribute("type", "button");
+      cancelbutton.setAttribute("class", "btn btn-outline-primary btn-sm myBtn");
+      cancelbutton.setAttribute("data-bs-dismiss", "modal");
+      cancelbutton.innerHTML = "CANCEL";
+
+      modalBody.appendChild(locationForm);
+      footer.appendChild(savebutton);
+      footer.appendChild(cancelbutton);
+
+      // hitting save in location tab passes through to the following ajax call.
+      $("#locationForm").on("submit", function (e) {
+        e.preventDefault();
         console.log('submit location btn pressed');
         const locnName = document.getElementById("inputLocationName").value;
         console.log(locnName);
@@ -653,13 +787,51 @@ $("#addBtn").on("click", function () {
           success: function(result) {
             console.log('location added!');
             console.log(result);
+            $("#addModal").modal("hide");
           }
         })
-      }
-      }
+      })
+
+      // //clear form
+      // $("#addForm").empty();
+
+      // //create 'add location' form
+      // const form = document.getElementById("addForm")
+
+      // const div = document.createElement("div");
+      // div.setAttribute("class", "form-floating mb-3");
+
+      // const locationInput = document.createElement("input");
+      // locationInput.setAttribute("type", "text");
+      // locationInput.setAttribute("class", "form-control");
+      // locationInput.setAttribute("id", "inputLocationName");
+      // locationInput.setAttribute("placeholder", "Location Name");
+      // locationInput.setAttribute("required", "");
+      // const locationInputLabel = document.createElement("label");
+      // locationInputLabel.setAttribute("for", "inputLocationName");
+      // locationInputLabel.innerHTML = "Location";
+
+      // div.appendChild(locationInput);
+      // div.appendChild(locationInputLabel);
+
+      // form.appendChild(div);
+
+      // //create the relevant submit button
+      // const footer = document.getElementById("modalFooter");
+
+      // const button = document.createElement("button");
+      // button.setAttribute("type", "submit");
+      // button.setAttribute("form", "addForm");
+      // button.setAttribute("class", "btn btn-outline-primary btn-sm myBtn");
+      // button.innerHTML = "SAVE";
+
+      // footer.appendChild(button);
+    }
   }
   
 });
+
+
 
 $("#personnelBtn").on("click", function() {
   // Call function to refresh personnel table
