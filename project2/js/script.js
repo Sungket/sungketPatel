@@ -942,11 +942,9 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
     }
   })
 
-  $("#confirmDepDelete").on("click", function() {
-    $("#deleteDepartmentModal").modal("hide");
-    console.log(deptname);
+  $("#confirmDepDelete").off("click").on("click", function() {
+
     if (deptArray.includes(deptname)) {
-      console.log("it works!");
       alert(`Cannot delete department: ${deptname} as it is in use.`)
     } else {
       $.ajax({
@@ -965,6 +963,7 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
         }
       })
     }
+    refreshDepartmentTable();
   })
 
 })
@@ -989,8 +988,7 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
     }
   })
   
-  $("#confirmLocDelete").on("click", function() {
-    $("#deleteLocationModal").modal("hide");
+  $("#confirmLocDelete").off("click").on("click", function() {
 
     if (locationIndexArray.includes(id)) {
       alert(`Cannot delete location, as it is in use.`)
@@ -1011,6 +1009,7 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
         }
       })
     }
+    refreshLocationTable();
   })
 })
 
@@ -1020,9 +1019,24 @@ $("#deletePersonnelModal").on("show.bs.modal", function (e) {
   const id = $(e.relatedTarget).attr("data-id");
   console.log(id);
   
-  // $("#confirmPersDelete").on("click", function() {
-  //   $.ajax({
-
-  //   })
-  // })
+  $("#confirmPersDelete").off("click").on("click", function() {
+    
+    $.ajax({
+      url: "php/deletePersonnelByID.php",
+      type: "POST",
+      data: {
+        id : id
+      },
+      success: function(result) {
+        const resultCode = result.status.code;
+        if (resultCode == 200) {
+          alert("Successfully deleted record");
+        } else {
+          alert("error occured while deleting record");
+        }
+      }
+    })
+    refreshPersonnelTable();
+  })
+  
 })
