@@ -3,7 +3,6 @@ function refreshPersonnelTable() {
     url: "php/getAll.php",
     type: "GET",
     success: function (result) {
-      console.log(result);
       $('#personnelTable').empty();
       for (let i = 0; i < result.data.length; i++){
         let tableRef = document.getElementById('personnelTable');
@@ -77,14 +76,14 @@ function refreshDepartmentTable() {
         editBtn.className = 'btn btn-primary btn-sm mx-1';
         editBtn.setAttribute('data-bs-toggle', "modal");
         editBtn.setAttribute("data-bs-target", "#editDepartmentModal");
-        editBtn.setAttribute("data-id", "");
+        editBtn.setAttribute("data-id", result.data[i].id);
         editBtn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>'
         let deleteBtn = document.createElement("button");
         deleteBtn.type = 'button';
         deleteBtn.className = 'btn btn-primary btn-sm deleteDepartmentBtn';
         deleteBtn.setAttribute("data-bs-toggle", "modal");
         deleteBtn.setAttribute("data-bs-target", "#deleteDepartmentModal");
-        deleteBtn.setAttribute("data-id", "");
+        deleteBtn.setAttribute("data-id", result.data[i].id);
         deleteBtn.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
         btnCell.appendChild(editBtn);
         btnCell.appendChild(deleteBtn);
@@ -111,10 +110,16 @@ function refreshLocationTable() {
         let editBtn = document.createElement("button");
         editBtn.type = 'button';
         editBtn.className = "btn btn-primary btn-sm mx-1";
+        editBtn.setAttribute('data-bs-toggle', "modal");
+        editBtn.setAttribute("data-bs-target", "#editLocationModal");
+        editBtn.setAttribute("data-id", result.data[i].id);
         editBtn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
         let deleteBtn = document.createElement("button");
         deleteBtn.type = 'button';
         deleteBtn.className = 'btn btn-primary btn-sm';
+        deleteBtn.setAttribute("data-bs-toggle", "modal");
+        deleteBtn.setAttribute("data-bs-target", "#deleteLocationModal");
+        deleteBtn.setAttribute("data-id", result.data[i].id);
         deleteBtn.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
         btnCell.appendChild(editBtn);
         btnCell.appendChild(deleteBtn);
@@ -126,9 +131,9 @@ function refreshLocationTable() {
 function searchFilter(result) {
   for (let i = 0; i < result.data.found.length; i++){
     if (i == 0){
-      $('#searchFilterTable').empty();
+      $('#personnelTable').empty();
     }
-    let tableref = document.getElementById('searchFilterTable');
+    let tableref = document.getElementById('personnelTable');
     let row = tableref.insertRow(-1);
     let nameCell = row.insertCell(0);
     nameCell.className = 'align-middle text-nowrap';
@@ -151,18 +156,18 @@ function searchFilter(result) {
     let emailText = document.createTextNode(result.data.found[i].email);
     emailCell.appendChild(emailText);
     let btnCell = row.insertCell(5);
-    btnCell.className = '';
+    btnCell.className = 'align-middle text-end text-nowrap';
     let editBtn = document.createElement('button');
     editBtn.type = 'button';
     editBtn.className = 'btn btn-primary btn-sm mx-1';
     editBtn.setAttribute('data-bs-toggle', 'modal');
     editBtn.setAttribute('data-bs-target', '#editPersonnelModal');
-    editBtn.setAttribute('data-id', '');
+    editBtn.setAttribute('data-id', result.data.found[i].id);
     editBtn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
     let deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
     deleteBtn.className = "btn btn-primary btn-sm deletePersonnelBtn";
-    deleteBtn.setAttribute('data-id', '');
+    deleteBtn.setAttribute('data-id', result.data.found[i].id);
     deleteBtn.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
     btnCell.appendChild(editBtn);
     btnCell.appendChild(deleteBtn);
@@ -174,7 +179,8 @@ function searchFilter(result) {
 
 $("#searchInp").on("keyup", function () {
   
-  // your code
+  // when using searchbar, you need to be in personnel tab as it is searching personnel table
+  // possible usecase for personnelTable.show?
   $.ajax({
     url: "php/SearchAll.php",
     type: "POST",
@@ -200,8 +206,6 @@ $("#searchInp").on("keyup", function () {
 });
 
 $("#refreshBtn").on("click", function () {
-
-  $('#searchFilterTable').empty();
   
   if ($("#personnelBtn").hasClass("active")) {
     // Refresh personnel table
@@ -334,7 +338,6 @@ $("#filterBtn").on("click", function () {
     console.log(dept + ', ' + locn);
     
     if(dept == "all" && locn == "all") {
-      $('#searchFilterTable').empty();
       refreshPersonnelTable();
     }
     else if (dept != "all" && (locn == "all" || locn != "all")) {
@@ -384,9 +387,6 @@ $("#addBtn").on("click", function () {
 
     $("#modalBody").empty();
     $("#modalFooter").empty();
-
-    //clear form
-    // $("#addForm").empty();
 
     //build the modal body for adding Personnel
     const modalBody = document.getElementById("modalBody")
@@ -837,19 +837,16 @@ $("#addBtn").on("click", function () {
 
 $("#personnelBtn").on("click", function() {
   // Call function to refresh personnel table
-  $('#searchFilterTable').empty()
   refreshPersonnelTable()
 });
 
 $("#departmentsBtn").on("click", function() {
   // Call function to refresh department table
-  $('#searchFilterTable').empty()
   refreshDepartmentTable()
 });
 
 $("#locationsBtn").on("click", function() {
   // Call function to refresh location table 
-  $('#searchFilterTable').empty()
   refreshLocationTable() 
 });
 
@@ -906,10 +903,13 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
 });
 
 
-// When confirmation to delete Department is pressed
-function deleteDepartment() {
-  //fetch all departments saved against personnel in the personnel table
+$("#deleteDepartmentModal").on("show.bs.modal", function (e) {  
+  //check if department is being used
   const deptArray = [];
+  let deptname;
+  const id = $(e.relatedTarget).attr("data-id");
+  
+
   $.ajax({
     url: "php/getAll.php",
     type: "GET",
@@ -920,12 +920,81 @@ function deleteDepartment() {
           deptArray.push(result.data[i].department);
         })
       }
-      console.log(deptArray);
-      
     }
   });
 
+  $.ajax({
+    url: "php/getDepartmentByID.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      id: id
+    },
+    success: function (result) {
+      const resultCode = result.status.code;
 
-//   if (dept exists in personnel table)
+      if (resultCode == 200) {
+        console.log(result);
+        deptname = result.data[0].name
+      }
+      
+    }
+  })
+
+  $("#confirmDepDelete").on("click", function() {
+    $("#deleteDepartmentModal").modal("hide");
+    console.log(deptname);
+    if (deptArray.includes(deptname)) {
+      console.log("it works!");
+      alert(`Cannot delete department: ${deptname} as it is in use.`)
+    } else {
+      $.ajax({
+        url: "php/deleteDepartmentByID.php",
+        type: "POST",
+        data: {
+          id : id
+        },
+        success: function(result) {
+          const resultCode = result.status.code;
+          if (resultCode == 200) {
+            alert("Successfully deleted department");
+          } else {
+            alert("error deleting department.");
+          }      
+        }
+      })
+    }
+  })
+
+})
+
+
+$("#deleteLocationModal").on("show.bs.modal", function (e) {
+  const locationIndexArray = [];
+  const id = $(e.relatedTarget).attr("data-id");
+  console.log(id);
   
-};
+  $.ajax({
+    url: "php/getAllDepartments.php",
+    type: "GET",
+    dataType: "json",
+    success: function(result) {
+      if(result.status.code == 200) {
+        $.each(result.data, function(i){
+          locationIndexArray.push(result.data[i].locationID);
+        })
+      }
+      console.log(locationIndexArray);
+    }
+  })
+  
+  $("#confirmLocDelete").on("click", function() {
+    $("#deleteLocationModal").modal("hide");
+
+    if (locationIndexArray.includes(id)) {
+      alert(`Cannot delete location, as it is in use.`)
+    } else {
+      
+    }
+  })
+})
