@@ -1,10 +1,9 @@
-// const { clippingParents } = require("@popperjs/core");
-
 function refreshPersonnelTable() {
   $.ajax({
     url: "php/getAll.php",
     type: "GET",
     success: function (result) {
+      console.log(result);
       $('#personnelTable').empty();
       for (let i = 0; i < result.data.length; i++){
         let tableRef = document.getElementById('personnelTable');
@@ -30,18 +29,18 @@ function refreshPersonnelTable() {
         let emailText = document.createTextNode(result.data[i].email);
         emailCell.appendChild(emailText);
         let btnCell = row.insertCell(5);
-        btnCell.className = '';
+        btnCell.className = 'align-middle text-end text-nowrap';
         let editBtn = document.createElement('button');
         editBtn.type = 'button';
         editBtn.className = 'btn btn-primary btn-sm mx-1';
         editBtn.setAttribute('data-bs-toggle', 'modal');
         editBtn.setAttribute('data-bs-target', '#editPersonnelModal');
-        editBtn.setAttribute('data-id', '23');
+        editBtn.setAttribute('data-id', result.data[i].id);
         editBtn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
         let deleteBtn = document.createElement('button');
         deleteBtn.type = 'button';
         deleteBtn.className = "btn btn-primary btn-sm deletePersonnelBtn";
-        deleteBtn.setAttribute('data-id', '23');
+        deleteBtn.setAttribute('data-id', result.data[i].id);
         deleteBtn.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
         btnCell.appendChild(editBtn);
         btnCell.appendChild(deleteBtn);
@@ -73,20 +72,22 @@ function refreshDepartmentTable() {
         });
         let btnCell = row.insertCell(2);
         btnCell.className = "align-middle text-end text-nowrap";
-        let btn = document.createElement("button");
-        btn.type = 'button';
-        btn.className = 'btn btn-primary btn-sm mx-1';
-        btn.setAttribute('data-bs-toggle', "modal");
-        btn.setAttribute("data-bs-target", "#deleteDepartmentModal");
-        btn.setAttribute("data-id", "1");
-        btn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>'
-        let btn2 = document.createElement("button");
-        btn2.type = 'button';
-        btn2.className = 'btn btn-primary btn-sm deleteDepartmentBtn';
-        btn2.setAttribute("data-id", "1");
-        btn2.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
-        btnCell.appendChild(btn);
-        btnCell.appendChild(btn2);
+        let editBtn = document.createElement("button");
+        editBtn.type = 'button';
+        editBtn.className = 'btn btn-primary btn-sm mx-1';
+        editBtn.setAttribute('data-bs-toggle', "modal");
+        editBtn.setAttribute("data-bs-target", "#editDepartmentModal");
+        editBtn.setAttribute("data-id", "");
+        editBtn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>'
+        let deleteBtn = document.createElement("button");
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'btn btn-primary btn-sm deleteDepartmentBtn';
+        deleteBtn.setAttribute("data-bs-toggle", "modal");
+        deleteBtn.setAttribute("data-bs-target", "#deleteDepartmentModal");
+        deleteBtn.setAttribute("data-id", "");
+        deleteBtn.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
+        btnCell.appendChild(editBtn);
+        btnCell.appendChild(deleteBtn);
       };
     }
   });
@@ -107,16 +108,16 @@ function refreshLocationTable() {
         locNameCell.appendChild(locationText);
         let btnCell = row.insertCell(1);
         btnCell.className = "align-middle text-end text-nowrap";
-        let editButton = document.createElement("button");
-        editButton.type = 'button';
-        editButton.className = "btn btn-primary btn-sm mx-1";
-        editButton.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
-        let deleteButton = document.createElement("button");
-        deleteButton.type = 'button';
-        deleteButton.className = 'btn btn-primary btn-sm';
-        deleteButton.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
-        btnCell.appendChild(editButton);
-        btnCell.appendChild(deleteButton);
+        let editBtn = document.createElement("button");
+        editBtn.type = 'button';
+        editBtn.className = "btn btn-primary btn-sm mx-1";
+        editBtn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
+        let deleteBtn = document.createElement("button");
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'btn btn-primary btn-sm';
+        deleteBtn.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
+        btnCell.appendChild(editBtn);
+        btnCell.appendChild(deleteBtn);
       }
     }
   }); 
@@ -156,17 +157,19 @@ function searchFilter(result) {
     editBtn.className = 'btn btn-primary btn-sm mx-1';
     editBtn.setAttribute('data-bs-toggle', 'modal');
     editBtn.setAttribute('data-bs-target', '#editPersonnelModal');
-    editBtn.setAttribute('data-id', '23');
+    editBtn.setAttribute('data-id', '');
     editBtn.innerHTML = '<i class="fa-solid fa-pencil fa-fw"></i>';
     let deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
     deleteBtn.className = "btn btn-primary btn-sm deletePersonnelBtn";
-    deleteBtn.setAttribute('data-id', '23');
+    deleteBtn.setAttribute('data-id', '');
     deleteBtn.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
     btnCell.appendChild(editBtn);
     btnCell.appendChild(deleteBtn);
   }
 }
+
+
 
 
 $("#searchInp").on("keyup", function () {
@@ -832,7 +835,6 @@ $("#addBtn").on("click", function () {
 });
 
 
-
 $("#personnelBtn").on("click", function() {
   // Call function to refresh personnel table
   $('#searchFilterTable').empty()
@@ -862,6 +864,8 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
     },
     success: function (result) {
       var resultCode = result.status.code;
+      console.log(result);
+      
 
       if (resultCode == 200) {
         // Update the hidden input with the employee id so that
@@ -901,15 +905,27 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
   });
 });
 
-// Executes when the form button with type="submit" is clicked
 
-$("#editPersonnelForm").on("submit", function (e) {
+// When confirmation to delete Department is pressed
+function deleteDepartment() {
+  //fetch all departments saved against personnel in the personnel table
+  const deptArray = [];
+  $.ajax({
+    url: "php/getAll.php",
+    type: "GET",
+    dataType: "json",
+    success: function(result) {
+      if (result.status.code == 200) {
+        $.each(result.data, function(i){
+          deptArray.push(result.data[i].department);
+        })
+      }
+      console.log(deptArray);
+      
+    }
+  });
+
+
+//   if (dept exists in personnel table)
   
-  // Executes when the form button with type="submit" is clicked
-  // stop the default browser behviour
-
-  e.preventDefault();
-
-  // AJAX call to save form data
-  
-});
+};
