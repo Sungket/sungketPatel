@@ -366,6 +366,31 @@
     </div>  
   </div>
 
+
+  <div id="deletePersonnelModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="DeletePersonnelLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+
+      <div class="modal-content shadow">
+
+        <div class="modal-header bg-primary bg-gradient text-white">
+          <h5 class="modal-title" id="deletePersonnelTitle">Delete Personnel</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <p id="deletePersonnelWarning">Are you sure you want to delete this record?</p>
+        </div>
+
+        <div class="modal-footer" id="modalFooter">
+          <button type="button" id="confirmPersDelete" class="btn btn-outline-primary btn-sm myBtn">YES</button>
+          <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+        </div>
+      </div>
+
+    </div>  
+  </div>
+
   <script src="js/jquery.min.js"></script>
   <script src="js/bootstrap.bundle.min.js"></script>
   <script src="js/script.js" charset="utf-8"></script>

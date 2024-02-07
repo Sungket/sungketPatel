@@ -39,6 +39,8 @@ function refreshPersonnelTable() {
         let deleteBtn = document.createElement('button');
         deleteBtn.type = 'button';
         deleteBtn.className = "btn btn-primary btn-sm deletePersonnelBtn";
+        deleteBtn.setAttribute('data-bs-toggle', 'modal');
+        deleteBtn.setAttribute('data-bs-target', '#deletePersonnelModal');
         deleteBtn.setAttribute('data-id', result.data[i].id);
         deleteBtn.innerHTML = '<i class="fa-solid fa-trash fa-fw"></i>';
         btnCell.appendChild(editBtn);
@@ -934,7 +936,6 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
       const resultCode = result.status.code;
 
       if (resultCode == 200) {
-        console.log(result);
         deptname = result.data[0].name
       }
       
@@ -994,7 +995,34 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
     if (locationIndexArray.includes(id)) {
       alert(`Cannot delete location, as it is in use.`)
     } else {
-      
+      $.ajax({
+        url: "php/deleteLocationByID.php",
+        type: "POST",
+        data: {
+          id : id
+        },
+        success: function(result) {
+          const resultCode = result.status.code;
+          if (resultCode == 200) {
+            alert("Successfully deleted location");
+          } else {
+            alert("error occured while deleting location");
+          }
+        }
+      })
     }
   })
+})
+
+
+$("#deletePersonnelModal").on("show.bs.modal", function (e) {
+  //no need to check for dependencies
+  const id = $(e.relatedTarget).attr("data-id");
+  console.log(id);
+  
+  // $("#confirmPersDelete").on("click", function() {
+  //   $.ajax({
+
+  //   })
+  // })
 })
