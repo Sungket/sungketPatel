@@ -520,16 +520,12 @@ $("#addBtn").on("click", function () {
 
     //hitting save in personnel tab passes through to the following ajax call.
       $("#personnelForm").on("submit", function (e) {
-        e.preventDefault();
 
-        console.log('personnel submit btn pressed');
         const fname = document.getElementById("inputFirstName").value;
         const lname = document.getElementById("inputLastName").value;
         const job = document.getElementById("inputJobTitle").value;
         const email = document.getElementById("inputEmail").value;
         const dept = document.getElementById("personnelDepartmentDropdown").value;
-  
-        console.log(dept);
         
         $.ajax({
           url: "php/insertPersonnel.php",
@@ -544,7 +540,7 @@ $("#addBtn").on("click", function () {
           success: function(result) {
             console.log('person added!');
             console.log(result);
-            $("#addModal").modal("hide");
+            // $("#addModal").modal("hide");
           }
         })
       })
@@ -646,7 +642,7 @@ $("#addBtn").on("click", function () {
         console.log('dept submit btn pressed');
         const dept = document.getElementById("departmentNameInput").value;
         const deptlocn = document.getElementById("departmentLocationDropdown").value;
-        console.log(dept + ", " + deptlocn);
+
         $.ajax({
           url: "php/insertDepartment.php",
           type: "POST",
@@ -852,6 +848,8 @@ $("#locationsBtn").on("click", function() {
   refreshLocationTable() 
 });
 
+
+
 $("#editPersonnelModal").on("show.bs.modal", function (e) {
   $.ajax({
     url:
@@ -902,7 +900,45 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
       );
     }
   });
+
 });
+
+$("#editPersonnelForm").on("submit", function (e) {
+  //remove below line in production
+  // e.preventDefault();
+
+  const id = document.getElementById("editPersonnelEmployeeID").value;
+  const firstName = document.getElementById("editPersonnelFirstName").value;
+  const lastName = document.getElementById("editPersonnelLastName").value;
+  const jobTitle = document.getElementById("editPersonnelJobTitle").value;
+  const email = document.getElementById("editPersonnelEmailAddress").value;
+  const departmentID = document.getElementById("editPersonnelDepartment").value;
+
+  console.log(firstName);
+  
+
+  $.ajax({
+    url: "php/updatePersonnel.php",
+    type: "POST",
+    data: {
+      id : id,
+      firstName : firstName,
+      lastName : lastName,
+      email : email,
+      jobTitle : jobTitle,
+      departmentID : departmentID
+    },
+    success: function(result) {
+      console.log("updating personnel record...");
+      console.log(result);
+      
+    }
+
+  })
+  
+})
+
+
 
 
 $("#deleteDepartmentModal").on("show.bs.modal", function (e) {  
