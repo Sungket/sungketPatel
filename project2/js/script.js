@@ -861,8 +861,6 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
     },
     success: function (result) {
       var resultCode = result.status.code;
-      console.log(result);
-      
 
       if (resultCode == 200) {
         // Update the hidden input with the employee id so that
@@ -924,9 +922,9 @@ $("#editPersonnelForm").on("submit", function (e) {
       departmentID : departmentID
     },
     success: function(result) {
-      console.log("updating personnel record...");
-      console.log(result);
-      
+      if (result.status.code == 200) {
+        console.log('successfully edited personnel record.');
+      }
     }
 
   })
@@ -934,6 +932,48 @@ $("#editPersonnelForm").on("submit", function (e) {
 })
 
 
+$("#editDepartmentModal").on("show.bs.modal", function (e) {
+  
+  $.ajax({
+    url : "php/getDepartmentByID.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      id : $(e.relatedTarget).attr("data-id")
+    },
+    success: function (result) {
+      const resultCode = result.status.code;
+
+      if (resultCode == 200) {
+        $("#editDepartmentName").val(result.data.department[0].name);
+
+        $("#editDepartmentLocation").html("");
+
+        $.each(result.data.location, function () {
+          $('#editDepartmentLocation').append(
+            $("<option>", {
+              value: this.id,
+              text: this.name
+            })
+          );
+        });
+
+        $("#editDepartmentLocation").val(result.data.department[0].locationID);
+      }
+      else {
+        $("#editDepartmentModal .modal-title").replaceWith(
+          "Error retrieving data"
+        );
+      }
+      
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      $("#editPersonnelModal .modal-title").replaceWith(
+        "Error retrieving data"
+      );
+    }
+  })
+})
 
 
 $("#deleteDepartmentModal").on("show.bs.modal", function (e) {  

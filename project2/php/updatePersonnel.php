@@ -67,16 +67,6 @@
 		exit;
 
 	}
-    
-	// $result = $query->get_result();
-
-   	// $personnel = [];
-
-	// while ($row = mysqli_fetch_assoc($result)) {
-
-	// 	array_push($personnel, $row);
-
-	// }
 
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
