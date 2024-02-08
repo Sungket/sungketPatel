@@ -904,8 +904,6 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
 });
 
 $("#editPersonnelForm").on("submit", function (e) {
-  //remove below line in production
-  // e.preventDefault();
 
   const id = document.getElementById("editPersonnelEmployeeID").value;
   const firstName = document.getElementById("editPersonnelFirstName").value;
@@ -913,9 +911,6 @@ $("#editPersonnelForm").on("submit", function (e) {
   const jobTitle = document.getElementById("editPersonnelJobTitle").value;
   const email = document.getElementById("editPersonnelEmailAddress").value;
   const departmentID = document.getElementById("editPersonnelDepartment").value;
-
-  console.log(firstName);
-  
 
   $.ajax({
     url: "php/updatePersonnel.php",
