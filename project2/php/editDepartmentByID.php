@@ -35,21 +35,12 @@
 	// first query - SQL statement accepts parameters and so is prepared to avoid SQL injection.
 	// $_REQUEST used for development / debugging. Remember to change to $_POST for production
 
-	$query = $conn->prepare("UPDATE personnel
-                            SET firstName = ?,
-							 lastName = ?,
-							  email = ?,
-							   jobTitle = ?,
-							    departmentID = ?
-                            WHERE id = ?");
+	$query = $conn->prepare("UPDATE department SET name = ?, locationID = ? WHERE id = ?");
 
-	$query->bind_param("ssssii",
-						 $_REQUEST['firstName'],
-						  $_REQUEST['lastName'],
-						   $_REQUEST['email'],
-        					$_REQUEST['jobTitle'],
-							 $_REQUEST['departmentID'],
-								$_REQUEST['id']);
+	$query->bind_param("sii",
+						 $_REQUEST['name'],
+						  $_REQUEST['locationID'],
+						   $_REQUEST['id']);
 
 	$query->execute();
 	
@@ -72,7 +63,6 @@
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
-	// $output['data']['personnel'] = $personnel;
 	$output['data'] = [];
 	
 	mysqli_close($conn);

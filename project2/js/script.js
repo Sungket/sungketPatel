@@ -911,7 +911,7 @@ $("#editPersonnelForm").on("submit", function (e) {
   const departmentID = document.getElementById("editPersonnelDepartment").value;
 
   $.ajax({
-    url: "php/updatePersonnel.php",
+    url: "php/editPersonnel.php",
     type: "POST",
     data: {
       id : id,
@@ -945,8 +945,9 @@ $("#editDepartmentModal").on("show.bs.modal", function (e) {
       const resultCode = result.status.code;
 
       if (resultCode == 200) {
-        $("#editDepartmentName").val(result.data.department[0].name);
 
+        $("#editDepartmentID").val(result.data.department[0].id);
+        $("#editDepartmentName").val(result.data.department[0].name);
         $("#editDepartmentLocation").html("");
 
         $.each(result.data.location, function () {
@@ -973,6 +974,34 @@ $("#editDepartmentModal").on("show.bs.modal", function (e) {
       );
     }
   })
+})
+
+
+$("#editDepartmentForm").on("submit", function (e) {
+  //remove below line in production
+  e.preventDefault()
+
+  const id = document.getElementById("editDepartmentID").value;
+  const deptName = document.getElementById("editDepartmentName").value;
+  const locnID = document.getElementById("editDepartmentLocation").value;
+
+  console.log(id);
+  console.log(deptName);
+  console.log(locnID);
+  
+$.ajax({
+  url : "php/editDepartmentByID.php",
+  type: "POST",
+  data: {
+    id: id,
+    name: deptName,
+    locationID: locnID
+  },
+  success: function (result) {
+    console.log('record succesfully updated!');
+    console.log(result);
+  }
+})
 })
 
 
