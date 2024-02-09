@@ -1005,6 +1005,59 @@ $.ajax({
 })
 
 
+$("#editLocationModal").on("show.bs.modal", function (e) {
+  console.log($(e.relatedTarget).attr("data-id"));
+
+  $.ajax({
+    url: "php/getLocationByID.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      id : $(e.relatedTarget).attr("data-id")
+    },
+    success: function (result) {
+      const resultCode = result.status.code;
+
+      if (resultCode == 200) {
+        $("#editLocationID").val(result.data.location[0].id);
+        $("#editLocationName").val(result.data.location[0].name);
+      }
+      else {
+        $("#editLocationModal .modal-title").replaceWith(
+          "Error retrieving data"
+        );
+      }
+      
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      $("#editPersonnelModal .modal-title").replaceWith(
+        "Error retrieving data"
+      );
+    }
+  });
+});
+
+$("#editLocationForm").on("submit", function (e) {
+  e.preventDefault();
+  const id = document.getElementById("editLocationID").value;
+  const location = document.getElementById("editLocationName").value;
+
+  $.ajax({
+    url: "php/editLocationByID.php",
+    type: "POST",
+    data: {
+      id : id,
+      name : location
+    },
+    success: function(result) {
+      if (result.status.code == 200) {
+        console.log('successfully edited location.');
+      }
+    }
+  })
+})
+
+
 $("#deleteDepartmentModal").on("show.bs.modal", function (e) {  
   //check if department is being used
   const deptArray = [];

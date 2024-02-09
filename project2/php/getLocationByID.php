@@ -1,10 +1,10 @@
 <?php
 
 	// example use from browser
-	// http://localhost/companydirectory/libs/php/getPersonnelByID.php?id=<id>
+	// http://localhost/companydirectory/libs/php/getDepartmentByID.php?id=<id>
 
-	// remove next two lines for production
-	
+	// remove next two lines for production	
+
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
 
@@ -23,11 +23,11 @@
 		$output['status']['description'] = "database unavailable";
 		$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
 		$output['data'] = [];
-
+		
 		mysqli_close($conn);
 
 		echo json_encode($output);
-
+		
 		exit;
 
 	}	
@@ -35,12 +35,9 @@
 	// SQL statement accepts parameters and so is prepared to avoid SQL injection.
 	// $_REQUEST used for development / debugging. Remember to change to $_POST for production
 
-	$query = $conn->prepare("UPDATE department SET name = ?, locationID = ? WHERE id = ?");
+	$query = $conn->prepare('SELECT id, name FROM location WHERE id =  ?');
 
-	$query->bind_param("sii",
-						 $_REQUEST['name'],
-						  $_REQUEST['locationID'],
-						   $_REQUEST['id']);
+	$query->bind_param("i", $_REQUEST['id']);
 
 	$query->execute();
 	
@@ -51,11 +48,20 @@
 		$output['status']['description'] = "query failed";	
 		$output['data'] = [];
 
-		mysqli_close($conn);
-
 		echo json_encode($output); 
-
+	
+		mysqli_close($conn);
 		exit;
+
+	}
+
+	$result = $query->get_result();
+   
+   	$location = [];
+
+	while ($row = mysqli_fetch_assoc($result)) {
+
+		array_push($location, $row);
 
 	}
 
@@ -63,10 +69,10 @@
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
-	$output['data'] = [];
-	
-	mysqli_close($conn);
+	$output['data']['location'] = $location;
 
 	echo json_encode($output); 
+
+	mysqli_close($conn);
 
 ?>
