@@ -198,11 +198,9 @@ $("#searchInp").on("keyup", function () {
         $('#locationsTable').empty();
 
         searchFilter(result);
-        
       }
     }
   })
-
 });
 
 $("#refreshBtn").on("click", function () {
@@ -266,7 +264,6 @@ $("#filterBtn").on("click", function () {
     }
   })
 
-
   // event when submitting form
   $("#filterForm").on("submit", function(e) {
     e.preventDefault();
@@ -275,13 +272,12 @@ $("#filterBtn").on("click", function () {
     $('#locationsTable').empty();
     let dept = $('select[id="departmentDropdown"] option:selected').val();
     let locn = $('select[id="locationDropdown"] option:selected').val();
-    console.log(dept + ', ' + locn);
     
     if(dept == "all" && locn == "all") {
       refreshPersonnelTable();
     }
     else if (dept != "all" && (locn == "all" || locn != "all")) {
-      console.log(dept);
+
       $.ajax({
         url: "php/SearchAll.php",
         type: "POST",
@@ -289,14 +285,13 @@ $("#filterBtn").on("click", function () {
           txt: dept
         },
         success: function(result) {
-          let resultCode = result.status.code;
-          if (resultCode == 200) {
+          if (result.status.code == 200) {
             searchFilter(result);
           }
         }
       })
     } else if (dept == "all" && locn != "all") {
-      console.log(locn);
+
       $.ajax({
         url: "php/SearchAll.php",
         type: "POST",
@@ -304,8 +299,7 @@ $("#filterBtn").on("click", function () {
           txt: locn
         },
         success: function(result) {
-          let resultCode = result.status.code;
-          if (resultCode == 200) {
+          if (result.status.code == 200) {
             searchFilter(result);
           }
         }
@@ -398,17 +392,14 @@ $("#addBtn").on("click", function () {
     departmentSelect.setAttribute("placeholder", "Department");
     const departmentSelectLabel = document.createElement("label");
     departmentSelectLabel.setAttribute("for", "personnelDepartmentDropdown");
-    departmentSelect.innerHTML = "Department";
+    departmentSelectLabel.innerHTML = "Department";
 
     //read getAllDepartments to populate the departments dropdown.
     $.ajax({
       url: "php/getAllDepartments.php",
       type: "GET",
       success: function(result) {
-        let resultCode = result.status.code;
-        if (resultCode == 200) {
-          console.log(result);
-          
+        if (result.status.code == 200) {
           for (let i = 0; i < result.data.length; i++) {
             let option = document.createElement("option");
             option.text = result.data[i].name;
@@ -458,34 +449,61 @@ $("#addBtn").on("click", function () {
 
     //hitting save in personnel tab passes through to the following ajax call.
       $("#personnelForm").on("submit", function (e) {
-
-        const fname = document.getElementById("inputFirstName").value;
-        const lname = document.getElementById("inputLastName").value;
-        const job = document.getElementById("inputJobTitle").value;
+        //remove below in production
+        e.preventDefault();
+        //first check for duplicates
+        let personnelArray = [];
+        const firstName = document.getElementById("inputFirstName").value;
+        const lastName = document.getElementById("inputLastName").value;
+        const jobTitle = document.getElementById("inputJobTitle").value;
         const email = document.getElementById("inputEmail").value;
-        const dept = document.getElementById("personnelDepartmentDropdown").value;
-        
+
+        let bool = false;
+
         $.ajax({
-          url: "php/insertPersonnel.php",
-          type: "POST",
-          data: {
-            firstName: fname,
-            lastName: lname,
-            jobTitle: job,
-            email: email,
-            departmentID: dept
-          },
+          url: "php/getAll.php",
+          type: "GET",
+          async: false,
+          dataType: "json",
           success: function(result) {
-            console.log('person added!');
-            console.log(result);
-            // $("#addModal").modal("hide");
+            if (result.status.code == 200) {
+              $.each(result.data, function(i){
+                personnelArray.push(result.data[i]);
+              })
+            }
           }
         })
+
+        $.each(personnelArray, function (i, record) {
+          if ((record.lastName == lastName) && (record.firstName == firstName) && (record.email == email)) {
+            alert(`A record with the name: ${firstName}, ${lastName} and email: ${email} already exists. Record not saved.`);
+            bool = true;
+            return false;
+          };
+        })
+
+        if (bool == false) {
+          $.ajax({
+            url: "php/insertPersonnel.php",
+            type: "POST",
+            async: false,
+            data: {
+              firstName: document.getElementById("inputFirstName").value,
+              lastName: document.getElementById("inputLastName").value,
+              jobTitle: document.getElementById("inputJobTitle").value,
+              email: document.getElementById("inputEmail").value,
+              departmentID: document.getElementById("personnelDepartmentDropdown").value
+            },
+            success: function (result) {
+              if (result.status.code == 200) {
+                alert("Record saved successfully.")
+              }
+            }
+          })
+        }
       })
 
   } else {
-
-
     //add department
     if ($("#departmentsBtn").hasClass("active")) {
 
@@ -532,8 +550,7 @@ $("#addBtn").on("click", function () {
         url: "php/getAllLocations.php",
         type: "GET",
         success: function(result) {
-          let resultCode = result.status.code;
-          if (resultCode == 200) {
+          if (result.status.code == 200) {
             for (let i = 0; i < result.data.length; i++) {
               let option = document.createElement("option");
               option.text = result.data[i].name;
@@ -554,7 +571,6 @@ $("#addBtn").on("click", function () {
 
 
       //create the relevant submit button
-
       const savebutton = document.createElement("button");
       savebutton.setAttribute("type", "submit");
       savebutton.setAttribute("form", "departmentForm");
@@ -582,7 +598,6 @@ $("#addBtn").on("click", function () {
           // success omitted as it is not needed
         })
       })
-
 
     } else {
       //add location modal
@@ -714,7 +729,7 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
   });
 });
 
-$("#editPersonnelForm").on("submit", function (e) {
+$("#editPersonnelForm").on("submit", function () {
 
   $.ajax({
     url: "php/editPersonnel.php",
@@ -780,7 +795,7 @@ $("#editDepartmentModal").on("show.bs.modal", function (e) {
 })
 
 
-$("#editDepartmentForm").on("submit", function (e) {
+$("#editDepartmentForm").on("submit", function () {
   
 $.ajax({
   url : "php/editDepartmentByID.php",
@@ -827,7 +842,7 @@ $("#editLocationModal").on("show.bs.modal", function (e) {
   });
 });
 
-$("#editLocationForm").on("submit", function (e) {
+$("#editLocationForm").on("submit", function () {
 
   $.ajax({
     url: "php/editLocationByID.php",
