@@ -448,14 +448,12 @@ $("#addBtn").on("click", function () {
     footer.appendChild(cancelbutton);
 
     //hitting save in personnel tab passes through to the following ajax call.
-      $("#personnelForm").on("submit", function (e) {
-        //remove below in production
-        e.preventDefault();
+      $("#personnelForm").on("submit", function () {
+
         //first check for duplicates
         let personnelArray = [];
         const firstName = document.getElementById("inputFirstName").value;
         const lastName = document.getElementById("inputLastName").value;
-        const jobTitle = document.getElementById("inputJobTitle").value;
         const email = document.getElementById("inputEmail").value;
 
         let bool = false;
@@ -476,7 +474,7 @@ $("#addBtn").on("click", function () {
 
         $.each(personnelArray, function (i, record) {
           if ((record.lastName == lastName) && (record.firstName == firstName) && (record.email == email)) {
-            alert(`A record with the name: ${firstName}, ${lastName} and email: ${email} already exists. Record not saved.`);
+            alert(`A record with the name: ${firstName} ${lastName} and email: ${email} already exists. Record not saved.`);
             bool = true;
             return false;
           };
@@ -488,10 +486,10 @@ $("#addBtn").on("click", function () {
             type: "POST",
             async: false,
             data: {
-              firstName: document.getElementById("inputFirstName").value,
-              lastName: document.getElementById("inputLastName").value,
+              firstName: firstName,
+              lastName: lastName,
               jobTitle: document.getElementById("inputJobTitle").value,
-              email: document.getElementById("inputEmail").value,
+              email: email,
               departmentID: document.getElementById("personnelDepartmentDropdown").value
             },
             success: function (result) {
@@ -588,15 +586,51 @@ $("#addBtn").on("click", function () {
 
       //hitting save in department tab passes through to the following ajax call.
       $("#departmentForm").on("submit", function () {
+
+        //check for duplicates
+        let departmentArray = [];
+        const departmentName = document.getElementById("departmentNameInput").value;
+        const locnID = document.getElementById("departmentLocationDropdown").value;
+        let bool = false;
+
         $.ajax({
-          url: "php/insertDepartment.php",
-          type: "POST",
-          data: {
-            name: document.getElementById("departmentNameInput").value,
-            locationID: document.getElementById("departmentLocationDropdown").value
+          url: "php/getAllDepartments.php",
+          type: "GET",
+          async: false,
+          success: function (result) {
+            if (result.status.code == 200) {
+              $.each(result.data, function(i) {
+                departmentArray.push(result.data[i])
+              })
+            }
           }
-          // success omitted as it is not needed
         })
+
+        $.each(departmentArray, function (i, record) {
+          
+          if ((record.name == departmentName) && (record.locationID == locnID)){
+            alert(`A department with the name: ${departmentName} exists in the same location. New department not saved.`);
+            bool = true;
+            return false;
+          };
+        })
+
+        if (bool == false) {
+          $.ajax({
+            url: "php/insertDepartment.php",
+            type: "POST",
+            async: false,
+            data: {
+              name: departmentName,
+              locationID: locnID
+            },
+            success: function (result) {
+              if (result.status.code == 200) {
+                alert("Department saved successsfully.")
+              }
+            }
+          })
+        }
       })
 
     } else {
@@ -648,14 +682,47 @@ $("#addBtn").on("click", function () {
       footer.appendChild(cancelbutton);
 
       $("#locationForm").on("submit", function () {
+
+        //check for duplicates
+        let locationArray = [];
+        const location = document.getElementById("inputLocationName").value;
+        let bool = false;
+
         $.ajax({
-          url: "php/insertLocation.php",
-          type: "POST",
-          data: {
-            name: document.getElementById("inputLocationName").value,
+          url: "php/getAllLocations.php",
+          type: "GET",
+          async: false,
+          success: function (result){
+            if (result.status.code == 200) {
+              $.each(result.data, function(i) {
+                locationArray.push(result.data[i].name)
+              })
+            }
           }
-          // success ommitted due to not being needed
         })
+
+        $.each(locationArray, function () {
+          if (locationArray.includes(location)) {
+            alert(`Location: ${location} already exists. New location not saved.`);
+            bool = true;
+            return false;
+          }
+        })
+
+        if (bool == false) {
+          $.ajax({
+            url: "php/insertLocation.php",
+            type: "POST",
+            data: {
+              name: location
+            },
+            success: function (result) {
+              if (result.status.code == 200) {
+                alert("Location saved successfully.")
+              }
+            }
+          })
+        }
       })
     }
   }
