@@ -266,7 +266,7 @@ $("#filterBtn").on("click", function () {
   })
 
   // event when submitting form
-  $("#filterForm").on("submit", function(e) {
+  $("#filterForm").off("submit").on("submit", function(e) {
     e.preventDefault();
     $('#personnelTable').empty();
     $('#departmentsTable').empty();
@@ -287,6 +287,9 @@ $("#filterBtn").on("click", function () {
         },
         success: function(result) {
           if (result.status.code == 200) {
+            if (result.data.found.length == 0) {
+              alert("No records saved under this department.")
+            }
             searchFilter(result);
           }
         }
@@ -301,6 +304,9 @@ $("#filterBtn").on("click", function () {
         },
         success: function(result) {
           if (result.status.code == 200) {
+            if(result.data.found.length == 0) {
+              alert("No records found at this location.")
+            }
             searchFilter(result);
           }
         }
