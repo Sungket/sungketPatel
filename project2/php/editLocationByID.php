@@ -3,11 +3,6 @@
 	// example use from browser
 	// http://localhost/companydirectory/libs/php/getPersonnelByID.php?id=<id>
 
-	// remove next two lines for production
-	
-	ini_set('display_errors', 'On');
-	error_reporting(E_ALL);
-
 	$executionStartTime = microtime(true);
 
 	include("config.php");
@@ -38,8 +33,8 @@
 	$query = $conn->prepare("UPDATE location SET name = ? WHERE id = ?");
 
 	$query->bind_param("si",
-						 $_REQUEST['name'],
-						    $_REQUEST['id']);
+						 $_POST['name'],
+						    $_POST['id']);
 
 	$query->execute();
 	

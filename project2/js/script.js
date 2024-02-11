@@ -131,6 +131,9 @@ function refreshLocationTable() {
 }
 
 function searchFilter(result) {
+  //make personnel tab active as search acts on personnel table.
+  $("#personnelBtn").tab("show");
+
   for (let i = 0; i < result.data.found.length; i++){
     if (i == 0){
       $('#personnelTable').empty();
@@ -178,9 +181,7 @@ function searchFilter(result) {
 
 
 $("#searchInp").on("keyup", function () {
-  
-  // when using searchbar, you need to be in personnel tab as it is searching personnel table
-  // possible usecase for personnelTable.show?
+
   $.ajax({
     url: "php/SearchAll.php",
     type: "POST",
@@ -811,7 +812,7 @@ $("#editPersonnelForm").on("submit", function () {
     },
     success: function(result) {
       if (result.status.code == 200) {
-        console.log('successfully edited personnel record.');
+        alert('successfully edited personnel record.');
       }
     }
   })
@@ -873,7 +874,7 @@ $.ajax({
     locationID: document.getElementById("editDepartmentLocation").value
   },
   success: function (result) {
-    console.log('record succesfully updated!');
+    alert('record succesfully updated!');
   }
 })
 })
@@ -920,7 +921,7 @@ $("#editLocationForm").on("submit", function () {
     },
     success: function(result) {
       if (result.status.code == 200) {
-        console.log('successfully edited location.');
+        alert('successfully edited location.');
       }
     }
   })

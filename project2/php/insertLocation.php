@@ -3,11 +3,6 @@
 	// example use from browser
 	// http://localhost/companydirectory/libs/php/insertDepartment.php?name=New%20Department&locationID=<id>
 
-	// remove next two lines for production
-	
-	ini_set('display_errors', 'On');
-	error_reporting(E_ALL);
-
 	$executionStartTime = microtime(true);
 	
 	// this includes the login details
@@ -39,7 +34,7 @@
 
 	$query = $conn->prepare('INSERT INTO location (name) VALUES(?)');
 
-	$query->bind_param("s", $_REQUEST['name']);
+	$query->bind_param("s", $_POST['name']);
 
 	$query->execute();
 	

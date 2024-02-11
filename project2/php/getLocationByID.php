@@ -3,11 +3,6 @@
 	// example use from browser
 	// http://localhost/companydirectory/libs/php/getDepartmentByID.php?id=<id>
 
-	// remove next two lines for production	
-
-	ini_set('display_errors', 'On');
-	error_reporting(E_ALL);
-
 	$executionStartTime = microtime(true);
 
 	include("config.php");
@@ -37,7 +32,7 @@
 
 	$query = $conn->prepare('SELECT id, name FROM location WHERE id =  ?');
 
-	$query->bind_param("i", $_REQUEST['id']);
+	$query->bind_param("i", $_POST['id']);
 
 	$query->execute();
 	

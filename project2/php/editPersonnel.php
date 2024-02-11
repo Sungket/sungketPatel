@@ -3,11 +3,6 @@
 	// example use from browser
 	// http://localhost/companydirectory/libs/php/getPersonnelByID.php?id=<id>
 
-	// remove next two lines for production
-	
-	ini_set('display_errors', 'On');
-	error_reporting(E_ALL);
-
 	$executionStartTime = microtime(true);
 
 	include("config.php");
@@ -44,12 +39,12 @@
                             WHERE id = ?");
 
 	$query->bind_param("ssssii",
-						 $_REQUEST['firstName'],
-						  $_REQUEST['lastName'],
-						   $_REQUEST['email'],
-        					$_REQUEST['jobTitle'],
-							 $_REQUEST['departmentID'],
-								$_REQUEST['id']);
+						 $_POST['firstName'],
+						  $_POST['lastName'],
+						   $_POST['email'],
+        					$_POST['jobTitle'],
+							 $_POST['departmentID'],
+								$_POST['id']);
 
 	$query->execute();
 	
