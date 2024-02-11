@@ -9,7 +9,7 @@
 
 	// database name, username and password
 
-	$cd_dbname = "companydirectory";
+	$cd_dbname = "companydirectory2";
 	$cd_user = "phpmyadmin";
 	$cd_password = "rootdb";
 
