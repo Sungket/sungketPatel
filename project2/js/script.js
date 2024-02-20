@@ -276,6 +276,7 @@ $("#filterBtn").on("click", function () {
   // event when submitting form
   $("#filterForm").off("submit").on("submit", function(e) {
     e.preventDefault();
+    clearSearchFilter();
     $('#personnelTable').empty();
     $('#departmentsTable').empty();
     $('#locationsTable').empty();
