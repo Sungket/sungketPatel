@@ -1,3 +1,6 @@
+//upon script and DOM loading, refresh personnel table immediately
+refreshPersonnelTable();
+
 function refreshPersonnelTable() {
   $.ajax({
     url: "php/getAll.php",
@@ -49,6 +52,7 @@ function refreshPersonnelTable() {
     }
   });
 }
+
 
 function refreshDepartmentTable() {
   $.ajax({
@@ -316,7 +320,6 @@ $("#filterBtn").on("click", function () {
 
 });
 
-// ------ ADD BUTTON SECTION ------------------
 
 $("#addBtn").on("click", function () {
   
