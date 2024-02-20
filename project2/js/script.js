@@ -134,6 +134,10 @@ function refreshLocationTable() {
   }); 
 }
 
+function clearSearchFilter() {
+  $("#searchInp").val("");
+}
+
 function searchFilter(result) {
   //make personnel tab active as search acts on personnel table.
   $("#personnelBtn").tab("show");
@@ -194,9 +198,7 @@ $("#searchInp").on("keyup", function () {
     },
     success: function(result){
 
-      let resultCode = result.status.code;
-
-      if (resultCode == 200) {
+      if (result.status.code == 200) {
 
         $('#personnelTable').empty();
         $('#departmentsTable').empty();
@@ -209,6 +211,8 @@ $("#searchInp").on("keyup", function () {
 });
 
 $("#refreshBtn").on("click", function () {
+
+  clearSearchFilter();
   
   if ($("#personnelBtn").hasClass("active")) {
     // Refresh personnel table
@@ -741,16 +745,19 @@ $("#addBtn").on("click", function () {
 
 $("#personnelBtn").on("click", function() {
   // Call function to refresh personnel table
+  clearSearchFilter()
   refreshPersonnelTable()
 });
 
 $("#departmentsBtn").on("click", function() {
   // Call function to refresh department table
+  clearSearchFilter()
   refreshDepartmentTable()
 });
 
 $("#locationsBtn").on("click", function() {
   // Call function to refresh location table 
+  clearSearchFilter()
   refreshLocationTable() 
 });
 
