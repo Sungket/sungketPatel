@@ -236,93 +236,191 @@ $("#refreshBtn").on("click", function () {
   }
 });
 
-$("#filterBtn").on("click", function () {
-  // Open a modal of your own design that allows the user to apply a filter to the personnel table on either department or location
-  //clear all existing options in list
-  $('#departmentDropdown').empty();
-  $('#locationDropdown').empty();
+// $("#filterBtn").on("click", function () {
+//   // Open a modal of your own design that allows the user to apply a filter to the personnel table on either department or location
+//   //clear all existing options in list
+//   $('#departmentDropdown').empty();
+//   $('#locationDropdown').empty();
 
-  $.ajax({
-    url: "php/getAllDepartments.php",
-    type: "GET",
-    success: function(result) {
+//   $.ajax({
+//     url: "php/getAllDepartments.php",
+//     type: "GET",
+//     success: function(result) {
 
-      for (let i = 0; i < result.data.length + 1; i++){
-        let option = document.createElement('option');
-        if (i == 0) {
-          option.text = "All";
-          option.value = "all";
-        } else {
-          option.text = result.data[i -1].name;
-          option.value = result.data[i -1].name;
-        }
-        $("#departmentDropdown").append(option);
-      }
+//       for (let i = 0; i < result.data.length + 1; i++){
+//         let option = document.createElement('option');
+//         if (i == 0) {
+//           option.text = "All";
+//           option.value = "all";
+//         } else {
+//           option.text = result.data[i -1].name;
+//           option.value = result.data[i -1].name;
+//         }
+//         $("#departmentDropdown").append(option);
+//       }
 
-      for (let i = 0; i < result.location.length + 1; i++){
-        let option = document.createElement('option');
-        if (i == 0) {
-          option.text = "All";
-          option.value = "all";
-        } else {
-          option.text = result.location[i -1].name;
-          option.value = result.location[i -1].name;
-        }
-        $("#locationDropdown").append(option);
-      }
-    }
-  })
+//       for (let i = 0; i < result.location.length + 1; i++){
+//         let option = document.createElement('option');
+//         if (i == 0) {
+//           option.text = "All";
+//           option.value = "all";
+//         } else {
+//           option.text = result.location[i -1].name;
+//           option.value = result.location[i -1].name;
+//         }
+//         $("#locationDropdown").append(option);
+//       }
+//     }
+//   })
 
   // event when submitting form
-  $("#filterForm").off("submit").on("submit", function(e) {
-    e.preventDefault();
+  // $("#filterForm").off("submit").on("submit", function(e) {
+  //   e.preventDefault();
+  //   clearSearchFilter();
+  //   $('#personnelTable').empty();
+  //   $('#departmentsTable').empty();
+  //   $('#locationsTable').empty();
+  //   let dept = $('select[id="departmentDropdown"] option:selected').val();
+  //   let locn = $('select[id="locationDropdown"] option:selected').val();
+
+
+    
+    // if(dept == "all" && locn == "all") {
+    //   refreshPersonnelTable();
+    // }
+    // else if (dept != "all" && (locn == "all" || locn != "all")) {
+
+    //   $.ajax({
+    //     url: "php/SearchAll.php",
+    //     type: "POST",
+    //     data: {
+    //       txt: dept
+    //     },
+    //     success: function(result) {
+    //       if (result.status.code == 200) {
+    //         if (result.data.found.length == 0) {
+    //           alert("No records saved under this department.")
+    //         }
+    //         searchFilter(result);
+    //       }
+    //     }
+    //   })
+    // } else if (dept == "all" && locn != "all") {
+
+    //   $.ajax({
+    //     url: "php/SearchAll.php",
+    //     type: "POST",
+    //     data: {
+    //       txt: locn
+    //     },
+    //     success: function(result) {
+    //       if (result.status.code == 200) {
+    //         if(result.data.found.length == 0) {
+    //           alert("No records found at this location.")
+    //         }
+    //         searchFilter(result);
+    //       }
+    //     }
+    //   })
+    // }
+
+    $("#filterModal").on("show.bs.modal", function () {
+      // Open a modal of your own design that allows the user to apply a filter to the personnel table on either department or location
+      //clear all existing options in list
+      $('#departmentDropdown').empty();
+      $('#locationDropdown').empty();
+    
+      $.ajax({
+        url: "php/getAllDepartments.php",
+        type: "GET",
+        success: function(result) {
+    
+          for (let i = 0; i < result.data.length + 1; i++){
+            let option = document.createElement('option');
+            if (i == 0) {
+              option.text = "All";
+              option.value = "all";
+            } else {
+              option.text = result.data[i -1].name;
+              option.value = result.data[i -1].name;
+            }
+            $("#departmentDropdown").append(option);
+          }
+    
+          for (let i = 0; i < result.location.length + 1; i++){
+            let option = document.createElement('option');
+            if (i == 0) {
+              option.text = "All";
+              option.value = "all";
+            } else {
+              option.text = result.location[i -1].name;
+              option.value = result.location[i -1].name;
+            }
+            $("#locationDropdown").append(option);
+          }
+        }
+      })
+
+
     clearSearchFilter();
     $('#personnelTable').empty();
     $('#departmentsTable').empty();
     $('#locationsTable').empty();
-    let dept = $('select[id="departmentDropdown"] option:selected').val();
-    let locn = $('select[id="locationDropdown"] option:selected').val();
+
+
+
     
-    if(dept == "all" && locn == "all") {
-      refreshPersonnelTable();
-    }
-    else if (dept != "all" && (locn == "all" || locn != "all")) {
+    $("#departmentDropdown").on("change", function() {
+      let dept = $('select[id="departmentDropdown"] option:selected').val();
 
-      $.ajax({
-        url: "php/SearchAll.php",
-        type: "POST",
-        data: {
-          txt: dept
-        },
-        success: function(result) {
-          if (result.status.code == 200) {
-            if (result.data.found.length == 0) {
-              alert("No records saved under this department.")
+      if (dept != "all") {
+        console.log(dept);
+        
+        $("#locationDropdown").val("all");
+  
+        $.ajax({
+          url: "php/SearchAll.php",
+          type: "POST",
+          data: {
+            txt: dept
+          },
+          success: function(result) {
+            if (result.status.code == 200) {
+              if (result.data.found.length == 0) {
+                alert("No records saved under this department.")
+              }
+              searchFilter(result);
             }
-            searchFilter(result);
           }
-        }
-      })
-    } else if (dept == "all" && locn != "all") {
+        })
+      } 
+    })
 
-      $.ajax({
-        url: "php/SearchAll.php",
-        type: "POST",
-        data: {
-          txt: locn
-        },
-        success: function(result) {
-          if (result.status.code == 200) {
-            if(result.data.found.length == 0) {
-              alert("No records found at this location.")
+    $("#locationDropdown").on("change", function() {
+      let locn = $('select[id="locationDropdown"] option:selected').val();
+
+      if (locn != "all") {
+        console.log(locn);
+
+        $("#departmentDropdown").val("all");
+
+        $.ajax({
+          url: "php/SearchAll.php",
+          type: "POST",
+          data: {
+            txt: locn
+          },
+          success: function(result) {
+            if (result.status.code == 200) {
+              if(result.data.found.length == 0) {
+                alert("No records found at this location.")
+              }
+              searchFilter(result);
             }
-            searchFilter(result);
           }
-        }
-      })
-    }
-  })
-
+        })
+      }
+    })
 });
 
 
