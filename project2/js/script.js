@@ -335,6 +335,9 @@ $("#filterModal").on("show.bs.modal", function () {
     type: "GET",
     success: function(result) {
 
+      let tempDeptArray = [];
+      let tempLocnArray = [];
+
       for (let i = 0; i < result.data.length + 1; i++){
         let option = document.createElement('option');
         if (i == 0) {
@@ -344,8 +347,11 @@ $("#filterModal").on("show.bs.modal", function () {
           option.text = result.data[i -1].name;
           option.value = result.data[i -1].name;
         }
-        $("#departmentDropdown").append(option);
+        tempDeptArray.push(option);
+        // $("#departmentDropdown").append(option);
       }
+      console.log(tempDeptArray);
+      
 
       for (let i = 0; i < result.location.length + 1; i++){
         let option = document.createElement('option');
@@ -356,8 +362,39 @@ $("#filterModal").on("show.bs.modal", function () {
           option.text = result.location[i -1].name;
           option.value = result.location[i -1].name;
         }
-        $("#locationDropdown").append(option);
+        tempLocnArray.push(option);
+        // $("#locationDropdown").append(option);
       }
+      console.log(tempLocnArray);
+      
+      //sort tempArray alphabetically    
+      tempDeptArray.sort(function (a, b) {
+        if (a.text < b.text) {
+          return -1;
+        }
+        if (a.text > b.text) {
+          return 1;
+        }
+        return 0;
+      });
+
+      tempLocnArray.sort(function (a, b) {
+        if (a.text < b.text) {
+          return -1;
+        }
+        if (a.text > b.text) {
+          return 1;
+        }
+        return 0;
+      });
+
+      tempDeptArray.forEach(element => {
+        $("#departmentDropdown").append(element);
+      });
+
+      tempLocnArray.forEach(element => {
+        $("#locationDropdown").append(element);
+      });
     }
   })
 
