@@ -236,94 +236,6 @@ $("#refreshBtn").on("click", function () {
   }
 });
 
-// $("#filterBtn").on("click", function () {
-//   // Open a modal of your own design that allows the user to apply a filter to the personnel table on either department or location
-//   //clear all existing options in list
-//   $('#departmentDropdown').empty();
-//   $('#locationDropdown').empty();
-
-//   $.ajax({
-//     url: "php/getAllDepartments.php",
-//     type: "GET",
-//     success: function(result) {
-
-//       for (let i = 0; i < result.data.length + 1; i++){
-//         let option = document.createElement('option');
-//         if (i == 0) {
-//           option.text = "All";
-//           option.value = "all";
-//         } else {
-//           option.text = result.data[i -1].name;
-//           option.value = result.data[i -1].name;
-//         }
-//         $("#departmentDropdown").append(option);
-//       }
-
-//       for (let i = 0; i < result.location.length + 1; i++){
-//         let option = document.createElement('option');
-//         if (i == 0) {
-//           option.text = "All";
-//           option.value = "all";
-//         } else {
-//           option.text = result.location[i -1].name;
-//           option.value = result.location[i -1].name;
-//         }
-//         $("#locationDropdown").append(option);
-//       }
-//     }
-//   })
-
-  // event when submitting form
-  // $("#filterForm").off("submit").on("submit", function(e) {
-  //   e.preventDefault();
-  //   clearSearchFilter();
-  //   $('#personnelTable').empty();
-  //   $('#departmentsTable').empty();
-  //   $('#locationsTable').empty();
-  //   let dept = $('select[id="departmentDropdown"] option:selected').val();
-  //   let locn = $('select[id="locationDropdown"] option:selected').val();
-
-
-    
-    // if(dept == "all" && locn == "all") {
-    //   refreshPersonnelTable();
-    // }
-    // else if (dept != "all" && (locn == "all" || locn != "all")) {
-
-    //   $.ajax({
-    //     url: "php/SearchAll.php",
-    //     type: "POST",
-    //     data: {
-    //       txt: dept
-    //     },
-    //     success: function(result) {
-    //       if (result.status.code == 200) {
-    //         if (result.data.found.length == 0) {
-    //           alert("No records saved under this department.")
-    //         }
-    //         searchFilter(result);
-    //       }
-    //     }
-    //   })
-    // } else if (dept == "all" && locn != "all") {
-
-    //   $.ajax({
-    //     url: "php/SearchAll.php",
-    //     type: "POST",
-    //     data: {
-    //       txt: locn
-    //     },
-    //     success: function(result) {
-    //       if (result.status.code == 200) {
-    //         if(result.data.found.length == 0) {
-    //           alert("No records found at this location.")
-    //         }
-    //         searchFilter(result);
-    //       }
-    //     }
-    //   })
-    // }
-
 $("#filterModal").on("show.bs.modal", function () {
   // Open a modal of your own design that allows the user to apply a filter to the personnel table on either department or location
   //clear all existing options in list
@@ -334,50 +246,29 @@ $("#filterModal").on("show.bs.modal", function () {
     url: "php/getAllDepartments.php",
     type: "GET",
     success: function(result) {     
-
-      let tempDeptArray = [];
       let tempLocnArray = [];
 
       for (let i = 0; i < result.data.length; i++){
         let option = document.createElement('option');
-        // if (i == 0) {
-        //   option.text = "All";
-        //   option.value = "all";
-        // } else {
-        // option.text = result.data[i -1].name;
-        // option.value = result.data[i -1].name;
-              option.text = result.data[i].name;
-              option.value = result.data[i].name;
-        // }
-        tempDeptArray.push(option);
-        // $("#departmentDropdown").append(option);
+        if (i == 0) {
+          option.text = "All";
+          option.value = "all";
+        } else {
+        option.text = result.data[i -1].name;
+        option.value = result.data[i -1].name;
+        }
+
+        $("#departmentDropdown").append(option);
       }
 
       for (let i = 0; i < result.location.length; i++){
+
         let option = document.createElement('option');
-        // if (i == 0) {
-        //   option.text = "All";
-        //   option.value = "all";
-        // } else {
-        //   option.text = result.location[i -1].name;
-        //   option.value = result.location[i -1].name;
-              option.text = result.location[i].name;
-              option.value = result.location[i].name;
-        // }
+        option.text = result.location[i].name;
+        option.value = result.location[i].name;
+
         tempLocnArray.push(option);
-        // $("#locationDropdown").append(option);
       }
-      
-      //sort tempArray alphabetically    
-      tempDeptArray.sort(function (a, b) {
-        if (a.text < b.text) {
-          return -1;
-        }
-        if (a.text > b.text) {
-          return 1;
-        }
-        return 0;
-      });
 
       tempLocnArray.sort(function (a, b) {
         if (a.text < b.text) {
@@ -388,17 +279,6 @@ $("#filterModal").on("show.bs.modal", function () {
         }
         return 0;
       });
-
-      for (let i = 0; i < tempDeptArray.length + 1; i++){
-        if (i == 0) {
-          let option = document.createElement('option');
-          option.text = "All";
-          option.value = "all";
-          $("#departmentDropdown").append(option);
-        } else {
-          $("#departmentDropdown").append(tempDeptArray[i - 1]);
-        }
-      }
 
       for (let i = 0; i < tempLocnArray.length + 1; i++){
         if (i == 0) {
@@ -411,13 +291,9 @@ $("#filterModal").on("show.bs.modal", function () {
         }
       }
 
-      // tempDeptArray.forEach(element => {
-      //   $("#departmentDropdown").append(element);
-      // });
-
-      // tempLocnArray.forEach(element => {
-      //   $("#locationDropdown").append(element);
-      // });
+      tempLocnArray.forEach(element => {
+        $("#locationDropdown").append(element);
+      });
     }
   })
 
@@ -577,30 +453,14 @@ $("#addBtn").on("click", function () {
       type: "GET",
       success: function(result) {
         if (result.status.code == 200) {
-          let tempDeptArray = [];
 
           for (let i = 0; i < result.data.length; i++) {
             let option = document.createElement("option");
             option.text = result.data[i].name;
             option.value = result.data[i].id;
 
-            tempDeptArray.push(option);
+            $("#personnelDepartmentDropdown").append(option);
           }
-
-          //sort tempArray alphabetically    
-          tempDeptArray.sort(function (a, b) {
-          if (a.text < b.text) {
-            return -1;
-          }
-          if (a.text > b.text) {
-            return 1;
-          }
-          return 0;
-          });
-
-          tempDeptArray.forEach(element => {
-            $("#personnelDepartmentDropdown").append(element);
-          });
         }
       }
     })
@@ -744,28 +604,14 @@ $("#addBtn").on("click", function () {
         type: "GET",
         success: function(result) {
           if (result.status.code == 200) {
-            let tempLocationArray = [];
 
             for (let i = 0; i < result.data.length; i++) {
               let option = document.createElement("option");
               option.text = result.data[i].name;
               option.value = result.data[i].id;
-              tempLocationArray.push(option);
+
+              $("#departmentLocationDropdown").append(option);
             }
-
-            tempLocationArray.sort(function (a, b) {
-              if (a.text < b.text) {
-                return -1;
-              }
-              if (a.text > b.text) {
-                return 1;
-              }
-              return 0;
-            });
-
-            tempLocationArray.forEach(element => {
-              $("#departmentLocationDropdown").append(element);
-            });
           }
         }
       })
