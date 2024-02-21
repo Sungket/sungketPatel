@@ -363,14 +363,8 @@ $("#refreshBtn").on("click", function () {
 
 
     clearSearchFilter();
-    $('#personnelTable').empty();
-    $('#departmentsTable').empty();
-    $('#locationsTable').empty();
-
-
-
     
-    $("#departmentDropdown").on("change", function() {
+    $("#departmentDropdown").off("change").on("change", function() {
       let dept = $('select[id="departmentDropdown"] option:selected').val();
 
       if (dept != "all") {
@@ -396,7 +390,7 @@ $("#refreshBtn").on("click", function () {
       } 
     })
 
-    $("#locationDropdown").on("change", function() {
+    $("#locationDropdown").off("change").on("change", function() {
       let locn = $('select[id="locationDropdown"] option:selected').val();
 
       if (locn != "all") {
