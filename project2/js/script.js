@@ -335,33 +335,40 @@ $("#filterModal").on("show.bs.modal", function () {
     type: "GET",
     success: function(result) {
 
+      console.log(result);
+      
+
       let tempDeptArray = [];
       let tempLocnArray = [];
 
-      for (let i = 0; i < result.data.length + 1; i++){
+      for (let i = 0; i < result.data.length; i++){
         let option = document.createElement('option');
-        if (i == 0) {
-          option.text = "All";
-          option.value = "all";
-        } else {
-          option.text = result.data[i -1].name;
-          option.value = result.data[i -1].name;
-        }
+        // if (i == 0) {
+        //   option.text = "All";
+        //   option.value = "all";
+        // } else {
+        // option.text = result.data[i -1].name;
+        // option.value = result.data[i -1].name;
+              option.text = result.data[i].name;
+              option.value = result.data[i].name;
+        // }
         tempDeptArray.push(option);
         // $("#departmentDropdown").append(option);
       }
       console.log(tempDeptArray);
       
 
-      for (let i = 0; i < result.location.length + 1; i++){
+      for (let i = 0; i < result.location.length; i++){
         let option = document.createElement('option');
-        if (i == 0) {
-          option.text = "All";
-          option.value = "all";
-        } else {
-          option.text = result.location[i -1].name;
-          option.value = result.location[i -1].name;
-        }
+        // if (i == 0) {
+        //   option.text = "All";
+        //   option.value = "all";
+        // } else {
+        //   option.text = result.location[i -1].name;
+        //   option.value = result.location[i -1].name;
+              option.text = result.location[i].name;
+              option.value = result.location[i].name;
+        // }
         tempLocnArray.push(option);
         // $("#locationDropdown").append(option);
       }
@@ -388,9 +395,31 @@ $("#filterModal").on("show.bs.modal", function () {
         return 0;
       });
 
-      tempDeptArray.forEach(element => {
-        $("#departmentDropdown").append(element);
-      });
+      for (let i = 0; i < tempDeptArray.length + 1; i++){
+        if (i == 0) {
+          let option = document.createElement('option');
+          option.text = "All";
+          option.value = "all";
+          $("#departmentDropdown").append(option);
+        } else {
+          $("#departmentDropdown").append(tempDeptArray[i - 1]);
+        }
+      }
+
+      for (let i = 0; i < tempLocnArray.length + 1; i++){
+        if (i == 0) {
+          let option = document.createElement('option');
+          option.text = "All";
+          option.value = "all";
+          $("#locationDropdown").append(option);
+        } else {
+          $("#locationDropdown").append(tempLocnArray[i - 1]);
+        }
+      }
+
+      // tempDeptArray.forEach(element => {
+      //   $("#departmentDropdown").append(element);
+      // });
 
       tempLocnArray.forEach(element => {
         $("#locationDropdown").append(element);
