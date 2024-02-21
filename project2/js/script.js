@@ -2,6 +2,8 @@
 refreshPersonnelTable();
 
 function refreshPersonnelTable() {
+  $("#filterBtn").attr("disabled", false);
+
   $.ajax({
     url: "php/getAll.php",
     type: "GET",
@@ -141,6 +143,8 @@ function clearSearchFilter() {
 function searchFilter(result) {
   //make personnel tab active as search acts on personnel table.
   $("#personnelBtn").tab("show");
+  
+  $("#filterBtn").attr("disabled", false);
 
   for (let i = 0; i < result.data.found.length; i++){
     if (i == 0){
@@ -186,6 +190,8 @@ function searchFilter(result) {
     btnCell.appendChild(deleteBtn);
   }
 }
+
+
 
 
 $("#searchInp").on("keyup", function () {
@@ -789,18 +795,21 @@ $("#addBtn").on("click", function () {
 $("#personnelBtn").on("click", function() {
   // Call function to refresh personnel table
   clearSearchFilter()
+  $("#filterBtn").attr("disabled", false);
   refreshPersonnelTable()
 });
 
 $("#departmentsBtn").on("click", function() {
   // Call function to refresh department table
   clearSearchFilter()
+  $("#filterBtn").attr("disabled", true);
   refreshDepartmentTable()
 });
 
 $("#locationsBtn").on("click", function() {
   // Call function to refresh location table 
   clearSearchFilter()
+  $("#filterBtn").attr("disabled", true);
   refreshLocationTable() 
 });
 
