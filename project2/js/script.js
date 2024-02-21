@@ -143,7 +143,7 @@ function clearSearchFilter() {
 function searchFilter(result) {
   //make personnel tab active as search acts on personnel table.
   $("#personnelBtn").tab("show");
-  
+
   $("#filterBtn").attr("disabled", false);
 
   for (let i = 0; i < result.data.found.length; i++){
@@ -303,7 +303,6 @@ $("#filterModal").on("show.bs.modal", function () {
     }
   })
 
-
 clearSearchFilter();
 
   $("#departmentDropdown").off("change").on("change", function() {
@@ -311,8 +310,6 @@ clearSearchFilter();
     let locn = $('select[id="locationDropdown"] option:selected').val();
 
     if (dept != "all") {
-      console.log(dept);
-      
       $("#locationDropdown").val("all");
 
       $.ajax({
@@ -342,8 +339,6 @@ clearSearchFilter();
     let locn = $('select[id="locationDropdown"] option:selected').val();
 
     if (locn != "all") {
-      console.log(locn);
-
       $("#departmentDropdown").val("all");
 
       $.ajax({
