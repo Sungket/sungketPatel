@@ -333,10 +333,7 @@ $("#filterModal").on("show.bs.modal", function () {
   $.ajax({
     url: "php/getAllDepartments.php",
     type: "GET",
-    success: function(result) {
-
-      console.log(result);
-      
+    success: function(result) {     
 
       let tempDeptArray = [];
       let tempLocnArray = [];
@@ -355,8 +352,6 @@ $("#filterModal").on("show.bs.modal", function () {
         tempDeptArray.push(option);
         // $("#departmentDropdown").append(option);
       }
-      console.log(tempDeptArray);
-      
 
       for (let i = 0; i < result.location.length; i++){
         let option = document.createElement('option');
@@ -372,7 +367,6 @@ $("#filterModal").on("show.bs.modal", function () {
         tempLocnArray.push(option);
         // $("#locationDropdown").append(option);
       }
-      console.log(tempLocnArray);
       
       //sort tempArray alphabetically    
       tempDeptArray.sort(function (a, b) {
@@ -421,9 +415,9 @@ $("#filterModal").on("show.bs.modal", function () {
       //   $("#departmentDropdown").append(element);
       // });
 
-      tempLocnArray.forEach(element => {
-        $("#locationDropdown").append(element);
-      });
+      // tempLocnArray.forEach(element => {
+      //   $("#locationDropdown").append(element);
+      // });
     }
   })
 
@@ -583,12 +577,30 @@ $("#addBtn").on("click", function () {
       type: "GET",
       success: function(result) {
         if (result.status.code == 200) {
+          let tempDeptArray = [];
+
           for (let i = 0; i < result.data.length; i++) {
             let option = document.createElement("option");
             option.text = result.data[i].name;
             option.value = result.data[i].id;
-            $("#personnelDepartmentDropdown").append(option);
+
+            tempDeptArray.push(option);
           }
+
+          //sort tempArray alphabetically    
+          tempDeptArray.sort(function (a, b) {
+          if (a.text < b.text) {
+            return -1;
+          }
+          if (a.text > b.text) {
+            return 1;
+          }
+          return 0;
+          });
+
+          tempDeptArray.forEach(element => {
+            $("#personnelDepartmentDropdown").append(element);
+          });
         }
       }
     })
@@ -732,12 +744,28 @@ $("#addBtn").on("click", function () {
         type: "GET",
         success: function(result) {
           if (result.status.code == 200) {
+            let tempLocationArray = [];
+
             for (let i = 0; i < result.data.length; i++) {
               let option = document.createElement("option");
               option.text = result.data[i].name;
               option.value = result.data[i].id;
-              $("#departmentLocationDropdown").append(option);
+              tempLocationArray.push(option);
             }
+
+            tempLocationArray.sort(function (a, b) {
+              if (a.text < b.text) {
+                return -1;
+              }
+              if (a.text > b.text) {
+                return 1;
+              }
+              return 0;
+            });
+
+            tempLocationArray.forEach(element => {
+              $("#departmentLocationDropdown").append(element);
+            });
           }
         }
       })
