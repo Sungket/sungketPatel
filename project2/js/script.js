@@ -892,6 +892,9 @@ $("#editDepartmentModal").on("show.bs.modal", function (e) {
       id : $(e.relatedTarget).attr("data-id")
     },
     success: function (result) {
+      console.log(result);
+      
+
       const resultCode = result.status.code;
 
       if (resultCode == 200) {
@@ -996,12 +999,14 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
   //check if department is being used
   const deptArray = [];
   let deptname;
-  const id = $(e.relatedTarget).attr("data-id");
-  
+  let count;
+  const id = $(e.relatedTarget).attr("data-id");  
+
   $.ajax({
     url: "php/getAll.php",
     type: "GET",
     dataType: "json",
+    async: false,
     success: function(result) {
       if (result.status.code == 200) {
         $.each(result.data, function(i){
@@ -1015,36 +1020,85 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
     url: "php/getDepartmentByID.php",
     type: "POST",
     dataType: "json",
+    async: false,
     data: {
       id: id
     },
-    success: function (result) {
+    success: function (result) {      
       if (result.status.code == 200) {
         deptname = result.data.department[0].name;
       }
     }
   })
 
-  $("#confirmDepDelete").off("click").on("click", function() {
-
-    if (deptArray.includes(deptname)) {
-      alert(`Cannot delete department: ${deptname} as it is in use.`)
-    } else {
-      $.ajax({
-        url: "php/deleteDepartmentByID.php",
-        type: "POST",
-        data: {
-          id : id
-        },
-        success: function(result) {
-          if (result.status.code == 200) {
-            alert("Successfully deleted department");
-          } else {
-            alert("error deleting department.");
-          }      
-        }
-      })
+  $.ajax({
+    url: "php/getPersonnelByDeptCountByID.php",
+    type: "POST",
+    dataType: "json",
+    async: false,
+    data: {
+      id: id
+    },
+    success: function (result) {     
+       
+      if (result.status.code == 200) {        
+        count = result.data[0]['COUNT(departmentID)'];        
+      }
     }
+  })
+
+  // $("#confirmDepDelete").off("click").on("click", function() {
+
+  //   if (deptArray.includes(deptname)) {
+  //     alert(`Cannot delete department: ${deptname} as it is in use.`)
+  //   } else {
+  //     $.ajax({
+  //       url: "php/deleteDepartmentByID.php",
+  //       type: "POST",
+  //       data: {
+  //         id : id
+  //       },
+  //       success: function(result) {
+  //         if (result.status.code == 200) {
+  //           alert("Successfully deleted department");
+  //         } else {
+  //           alert("error deleting department.");
+  //         }      
+  //       }
+  //     })
+  //   }
+  //   refreshDepartmentTable();
+  // })
+
+  if (deptArray.includes(deptname)) {
+    document.getElementById("deleteDepartmentModalFooter").replaceChildren();
+    document.getElementById("deleteDepartmentTitle").innerHTML = "Cannot delete department";
+    document.getElementById("deleteDepartmentWarning").innerHTML = `Cannot delete ${deptname} department as there are ${count} employees assigned to it.`;
+    $('#deleteDepartmentModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CLOSE</button>'));
+
+  } else {
+    document.getElementById("deleteDepartmentModalFooter").replaceChildren();
+    document.getElementById("deleteDepartmentTitle").innerHTML = "Delete department";
+    document.getElementById("deleteDepartmentWarning").innerHTML = `Are you sure you want to delete the department ${deptname}?`;
+    $('#deleteDepartmentModalFooter').append($('<button type="button" id="confirmDepDelete" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">YES</button>'));
+    $('#deleteDepartmentModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>'));
+  }
+
+  $("#confirmDepDelete").off("click").on("click", function() {
+    $.ajax({
+      url: "php/deleteDepartmentByID.php",
+      type: "POST",
+      data: {
+        id : id
+      },
+      success: function(result) {
+        if (result.status.code == 200) {
+          alert("Successfully deleted department");
+        } else {
+          alert("error deleting department.");
+        }      
+      }
+    })
     refreshDepartmentTable();
   })
 })
