@@ -1107,20 +1107,55 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
 // Delete Location
 $("#deleteLocationModal").on("show.bs.modal", function (e) {
   const locationIndexArray = [];
+  let locnName;
+  let locnCount;
   const id = $(e.relatedTarget).attr("data-id");
   
   $.ajax({
     url: "php/getAllDepartments.php",
     type: "GET",
     dataType: "json",
+    async: false,
     success: function(result) {
-      if(result.status.code == 200) {
+      if(result.status.code == 200) {        
         $.each(result.data, function(i){
           locationIndexArray.push(result.data[i].locationID);
         })
       }
     }
   })
+
+  $.ajax({
+    url: "php/getLocationByID.php",
+    type: "POST",
+    dataType: "json",
+    async: false,
+    data: {
+      id: id
+    },
+    success: function (result) {      
+      if (result.status.code == 200) {
+        locnName = result.data.location[0].name;
+      }
+    }
+  })
+
+  $.ajax({
+    url: "php/getDeptLocationCountByID.php",
+    type: "POST",
+    dataType: "json",
+    async: false,
+    data: {
+      id: id
+    },
+    success: function(result) {      
+      if(result.status.code == 200) {
+        locnCount = result.data[0]['COUNT(locationID)'];
+      }
+    }
+  })
+  
+  
   
   $("#confirmLocDelete").off("click").on("click", function() {
 
