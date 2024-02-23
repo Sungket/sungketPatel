@@ -1093,84 +1093,89 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
   let locnName;
   let locnCount;
   const id = $(e.relatedTarget).attr("data-id");
+  let promises = [];
   
-  $.ajax({
-    url: "php/getAllDepartments.php",
-    type: "GET",
-    dataType: "json",
-    async: false,
-    success: function(result) {
-      if(result.status.code == 200) {        
-        $.each(result.data, function(i){
-          locationIndexArray.push(result.data[i].locationID);
-        })
-      }
-    }
-  })
-
-  $.ajax({
-    url: "php/getLocationByID.php",
-    type: "POST",
-    dataType: "json",
-    async: false,
-    data: {
-      id: id
-    },
-    success: function (result) {      
-      if (result.status.code == 200) {
-        locnName = result.data.location[0].name;
-      }
-    }
-  })
-
-  $.ajax({
-    url: "php/getDeptLocationCountByID.php",
-    type: "POST",
-    dataType: "json",
-    async: false,
-    data: {
-      id: id
-    },
-    success: function(result) {      
-      if(result.status.code == 200) {
-        locnCount = result.data[0]['COUNT(locationID)'];
-      }
-    }
-  })
-  
-
-  if (locationIndexArray.includes(id)) {
-    document.getElementById("deleteLocationModalFooter").replaceChildren();
-    document.getElementById("deleteLocationTitle").innerHTML = "Cannot delete location";
-    document.getElementById("deleteLocationWarning").innerHTML = `Cannot delete location <b>${locnName}</b> as there ${locnCount > 1 ? "are" : "is"} <b>${locnCount}</b> ${locnCount > 1 ? "departments" : "department"} allocated to it.`;
-    $('#deleteLocationModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CLOSE</button>'));
-  
-  } else {
-    document.getElementById("deleteLocationModalFooter").replaceChildren();
-    document.getElementById("deleteLocationTitle").innerHTML = "Delete location";
-    document.getElementById("deleteLocationWarning").innerHTML = `Are you sure you want to delete location <b>${locnName}</b>?`;
-    $('#deleteLocationModalFooter').append($('<button type="button" id="confirmLocDelete" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">YES</button>'));
-    $('#deleteLocationModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>'));
-  }
-
-  $("#confirmLocDelete").off("click").on("click", function() {
+  promises.push(new Promise(resolve => {
     $.ajax({
-      url: "php/deleteLocationByID.php",
-      type: "POST",
-      data: {
-        id : id
-      },
+      url: "php/getAllDepartments.php",
+      type: "GET",
+      dataType: "json",
       success: function(result) {
-        const resultCode = result.status.code;
-        if (resultCode == 200) {
-          alert("Successfully deleted location");
-        } else {
-          alert("error occured while deleting location");
+        if(result.status.code == 200) {        
+          $.each(result.data, function(i){
+            resolve(locationIndexArray.push(result.data[i].locationID));
+          })
         }
       }
-    })
-    refreshLocationTable();
-  })
+    });
+  }));
+
+  promises.push(new Promise(resolve => {
+    $.ajax({
+      url: "php/getLocationByID.php",
+      type: "POST",
+      dataType: "json",
+      data: {
+        id: id
+      },
+      success: function (result) {      
+        if (result.status.code == 200) {
+          resolve(locnName = result.data.location[0].name);
+        }
+      }
+    });
+  }));
+
+  promises.push(new Promise(resolve => {
+    $.ajax({
+      url: "php/getDeptLocationCountByID.php",
+      type: "POST",
+      dataType: "json",
+      data: {
+        id: id
+      },
+      success: function(result) {      
+        if(result.status.code == 200) {
+          resolve(locnCount = result.data[0]['COUNT(locationID)']);
+        }
+      }
+    });
+  }));
+
+  Promise.all(promises).then(() => {
+    if (locationIndexArray.includes(id)) {
+      document.getElementById("deleteLocationModalFooter").replaceChildren();
+      document.getElementById("deleteLocationTitle").innerHTML = "Cannot delete location";
+      document.getElementById("deleteLocationWarning").innerHTML = `Cannot delete location <b>${locnName}</b> as there ${locnCount > 1 ? "are" : "is"} <b>${locnCount}</b> ${locnCount > 1 ? "departments" : "department"} allocated to it.`;
+      $('#deleteLocationModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CLOSE</button>'));
+    
+    } else {
+      document.getElementById("deleteLocationModalFooter").replaceChildren();
+      document.getElementById("deleteLocationTitle").innerHTML = "Delete location";
+      document.getElementById("deleteLocationWarning").innerHTML = `Are you sure you want to delete location <b>${locnName}</b>?`;
+      $('#deleteLocationModalFooter').append($('<button type="button" id="confirmLocDelete" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">YES</button>'));
+      $('#deleteLocationModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>'));
+    }
+  
+    $("#confirmLocDelete").off("click").on("click", function() {
+      $.ajax({
+        url: "php/deleteLocationByID.php",
+        type: "POST",
+        data: {
+          id : id
+        },
+        success: function(result) {
+          const resultCode = result.status.code;
+          if (resultCode == 200) {
+            alert("Successfully deleted location");
+          } else {
+            alert("error occured while deleting location");
+          }
+        }
+      })
+      refreshLocationTable();
+    });
+  });
 })
 
 
@@ -1184,7 +1189,6 @@ $("#deletePersonnelModal").on("show.bs.modal", function (e) {
     url: "php/getPersonnelByID.php",
     type: "POST",
     dataType: "json",
-    async: false,
     data: {
       id: id
     },
@@ -1193,27 +1197,29 @@ $("#deletePersonnelModal").on("show.bs.modal", function (e) {
         persName = result.data.personnel[0].firstName + " " + result.data.personnel[0].lastName;
       }
     }
-  });
+  })
 
-  document.getElementById("deletePersonnelWarning").innerHTML = `Are you sure you want to delete the record for <b>${persName}</b>?`;
+  .then(function() {
+    document.getElementById("deletePersonnelWarning").innerHTML = `Are you sure you want to delete the record for <b>${persName}</b>?`;
   
-  $("#confirmPersDelete").off("click").on("click", function() {
-    
-    $.ajax({
-      url: "php/deletePersonnelByID.php",
-      type: "POST",
-      data: {
-        id : id
-      },
-      success: function(result) {
-        const resultCode = result.status.code;
-        if (resultCode == 200) {
-          alert("Successfully deleted record");
-        } else {
-          alert("error occured while deleting record");
+    $("#confirmPersDelete").off("click").on("click", function() {
+      
+      $.ajax({
+        url: "php/deletePersonnelByID.php",
+        type: "POST",
+        data: {
+          id : id
+        },
+        success: function(result) {
+          const resultCode = result.status.code;
+          if (resultCode == 200) {
+            alert("Successfully deleted record");
+          } else {
+            alert("error occured while deleting record");
+          }
         }
-      }
+      })
+      refreshPersonnelTable();
     })
-    refreshPersonnelTable();
   })
 })
