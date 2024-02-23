@@ -1190,8 +1190,29 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
   })
 })
 
+
 //Delete Personnel
 $("#deletePersonnelModal").on("show.bs.modal", function (e) {
+
+  let persName;
+  const id = $(e.relatedTarget).attr("data-id");
+
+  $.ajax({
+    url: "php/getPersonnelByID.php",
+    type: "POST",
+    dataType: "json",
+    async: false,
+    data: {
+      id: id
+    },
+    success: function (result) {      
+      if (result.status.code == 200) {        
+        persName = result.data.personnel[0].firstName + " " + result.data.personnel[0].lastName;
+      }
+    }
+  });
+
+  document.getElementById("deletePersonnelWarning").innerHTML = `Are you sure you want to delete the record for ${persName}?`;
   
   $("#confirmPersDelete").off("click").on("click", function() {
     
@@ -1199,7 +1220,7 @@ $("#deletePersonnelModal").on("show.bs.modal", function (e) {
       url: "php/deletePersonnelByID.php",
       type: "POST",
       data: {
-        id : $(e.relatedTarget).attr("data-id")
+        id : id
       },
       success: function(result) {
         const resultCode = result.status.code;
