@@ -1001,83 +1001,89 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
   let deptname;
   let count;
   const id = $(e.relatedTarget).attr("data-id");  
+  let promises = [];
 
-  $.ajax({
-    url: "php/getAll.php",
-    type: "GET",
-    dataType: "json",
-    async: false,
-    success: function(result) {
-      if (result.status.code == 200) {
-        $.each(result.data, function(i){
-          deptArray.push(result.data[i].department);
-        })
-      }
-    }
-  });
-
-  $.ajax({
-    url: "php/getDepartmentByID.php",
-    type: "POST",
-    dataType: "json",
-    async: false,
-    data: {
-      id: id
-    },
-    success: function (result) {      
-      if (result.status.code == 200) {
-        deptname = result.data.department[0].name;
-      }
-    }
-  })
-
-  $.ajax({
-    url: "php/getPersonnelByDeptCountByID.php",
-    type: "POST",
-    dataType: "json",
-    async: false,
-    data: {
-      id: id
-    },
-    success: function (result) {     
-       
-      if (result.status.code == 200) {        
-        count = result.data[0]['COUNT(departmentID)'];        
-      }
-    }
-  })
-
-  if (deptArray.includes(deptname)) {
-    document.getElementById("deleteDepartmentModalFooter").replaceChildren();
-    document.getElementById("deleteDepartmentTitle").innerHTML = "Cannot delete department";
-    document.getElementById("deleteDepartmentWarning").innerHTML = `Cannot delete <b>${deptname}</b> department as there ${count > 1 ? "are" : "is"} <b>${count}</b> ${count > 1 ? 'employees' : 'employee'} assigned to it.`;
-    $('#deleteDepartmentModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CLOSE</button>'));
-
-  } else {
-    document.getElementById("deleteDepartmentModalFooter").replaceChildren();
-    document.getElementById("deleteDepartmentTitle").innerHTML = "Delete department";
-    document.getElementById("deleteDepartmentWarning").innerHTML = `Are you sure you want to delete the department <b>${deptname}</b>?`;
-    $('#deleteDepartmentModalFooter').append($('<button type="button" id="confirmDepDelete" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">YES</button>'));
-    $('#deleteDepartmentModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>'));
-  }
-
-  $("#confirmDepDelete").off("click").on("click", function() {
+  promises.push(new Promise(resolve => {
     $.ajax({
-      url: "php/deleteDepartmentByID.php",
-      type: "POST",
-      data: {
-        id : id
-      },
+      url: "php/getAll.php",
+      type: "GET",
+      dataType: "json",
       success: function(result) {
         if (result.status.code == 200) {
-          alert("Successfully deleted department");
-        } else {
-          alert("error deleting department.");
-        }      
+          $.each(result.data, function(i){
+            resolve(deptArray.push(result.data[i].department));
+          })
+        }
       }
+    });
+  }));
+
+  promises.push(new Promise(resolve => {
+    $.ajax({
+      url: "php/getDepartmentByID.php",
+      type: "POST",
+      dataType: "json",
+      data: {
+        id: id
+      },
+      success: function (result) {      
+        if (result.status.code == 200) {
+          resolve(deptname = result.data.department[0].name);
+        }
+      }
+    });
+  }));
+
+  promises.push(new Promise((resolve) => {
+    $.ajax({
+      url: "php/getPersonnelByDeptCountByID.php",
+      type: "POST",
+      dataType: "json",
+      data: {
+        id: id
+      },
+      success: function (result) {     
+        if (result.status.code == 200) {        
+          resolve(count = result.data[0]['COUNT(departmentID)']);        
+        }
+      }
+    });
+  }));
+
+  Promise.all(promises).then(() => {
+    
+    if (deptArray.includes(deptname)) {
+      document.getElementById("deleteDepartmentModalFooter").replaceChildren();
+      document.getElementById("deleteDepartmentTitle").innerHTML = "Cannot delete department";
+      document.getElementById("deleteDepartmentWarning").innerHTML = `Cannot delete <b>${deptname}</b> department as there ${count > 1 ? "are" : "is"} <b>${count}</b> ${count > 1 ? 'employees' : 'employee'} assigned to it.`;
+      $('#deleteDepartmentModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CLOSE</button>'));
+  
+    } else {
+      document.getElementById("deleteDepartmentModalFooter").replaceChildren();
+      document.getElementById("deleteDepartmentTitle").innerHTML = "Delete department";
+      document.getElementById("deleteDepartmentWarning").innerHTML = `Are you sure you want to delete the department <b>${deptname}</b>?`;
+      $('#deleteDepartmentModalFooter').append($('<button type="button" id="confirmDepDelete" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">YES</button>'));
+      $('#deleteDepartmentModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>'));
+    }
+  
+    $("#confirmDepDelete").off("click").on("click", function() {
+      $.ajax({
+        url: "php/deleteDepartmentByID.php",
+        type: "POST",
+        data: {
+          id : id
+        },
+        success: function(result) {
+          if (result.status.code == 200) {
+            alert("Successfully deleted department");
+          } else {
+            alert("error deleting department.");
+          }      
+        }
+      })
+      refreshDepartmentTable();
     })
-    refreshDepartmentTable();
-  })
+  });
 })
 
 
