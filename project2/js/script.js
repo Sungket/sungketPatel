@@ -321,7 +321,9 @@ clearSearchFilter();
         success: function(result) {
           if (result.status.code == 200) {
             if (result.data.found.length == 0) {
-              alert("No records saved under this department.")
+              $("#informationModal").modal('show');
+              $("#information").html('No records saved under this department.');
+              // alert("No records saved under this department.")
             }
             searchFilter(result);
           }
