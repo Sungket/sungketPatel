@@ -1047,33 +1047,10 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
     }
   })
 
-  // $("#confirmDepDelete").off("click").on("click", function() {
-
-  //   if (deptArray.includes(deptname)) {
-  //     alert(`Cannot delete department: ${deptname} as it is in use.`)
-  //   } else {
-  //     $.ajax({
-  //       url: "php/deleteDepartmentByID.php",
-  //       type: "POST",
-  //       data: {
-  //         id : id
-  //       },
-  //       success: function(result) {
-  //         if (result.status.code == 200) {
-  //           alert("Successfully deleted department");
-  //         } else {
-  //           alert("error deleting department.");
-  //         }      
-  //       }
-  //     })
-  //   }
-  //   refreshDepartmentTable();
-  // })
-
   if (deptArray.includes(deptname)) {
     document.getElementById("deleteDepartmentModalFooter").replaceChildren();
     document.getElementById("deleteDepartmentTitle").innerHTML = "Cannot delete department";
-    document.getElementById("deleteDepartmentWarning").innerHTML = `Cannot delete ${deptname} department as there are ${count} employees assigned to it.`;
+    document.getElementById("deleteDepartmentWarning").innerHTML = `Cannot delete <b>${deptname}</b> department as there ${count > 1 ? "are" : "is"} <b>${count}</b> ${count > 1 ? 'employees' : 'employee'} assigned to it.`;
     $('#deleteDepartmentModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CLOSE</button>'));
 
   } else {
