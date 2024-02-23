@@ -1155,29 +1155,37 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
     }
   })
   
-  
-  
-  $("#confirmLocDelete").off("click").on("click", function() {
 
-    if (locationIndexArray.includes(id)) {
-      alert(`Cannot delete location, as it is in use.`)
-    } else {
-      $.ajax({
-        url: "php/deleteLocationByID.php",
-        type: "POST",
-        data: {
-          id : id
-        },
-        success: function(result) {
-          const resultCode = result.status.code;
-          if (resultCode == 200) {
-            alert("Successfully deleted location");
-          } else {
-            alert("error occured while deleting location");
-          }
+  if (locationIndexArray.includes(id)) {
+    document.getElementById("deleteLocationModalFooter").replaceChildren();
+    document.getElementById("deleteLocationTitle").innerHTML = "Cannot delete location";
+    document.getElementById("deleteLocationWarning").innerHTML = `Cannot delete location ${locnName} as there are ${locnCount} departments allocated to it.`;
+    $('#deleteLocationModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CLOSE</button>'));
+  
+  } else {
+    document.getElementById("deleteLocationModalFooter").replaceChildren();
+    document.getElementById("deleteLocationTitle").innerHTML = "Delete location";
+    document.getElementById("deleteLocationWarning").innerHTML = `Are you sure you want to delete location ${locnName}?`;
+    $('#deleteLocationModalFooter').append($('<button type="button" id="confirmLocDelete" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">YES</button>'));
+    $('#deleteLocationModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>'));
+  }
+
+  $("#confirmLocDelete").off("click").on("click", function() {
+    $.ajax({
+      url: "php/deleteLocationByID.php",
+      type: "POST",
+      data: {
+        id : id
+      },
+      success: function(result) {
+        const resultCode = result.status.code;
+        if (resultCode == 200) {
+          alert("Successfully deleted location");
+        } else {
+          alert("error occured while deleting location");
         }
-      })
-    }
+      }
+    })
     refreshLocationTable();
   })
 })
