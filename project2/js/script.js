@@ -1056,7 +1056,7 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
   } else {
     document.getElementById("deleteDepartmentModalFooter").replaceChildren();
     document.getElementById("deleteDepartmentTitle").innerHTML = "Delete department";
-    document.getElementById("deleteDepartmentWarning").innerHTML = `Are you sure you want to delete the department ${deptname}?`;
+    document.getElementById("deleteDepartmentWarning").innerHTML = `Are you sure you want to delete the department <b>${deptname}</b>?`;
     $('#deleteDepartmentModalFooter').append($('<button type="button" id="confirmDepDelete" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">YES</button>'));
     $('#deleteDepartmentModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>'));
   }
@@ -1136,13 +1136,13 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
   if (locationIndexArray.includes(id)) {
     document.getElementById("deleteLocationModalFooter").replaceChildren();
     document.getElementById("deleteLocationTitle").innerHTML = "Cannot delete location";
-    document.getElementById("deleteLocationWarning").innerHTML = `Cannot delete location ${locnName} as there are ${locnCount} departments allocated to it.`;
+    document.getElementById("deleteLocationWarning").innerHTML = `Cannot delete location <b>${locnName}</b> as there ${locnCount > 1 ? "are" : "is"} <b>${locnCount}</b> ${locnCount > 1 ? "departments" : "department"} allocated to it.`;
     $('#deleteLocationModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CLOSE</button>'));
   
   } else {
     document.getElementById("deleteLocationModalFooter").replaceChildren();
     document.getElementById("deleteLocationTitle").innerHTML = "Delete location";
-    document.getElementById("deleteLocationWarning").innerHTML = `Are you sure you want to delete location ${locnName}?`;
+    document.getElementById("deleteLocationWarning").innerHTML = `Are you sure you want to delete location <b>${locnName}</b>?`;
     $('#deleteLocationModalFooter').append($('<button type="button" id="confirmLocDelete" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">YES</button>'));
     $('#deleteLocationModalFooter').append($('<button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>'));
   }
@@ -1189,7 +1189,7 @@ $("#deletePersonnelModal").on("show.bs.modal", function (e) {
     }
   });
 
-  document.getElementById("deletePersonnelWarning").innerHTML = `Are you sure you want to delete the record for ${persName}?`;
+  document.getElementById("deletePersonnelWarning").innerHTML = `Are you sure you want to delete the record for <b>${persName}</b>?`;
   
   $("#confirmPersDelete").off("click").on("click", function() {
     
