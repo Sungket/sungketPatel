@@ -352,7 +352,9 @@ clearSearchFilter();
         success: function(result) {
           if (result.status.code == 200) {
             if(result.data.found.length == 0) {
-              alert("No records found at this location.")
+              $("#informationModal").modal('show');
+              $("#information").text('No records found at this location.');
+              // alert("No records found at this location.")
             }
             searchFilter(result);
           }
@@ -506,7 +508,7 @@ $("#addBtn").on("click", function () {
     footer.appendChild(cancelbutton);
 
     //hitting save in personnel tab passes through to the following ajax call.
-      $("#personnelForm").on("submit", function () {
+      $("#personnelForm").on("submit", function (e) {
 
         //first check for duplicates
         let personnelArray = [];
@@ -532,7 +534,10 @@ $("#addBtn").on("click", function () {
 
         $.each(personnelArray, function (i, record) {
           if ((record.lastName == lastName) && (record.firstName == firstName) && (record.email == email)) {
-            alert(`A record with the name: ${firstName} ${lastName} and email: ${email} already exists. Record not saved.`);
+            e.preventDefault();
+            $("#informationModal").modal('show');
+            $("#information").text(`A record with the name: ${firstName} ${lastName} and email: ${email} already exists. Record not saved.`);
+            // alert(`A record with the name: ${firstName} ${lastName} and email: ${email} already exists. Record not saved.`);
             bool = true;
             return false;
           };
@@ -552,7 +557,8 @@ $("#addBtn").on("click", function () {
             },
             success: function (result) {
               if (result.status.code == 200) {
-                alert("Record saved successfully.")
+                $('#personnelForm').addClass('alert alert-success').show();
+                $('#personnelForm').text('Success!');
               }
             }
           })
@@ -645,7 +651,7 @@ $("#addBtn").on("click", function () {
       footer.appendChild(cancelbutton);
 
       //hitting save in department tab passes through to the following ajax call.
-      $("#departmentForm").on("submit", function () {
+      $("#departmentForm").on("submit", function (e) {
 
         //check for duplicates
         let departmentArray = [];
@@ -669,7 +675,10 @@ $("#addBtn").on("click", function () {
         $.each(departmentArray, function (i, record) {
           
           if ((record.name == departmentName) && (record.locationID == locnID)){
-            alert(`A department with the name: ${departmentName} exists in the same location. New department not saved.`);
+            e.preventDefault();
+            $("#informationModal").modal('show');
+            $("#information").text(`A department with the name: ${departmentName} exists in the same location. New department not saved.`);
+            // alert(`A department with the name: ${departmentName} exists in the same location. New department not saved.`);
             bool = true;
             return false;
           };
@@ -686,7 +695,9 @@ $("#addBtn").on("click", function () {
             },
             success: function (result) {
               if (result.status.code == 200) {
-                alert("Department saved successsfully.")
+                $('#departmentForm').addClass('alert alert-success').show();
+                $('#departmentForm').text('Department saved successsfully.');
+                // alert("Department saved successsfully.")
               }
             }
           })
@@ -741,7 +752,7 @@ $("#addBtn").on("click", function () {
       footer.appendChild(savebutton);
       footer.appendChild(cancelbutton);
 
-      $("#locationForm").on("submit", function () {
+      $("#locationForm").on("submit", function (e) {
 
         //check for duplicates
         let locationArray = [];
@@ -763,7 +774,10 @@ $("#addBtn").on("click", function () {
 
         $.each(locationArray, function () {
           if (locationArray.includes(location)) {
-            alert(`Location: ${location} already exists. New location not saved.`);
+            e.preventDefault();
+            $("#informationModal").modal('show');
+            $("#information").text(`Location: ${location} already exists. New location not saved.`);
+            // alert(`Location: ${location} already exists. New location not saved.`);
             bool = true;
             return false;
           }
@@ -778,7 +792,9 @@ $("#addBtn").on("click", function () {
             },
             success: function (result) {
               if (result.status.code == 200) {
-                alert("Location saved successfully.")
+                $('#locationForm').addClass('alert alert-success').show();
+                $('#locationForm').text('Location saved successfully.');
+                // alert("Location saved successfully.")
               }
             }
           })
@@ -877,7 +893,9 @@ $("#editPersonnelForm").on("submit", function () {
     },
     success: function(result) {
       if (result.status.code == 200) {
-        alert('successfully edited personnel record.');
+        $('#editPersonnelForm').addClass('alert alert-success').show();
+        $('#editPersonnelForm').text('successfully edited personnel record.');
+        // alert('successfully edited personnel record.');
       }
     }
   })
@@ -942,7 +960,9 @@ $.ajax({
     locationID: document.getElementById("editDepartmentLocation").value
   },
   success: function (result) {
-    alert('record succesfully updated!');
+    $('#editDepartmentForm').addClass('alert alert-success').show();
+    $('#editDepartmentForm').text('record succesfully updated!');
+    // alert('record succesfully updated!');
   }
 })
 })
@@ -989,7 +1009,9 @@ $("#editLocationForm").on("submit", function () {
     },
     success: function(result) {
       if (result.status.code == 200) {
-        alert('successfully edited location.');
+        $('#editLocationForm').addClass('alert alert-success').show();
+        $('#editLocationForm').text('successfully edited location.');
+        // alert('successfully edited location.');
       }
     }
   })
@@ -1077,9 +1099,10 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
         },
         success: function(result) {
           if (result.status.code == 200) {
-            alert("Successfully deleted department");
+            $("#confirmDepDelete").replaceWith("Successfully deleted department");
           } else {
-            alert("error deleting department.");
+            $("#confirmDepDelete").replaceWith("error deleting department.");
+            // alert("error deleting department.");
           }      
         }
       })
@@ -1169,7 +1192,11 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
         success: function(result) {
           const resultCode = result.status.code;
           if (resultCode == 200) {
-            alert("Successfully deleted location");
+            $("#informationModal").modal('show');
+            $('#information').text("Successfully deleted location");
+            // $('#confirmLocDelete').addClass('alert alert-success').show();
+            // $('#confirmLocDelete').text("Successfully deleted location");
+            // alert("Successfully deleted location");
           } else {
             alert("error occured while deleting location");
           }
