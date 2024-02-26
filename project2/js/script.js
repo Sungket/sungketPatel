@@ -878,25 +878,65 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
   });
 });
 
-$("#editPersonnelForm").on("submit", function () {
+$("#editPersonnelForm").on("submit", function (e) {
+  e.preventDefault();
+
+  let persArray = [];
+  const fName = document.getElementById("editPersonnelFirstName").value;
+  const lName = document.getElementById("editPersonnelLastName").value;
+  const persEmail = document.getElementById("editPersonnelEmailAddress").value;
+
+  let bool = false;
 
   $.ajax({
-    url: "php/editPersonnel.php",
-    type: "POST",
-    data: {
-      id : document.getElementById("editPersonnelEmployeeID").value,
-      firstName : document.getElementById("editPersonnelFirstName").value,
-      lastName : document.getElementById("editPersonnelLastName").value,
-      email : document.getElementById("editPersonnelEmailAddress").value,
-      jobTitle : document.getElementById("editPersonnelJobTitle").value,
-      departmentID : document.getElementById("editPersonnelDepartment").value
-    },
+    url: "php/getAll.php",
+    type: "GET",
+    dataType: "json",
     success: function(result) {
       if (result.status.code == 200) {
-        $('#editPersonnelForm').addClass('alert alert-success').show();
-        $('#editPersonnelForm').text('successfully edited personnel record.');
-        // alert('successfully edited personnel record.');
+        $.each(result.data, function(i){
+          persArray.push(result.data[i]);
+        })
       }
+    }
+  })
+  
+  .then(()=> {
+    console.log(fName);
+    console.log(lName);
+    console.log(persEmail);
+    console.log(persArray);
+     
+    persArray.forEach((person) => {
+      if (person.lastName == lName && person.firstName == fName && person.email == persEmail) {
+        $("#informationModal").modal('show');
+        $("#information").text(`A record with the name: ${fName} ${lName} and email: ${persEmail} already exists.`);
+        bool = true;
+        return;
+      }
+    })
+
+    if(bool == false) {
+      $.ajax({
+        url: "php/editPersonnel.php",
+        type: "POST",
+        data: {
+          id : document.getElementById("editPersonnelEmployeeID").value,
+          firstName : document.getElementById("editPersonnelFirstName").value,
+          lastName : document.getElementById("editPersonnelLastName").value,
+          email : document.getElementById("editPersonnelEmailAddress").value,
+          jobTitle : document.getElementById("editPersonnelJobTitle").value,
+          departmentID : document.getElementById("editPersonnelDepartment").value
+        },
+        success: function(result) {
+          if (result.status.code == 200) {
+            $('#editPersonnelForm').addClass('alert alert-success').show();
+            $('#editPersonnelForm').text('successfully edited personnel record.');
+            e.target.submit();
+            // alert('successfully edited personnel record.');
+          }
+        }
+      })
     }
   })
 })
