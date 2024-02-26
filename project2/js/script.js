@@ -998,21 +998,44 @@ $("#editLocationModal").on("show.bs.modal", function (e) {
   });
 });
 
-$("#editLocationForm").on("submit", function () {
+$("#editLocationForm").on("submit", function (e) {
+  e.preventDefault();
+  let locnArray = [];
+  const input = document.getElementById("editLocationName").value;
 
   $.ajax({
-    url: "php/editLocationByID.php",
-    type: "POST",
-    data: {
-      id : document.getElementById("editLocationID").value,
-      name : document.getElementById("editLocationName").value
-    },
-    success: function(result) {
+    url: "php/getAllLocations.php",
+    type: "GET",
+    success: function (result){
+      
       if (result.status.code == 200) {
-        $('#editLocationForm').addClass('alert alert-success').show();
-        $('#editLocationForm').text('successfully edited location.');
-        // alert('successfully edited location.');
+        $.each(result.data, function(i) {
+          locnArray.push(result.data[i].name)
+        })
       }
+    }
+  })
+
+  .then(()=> {
+    if(!locnArray.includes(input)) {
+      $.ajax({
+        url: "php/editLocationByID.php",
+        type: "POST",
+        data: {
+          id : document.getElementById("editLocationID").value,
+          name : input
+        },
+        success: function(result) {
+          if (result.status.code == 200) {
+            $('#editLocationForm').addClass('alert alert-success').show();
+            $('#editLocationForm').text('successfully edited location.');
+            e.target.submit();
+          }
+        }
+      })
+    } else {
+      $("#informationModal").modal('show');
+      $('#information').text('this location already exists.');
     }
   })
 })
@@ -1194,8 +1217,6 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
           if (resultCode == 200) {
             $("#informationModal").modal('show');
             $('#information').text("Successfully deleted location");
-            // $('#confirmLocDelete').addClass('alert alert-success').show();
-            // $('#confirmLocDelete').text("Successfully deleted location");
             // alert("Successfully deleted location");
           } else {
             $("#informationModal").modal('show');
