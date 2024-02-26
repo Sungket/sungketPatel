@@ -912,9 +912,6 @@ $("#editDepartmentModal").on("show.bs.modal", function (e) {
       id : $(e.relatedTarget).attr("data-id")
     },
     success: function (result) {
-      console.log(result);
-      
-
       const resultCode = result.status.code;
 
       if (resultCode == 200) {
@@ -949,22 +946,54 @@ $("#editDepartmentModal").on("show.bs.modal", function (e) {
 })
 
 
-$("#editDepartmentForm").on("submit", function () {
+$("#editDepartmentForm").on("submit", function (e) {
+  e.preventDefault();
+  let departArray = [];
+  let bool = false;
+  const departName = document.getElementById("editDepartmentName").value;
+  const departlocn = document.getElementById("editDepartmentLocation").value;
+
+  $.ajax({
+    url: "php/getAllDepartments.php",
+    type: "GET",
+    success: function (result) {
+      if (result.status.code == 200) {
+        $.each(result.data, function(i) {
+          departArray.push(result.data[i])
+        })
+      }
+    }    
+  })
   
-$.ajax({
-  url : "php/editDepartmentByID.php",
-  type: "POST",
-  data: {
-    id: document.getElementById("editDepartmentID").value,
-    name: document.getElementById("editDepartmentName").value,
-    locationID: document.getElementById("editDepartmentLocation").value
-  },
-  success: function (result) {
-    $('#editDepartmentForm').addClass('alert alert-success').show();
-    $('#editDepartmentForm').text('record succesfully updated!');
-    // alert('record succesfully updated!');
-  }
-})
+  .then(()=> {
+    departArray.forEach((department)=> {
+      if(department.name == departName && department.locationID == departlocn) {
+        $("#informationModal").modal('show');
+        $("#information").innerHTML(`A department with the name: <b>${departName}</b> already exists in the same location.`);
+        bool = true;
+        return;
+      } 
+    })
+
+    if (bool == false) {
+      $.ajax({
+        url : "php/editDepartmentByID.php",
+        type: "POST",
+        data: {
+          id: document.getElementById("editDepartmentID").value,
+          name: document.getElementById("editDepartmentName").value,
+          locationID: document.getElementById("editDepartmentLocation").value
+        },
+        success: function (result) {
+          if(result.status.code == 200) {
+            $('#editDepartmentForm').addClass('alert alert-success').show();
+            $('#editDepartmentForm').text('record succesfully updated!');
+            e.target.submit();
+          }
+        }
+      })
+    }
+  })
 })
 
 
