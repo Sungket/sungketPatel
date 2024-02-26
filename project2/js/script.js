@@ -1198,7 +1198,9 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
             // $('#confirmLocDelete').text("Successfully deleted location");
             // alert("Successfully deleted location");
           } else {
-            alert("error occured while deleting location");
+            $("#informationModal").modal('show');
+            $('#information').text("error occured while deleting location");
+            // alert("error occured while deleting location");
           }
         }
       })
@@ -1242,9 +1244,13 @@ $("#deletePersonnelModal").on("show.bs.modal", function (e) {
         success: function(result) {
           const resultCode = result.status.code;
           if (resultCode == 200) {
-            alert("Successfully deleted record");
+            $("#informationModal").modal('show');
+            $('#information').text("Successfully deleted record");
+            // alert("Successfully deleted record");
           } else {
-            alert("error occured while deleting record");
+            $("#informationModal").modal('show');
+            $('#information').text("error occured while deleting record");
+            // alert("error occured while deleting record");
           }
         }
       })
