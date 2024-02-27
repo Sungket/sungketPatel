@@ -192,8 +192,6 @@ function searchFilter(result) {
 }
 
 
-
-
 $("#searchInp").on("keyup", function () {
 
   $.ajax({
@@ -771,7 +769,7 @@ $("#addBtn").on("click", function () {
           if (locationArray.includes(location)) {
             e.preventDefault();
             $("#informationModal").modal('show');
-            $("#information").text(`Location: ${location} already exists. New location not saved.`);
+            $("#information").html(`Location: <b>${location}</b> already exists. New location not saved.`);
             bool = true;
             return false;
           }
@@ -996,7 +994,7 @@ $("#editDepartmentForm").on("submit", function (e) {
     departArray.forEach((department)=> {
       if(department.name == departName && department.locationID == departlocn) {
         $("#informationModal").modal('show');
-        $("#information").innerHTML(`A department with the name: <b>${departName}</b> already exists in the same location.`);
+        $("#information").html(`A department with the name: <b>${departName}</b> already exists in the same location.`);
         bool = true;
         return;
       } 
