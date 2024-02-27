@@ -32,7 +32,7 @@
 
     $query = $conn->prepare('SELECT COUNT(departmentID) FROM personnel WHERE departmentID = ?');
 
-	$query-> bind_param("i", $_REQUEST['id']);
+	$query-> bind_param("i", $_POST['id']);
 
     $query-> execute();
     

@@ -323,7 +323,6 @@ clearSearchFilter();
             if (result.data.found.length == 0) {
               $("#informationModal").modal('show');
               $("#information").html('No records saved under this department.');
-              // alert("No records saved under this department.")
             }
             searchFilter(result);
           }
@@ -354,7 +353,6 @@ clearSearchFilter();
             if(result.data.found.length == 0) {
               $("#informationModal").modal('show');
               $("#information").text('No records found at this location.');
-              // alert("No records found at this location.")
             }
             searchFilter(result);
           }
@@ -537,7 +535,6 @@ $("#addBtn").on("click", function () {
             e.preventDefault();
             $("#informationModal").modal('show');
             $("#information").text(`A record with the name: ${firstName} ${lastName} and email: ${email} already exists. Record not saved.`);
-            // alert(`A record with the name: ${firstName} ${lastName} and email: ${email} already exists. Record not saved.`);
             bool = true;
             return false;
           };
@@ -678,7 +675,6 @@ $("#addBtn").on("click", function () {
             e.preventDefault();
             $("#informationModal").modal('show');
             $("#information").text(`A department with the name: ${departmentName} exists in the same location. New department not saved.`);
-            // alert(`A department with the name: ${departmentName} exists in the same location. New department not saved.`);
             bool = true;
             return false;
           };
@@ -697,7 +693,6 @@ $("#addBtn").on("click", function () {
               if (result.status.code == 200) {
                 $('#departmentForm').addClass('alert alert-success').show();
                 $('#departmentForm').text('Department saved successsfully.');
-                // alert("Department saved successsfully.")
               }
             }
           })
@@ -777,7 +772,6 @@ $("#addBtn").on("click", function () {
             e.preventDefault();
             $("#informationModal").modal('show');
             $("#information").text(`Location: ${location} already exists. New location not saved.`);
-            // alert(`Location: ${location} already exists. New location not saved.`);
             bool = true;
             return false;
           }
@@ -794,7 +788,6 @@ $("#addBtn").on("click", function () {
               if (result.status.code == 200) {
                 $('#locationForm').addClass('alert alert-success').show();
                 $('#locationForm').text('Location saved successfully.');
-                // alert("Location saved successfully.")
               }
             }
           })
@@ -902,11 +895,6 @@ $("#editPersonnelForm").on("submit", function (e) {
   })
   
   .then(()=> {
-    console.log(fName);
-    console.log(lName);
-    console.log(persEmail);
-    console.log(persArray);
-     
     persArray.forEach((person) => {
       if (person.lastName == lName && person.firstName == fName && person.email == persEmail) {
         $("#informationModal").modal('show');
@@ -933,7 +921,6 @@ $("#editPersonnelForm").on("submit", function (e) {
             $('#editPersonnelForm').addClass('alert alert-success').show();
             $('#editPersonnelForm').text('successfully edited personnel record.');
             e.target.submit();
-            // alert('successfully edited personnel record.');
           }
         }
       })
@@ -1194,7 +1181,6 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
             $("#confirmDepDelete").replaceWith("Successfully deleted department");
           } else {
             $("#confirmDepDelete").replaceWith("error deleting department.");
-            // alert("error deleting department.");
           }      
         }
       })
@@ -1286,11 +1272,9 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
           if (resultCode == 200) {
             $("#informationModal").modal('show');
             $('#information').text("Successfully deleted location");
-            // alert("Successfully deleted location");
           } else {
             $("#informationModal").modal('show');
             $('#information').text("error occured while deleting location");
-            // alert("error occured while deleting location");
           }
         }
       })
@@ -1336,11 +1320,9 @@ $("#deletePersonnelModal").on("show.bs.modal", function (e) {
           if (resultCode == 200) {
             $("#informationModal").modal('show');
             $('#information').text("Successfully deleted record");
-            // alert("Successfully deleted record");
           } else {
             $("#informationModal").modal('show');
             $('#information').text("error occured while deleting record");
-            // alert("error occured while deleting record");
           }
         }
       })
