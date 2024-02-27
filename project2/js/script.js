@@ -243,6 +243,12 @@ $("#refreshBtn").on("click", function () {
 $("#filterModal").on("show.bs.modal", function () {
   // Open a modal of your own design that allows the user to apply a filter to the personnel table on either department or location
   //clear all existing options in list
+  // const departmentFilterValue = document.getElementById("departmentDropdown").val();
+  // console.log(departmentFilterValue);
+  
+  // const locationFilterValue = document.getElementById("departmentDropdown").value();
+  // console.log(locationFilterValue);
+
   $('#departmentDropdown').empty();
   $('#locationDropdown').empty();
 
@@ -306,6 +312,9 @@ clearSearchFilter();
   $("#departmentDropdown").off("change").on("change", function() {
     let dept = $('select[id="departmentDropdown"] option:selected').val();
     let locn = $('select[id="locationDropdown"] option:selected').val();
+
+    console.log(dept);
+    console.log(locn);
 
     if (dept != "all") {
       $("#locationDropdown").val("all");
