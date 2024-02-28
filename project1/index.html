@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="css/leaflet.css">
+    <link rel="stylesheet" href="css/toastify.min.css">
+    <link rel="stylesheet" href="css/MarkerCluster.Default.min.css">
+    <link rel="stylesheet" href="css/MarkerCluster.min.css">
+    <link rel="stylesheet" href="css/leaflet.extra-markers.min.css">
+    <link rel="stylesheet" href="css/fontawesome621.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/easy-button.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Gazetteer</title>
+</head>
+<body>
+
+    <div id="preloader"></div>
+
+    <span id="selectContainer">
+        <select id="countrySelect" class="form-select" onchange="fetchBoundingBox(value)">
+          <!-- populate from PHP call that returns only the codes and names from the countryborder GeoJSON file -->
+          <!-- <option value="1">Afghanistan</option> -->
+        </select>
+    </span>
+
+    <!-- <div class="dropdown">
+        <button type="button" class="btn btn-primary dropdown-toggle position-static w-100" data-toggle="dropdown" id="dropdownbtn">
+            Select country
+        </button>
+        <div class="dropdown-menu" style="z-index: 2000 !important;">
+        </div>
+    </div> -->
+    
+    <div id="map"></div>
+
+    <!-- Quick Facts Modal-->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header bg-success bg-gradient text-white">
+                    <h5 class="modal-title">Quick Facts</h5>
+                </div>
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Country</td>
+                                <td id="EBcountryData">data</td>
+                            </tr>
+                            <tr>
+                                <td>Flag</td>
+                                <td id="flagImg"></td>
+                            </tr>
+                            <tr>
+                                <td>Capital City</td>
+                                <td id="EBcapitalCity">data</td>
+                            </tr>
+                            <tr>
+                                <td>Area in sq km</td>
+                                <td id="EBareakm">data</td>
+                            </tr>
+                            <tr>
+                                <td>Continent</td>
+                                <td id="EBcontinents">data</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div> <!--End modal content-->
+        </div> <!--End modal dialog-->
+    </div> <!-- End modal-->
+
+    <!--Weather modal-->
+    <div class="modal fade" id="weatherModal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content shadow">
+                <!--Modal header-->
+                <div class="modal-header bg-primary bg-gradient text-center text-white">
+                    <h5 class="modal-title">Today's Forecast</h5>
+                </div>
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td scope="row">
+                                    Condition
+                                </td>
+                                <td class="text-end" id="weatherOverview">
+                                    value
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="row">
+                                    Temperature
+                                </td>
+                                <td class="text-end" id="tempInfo">
+                                    value
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="row">
+                                    Feels like
+                                </td>
+                                <td class="text-end" id="feelsLike">
+                                    value
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="row">
+                                    Wind speed
+                                </td>
+                                <td class="text-end" id="wind">
+                                    value
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div> <!--End modal content-->
+        </div> <!--End modal dialog-->
+    </div> <!-- End modal-->
+
+    <!--Weather forecast modal-->
+    <div class="modal fade" id="weatherForecastModal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content shadow">
+                <!--Modal header-->
+                <div class="modal-header bg-primary bg-gradient text-center text-white">
+                    <h5 class="modal-title">Three-day Forecast</h5>
+                </div>
+                <!--Modal body-->
+                <div class="modal-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td scope="col"></td>
+                                <td id="day1" scope="col">Date1</td>
+                                <td id="day2" scope="col">Date2</td>
+                                <td id="day3" scope="col">Date3</td>
+                            </tr>
+                            <tr>
+                                <td class="fas fa-temperature-high"></td>
+                                <td scope="row">
+                                Average Temp
+                                </td>
+                                <td class="text-end" id="forecast">
+                                value
+                                </td>
+                                <td class="text-end" id="forecast2">
+                                value
+                                </td>
+                                <td class="text-end" id="forecast3">
+                                value
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fas fa-temperature-high"></td>
+                                <td scope="row">
+                                Temp High
+                                </td>
+                                <td class="text-end" id="tempHigh">
+                                value
+                                </td>
+                                <td class="text-end" id="tempHigh2">
+                                value
+                                </td>
+                                <td class="text-end" id="tempHigh3">
+                                value
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fas fa-temperature-low"></td>
+                                <td scope="row">
+                                Temp Low
+                                </td>
+                                <td class="text-end" id="tempLow">
+                                value
+                                </td>
+                                <td class="text-end" id="tempLow2">
+                                value
+                                </td>
+                                <td class="text-end" id="tempLow3">
+                                value
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fas fa-umbrella"></td>
+                                <td scope="row">
+                                Precipitation (mm)
+                                </td>
+                                <td class="text-end" id="rain">
+                                value
+                                </td>
+                                <td class="text-end" id="rain2">
+                                value
+                                </td>
+                                <td class="text-end" id="rain3">
+                                value
+                                </td>
+                            </tr>
+                          <tr>
+                                <td class="fas fa-sun"></td>
+                                <td>
+                                UV
+                                </td>
+                                <td class="text-end" id="uv">
+                                value
+                                </td>
+                                <td class="text-end" id="uv2">
+                                value
+                                </td>
+                                <td class="text-end" id="uv3">
+                                value
+                                </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div> <!--End modal content-->
+        </div> <!--End modal dialog-->
+    </div> <!-- End modal-->
+
+    <!-- Currency Modal-->
+    <div class="modal fade" id="ccModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header bg-info bg-gradient text-white">
+                    <h5 class="modal-title">Currency Converter</h5>
+                </div>
+                <!--Modal Body-->
+                <div class="modal-body">
+                    <table class="table">
+                        <tr>
+                            <td class="text-center font-italic" id="currentExchangeInfo" colspan="2">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">
+                                <input type="text" id="usd2Convert" name="usd" placeholder="Input amount to convert"><br>
+                                <input type="submit" value="Submit" onclick="calculate()">
+                            </td>
+                            <td class="text-end" id="resultAmount">Enter amount to convert</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div> <!--End modal content-->
+        </div> <!--End modal dialog-->
+    </div> <!-- End modal-->
+
+        <!--Population Modal-->
+        <div class="modal fade" id="popModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header bg-success bg-gradient text-white">
+                        <h5 class="modal-title">Population Information</h5>
+                    </div>
+                    <!--Modal Body-->
+                    <div class="modal-body">
+                        <table class="table">
+                            <tr>
+                                <td class="text">
+                                    Population
+                                </td>
+                                <td class="text-end" id="popValue">
+                                    value
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text">
+                                    Languages
+                                </td>
+                                <td id="langValue" class="text-end">
+                                    value
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div> <!--End modal content-->
+            </div> <!--End modal dialog-->
+        </div> <!-- End modal-->
+
+        <!--News Modal-->
+        <div class="modal fade" id="newsModal">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">News</h5>
+                    </div>
+                    <!--Modal Body-->
+                    <div class="modal-body" id="newsContent">
+                        <ul class="news-list">
+
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div> <!--End modal content-->
+            </div> <!--End modal dialog-->
+        </div> <!-- End modal-->
+
+        <!-- Wikipedia Modal -->
+        <div class="modal fade" id="wikiModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header bg-success bg-gradient text-white">
+                        <h5 class="modal-title">Wikipedia Article</h5>
+                    </div>
+                    <!--Modal Body-->
+                    <div class="modal-body" id="wiki">
+                        <table class="table table-striped">
+                            <tr>
+                                <td id="wikiTitle">Title</td>
+                            </tr>
+                            <tr>
+                                <td id="wikiArticle">Article</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div> <!--End modal content-->
+            </div> <!--End modal dialog-->
+        </div> <!--End modal -->
+
+    <script src="js/leaflet.js"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/toastify.min.js"></script>
+    <script src="js/leaflet.markercluster.js"></script>
+    <script src="js/leaflet.extra-markers.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/easy-button.min.js"></script>
+    <script type="text/javascript" src="js/date.js"></script>
+    <script src="js/numeral.min.js"></script>
+    <script src="js/script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geonames Table of APIs</title>
+    <link rel="stylesheet" href="css/styles.css" defer>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>API name</th>
+            <th>API description</th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>1. Neighboring countries</td>
+            <td>
+                <p>Select a country from the drop down, and see a list of its neighboring countries.</p>
+                <select id="selCountry">
+                    <option value="GB">Great Britain</option>
+                    <option value="FR">France</option>
+                    <option value="DE">Germany</option>
+                    <option value="US">USA</option>
+                    <option value="AU">Australia</option>
+                    <option value="FR">France</option>
+                    <option value="IN">India</option>
+                    <option value="JP">Japan</option>
+                    <option value="KE">Kenya</option>
+                    <option value="MX">Mexico</option>
+                    <option value="ZA">South Africa</option>
+                    <option value="TH">Thailand</option>
+                </select>
+            </td>
+            <td><button onclick="processInput()">Submit</button></td>
+        </tr>
+        <tr>
+            <td>2. Get Timezone</td>
+            <td>
+                <p>
+                    Input the latitude (between -90 and 90) and longitude (between -180 and 180) of your choice to see the 
+                    timezone in GMT of that area.
+                </p>
+                <label for="lat">Latitude</label>
+                <input type="number" id="lat" min="-90" max="90">
+                <label for="long">Longitude</label>
+                <input type="number" id="long" min="-180" max="180">
+            </td>
+            <td><button onclick="processTimezone()">Submit</button></td>
+        </tr>
+        <tr>
+            <td>3. Latest earthquake</td>
+            <td>
+                <p>Input values for north/south (between -90 and +90), and east/west (between -180 and +180). 
+                    The result will show the most recent earthquake to happen in the area bounded by the values.
+                </p>
+                <label for="north">North</label>
+                <input type="number" id="north" min="-90" max="90">
+                <label for="east">East</label>
+                <input type="number" id="east" min="-180" max="180">
+                <label for="south">South</label>
+                <input type="number" id="south" min="-90" max="90">
+                <label for="west">West</label>
+                <input type="number" id="west" min="-180" max="180">
+            </td>
+            <td><button onclick="processEQ()">Submit</button></td>
+        </tr>
+        <tr>
+            <td id="countries" colspan="3">neighboring countries</td>
+        </tr>
+        <tr>
+            <td id="timezone" colspan="3">timezone</td>
+        </tr>
+        <tr>
+            <td id="earthq" colspan="3">latest earthquake</td>
+        </tr>
+    </table>
+
+    <script type="application/javascript" src="js/jquery-2.2.3.min.js"></script>
+    <script type="application/javascript" src="js/script.js"></script>
+
+</body>
+
+</html>
