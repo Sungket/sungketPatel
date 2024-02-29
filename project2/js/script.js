@@ -1196,13 +1196,15 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
         },
         success: function(result) {
           if (result.status.code == 200) {
-            $("#confirmDepDelete").replaceWith("Successfully deleted department");
+            $("#informationModal").modal('show');
+            $('#information').text("Successfully deleted department");
           } else {
-            $("#confirmDepDelete").replaceWith("error deleting department.");
-          }      
+            $("#informationModal").modal('show');
+            $('#information').text("error occured while deleting department");
+          }
+          refreshDepartmentTable();
         }
       })
-      refreshDepartmentTable();
     })
   });
 })
@@ -1294,9 +1296,9 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
             $("#informationModal").modal('show');
             $('#information').text("error occured while deleting location");
           }
+          refreshLocationTable();
         }
       })
-      refreshLocationTable();
     });
   });
 })
@@ -1342,9 +1344,9 @@ $("#deletePersonnelModal").on("show.bs.modal", function (e) {
             $("#informationModal").modal('show');
             $('#information').text("error occured while deleting record");
           }
+          refreshPersonnelTable();
         }
       })
-      refreshPersonnelTable();
     })
   })
 })
