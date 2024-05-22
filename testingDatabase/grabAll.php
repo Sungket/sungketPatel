@@ -1,6 +1,6 @@
 <?php
     
-    include("config.php");
+    include 'config.php';
 
     $conn = new mysqli($cd_host, $cd_port, $cd_socket, $cd_dbname, $cd_user, $cd_password);
 
@@ -12,7 +12,7 @@
 
     $query = $conn->prepare('SELECT firstName FROM personnel');
 
-    $query->bind_param("s", $firstName);
+    //$query->bind_param("s", $firstName);
 
     $result = $conn->query($query);
 
@@ -33,4 +33,5 @@
 
     mysqli_close($conn);
 
+    echo json_encode($output);
 ?>
