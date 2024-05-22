@@ -5,5 +5,5 @@
 include 'grabAll.php';
 
 echo $output;
-
+echo $result;
 ?>
