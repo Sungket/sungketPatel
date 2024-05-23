@@ -2,7 +2,7 @@
 
     include ("config.php");
 
-    header('Content-Type, application/json, charset=UTF-8');
+    header('Content-Type: application/json; charset=UTF-8');
 
 	$conn = new mysqli($cd_host, $cd_user, $cd_password, $cd_dbname, $cd_port, $cd_socket);
 
@@ -21,13 +21,13 @@
     }
 
     // query takes parameters, hence it is prepared
-    $query = $conn->prepare('INSERT INTO colorsCode (colorInput, colorCodeInput) VALUES(?,?)');
+    $query = $conn->prepare('INSERT INTO colorsCode (color, code) VALUES(?,?)');
 
     $query->bind_param("ss", $_POST['colorInput'], $_POST['colorCodeInput']);
 
     $query->execute();
 
-    if (false == $query) {
+    if (false === $query) {
         $output['status']['code'] = '500';
         $output['status']['name'] = 'failure';
         $output['status']['description'] = 'empty query';
