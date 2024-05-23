@@ -7,9 +7,8 @@
 
 	// database name, username and password
 
-	$cd_dbname = "companydirectory";
+	$cd_dbname = "colors";
 	$cd_user = "root";
 	$cd_password = "root";
 
-    $baseURL = "companydirectory.sungketpatel.co.uk";
 ?>
