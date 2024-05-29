@@ -45,5 +45,10 @@
     
     mysqli_close($conn);
 
+    echo "<h2>Your Selection</h2>";
+    echo $_POST['colorInput'];
+    echo $_POST['colorCodeInput'];
+
     echo json_encode($output);
+    header('Location: index.php');
 ?>

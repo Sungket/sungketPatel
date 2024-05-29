@@ -9,6 +9,7 @@
 </form>
 
 <?php
+    include('insertColor.php');
 
-
+    $results = 
 ?>
